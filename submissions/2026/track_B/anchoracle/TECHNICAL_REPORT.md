@@ -51,7 +51,7 @@
 │    scan/route.ts  —— 视觉推理 + 多信号加权评分
 │    chat/route.ts  —— 流式对话 + 实用查询挂钩
 ├─ 领域数据层 (src/data/*.ts)
-│    characters / landmarks / personas —— 30 人物 · 90 景点 · 人设
+│    characters / landmarks / landmarkAliases / personas —— 30 人物 · 90 景点 · 别名 · 人设
 │    纯数据与类型枚举，识别与对话逻辑均 import 此层
 └─ 基础设施层 (src/lib/*.ts)
      aiClient(Gemma/Gemini 单例) · chatDb(IndexedDB) · imageUtils(压缩)

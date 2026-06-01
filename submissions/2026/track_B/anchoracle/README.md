@@ -182,6 +182,7 @@ travel-history-agent/
 │   ├── data/
 │   │   ├── characters.ts         # 30 人物 / 90 景点 / 场景类型
 │   │   ├── landmarks.ts          # 景点元数据
+│   │   ├── landmarkAliases.ts    # 景点别名映射（俗称 / 简称 → 标准名）
 │   │   └── personas.ts           # 人物对话人设
 │   └── lib/
 │       ├── aiClient.ts           # Gemma / Gemini SDK 单例
