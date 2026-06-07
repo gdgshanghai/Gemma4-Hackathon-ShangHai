@@ -1,0 +1,34 @@
+# Argo CD ApplicationSet for JSL Biomedical.
+# Placeholder — replace with actual repo URL, target revision, and sync policy.
+#
+# Usage:
+#   kubectl apply -f deploy/argocd/applicationset.yaml
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: jsl-biomedical
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - environment: dev
+          - environment: staging
+          - environment: prod
+  template:
+    metadata:
+      name: jsl-biomedical-{{environment}}
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/jsl-biomedical/jsl-biomedical.git
+        targetRevision: main
+        path: deploy/overlays/{{environment}}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: jsl-{{environment}}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

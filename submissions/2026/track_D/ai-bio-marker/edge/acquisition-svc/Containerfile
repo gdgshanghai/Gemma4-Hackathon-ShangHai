@@ -1,0 +1,18 @@
+# acquisition-svc — Go 1.22+ multi-stage build
+# Reads ADC streams from 8-channel dry-electrode BCI headset at 250 Hz.
+# Emits signal.v1.Frame protobuf messages to the edge message bus.
+
+# ---- build stage ----
+FROM golang:1.22-alpine AS build
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o /acquisition-svc .
+
+# ---- run stage ----
+FROM alpine:3.20
+RUN adduser -D -u 1000 edge
+USER edge
+COPY --from=build /acquisition-svc /usr/local/bin/acquisition-svc
+ENTRYPOINT ["acquisition-svc"]

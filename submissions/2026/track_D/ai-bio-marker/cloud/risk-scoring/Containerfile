@@ -1,0 +1,10 @@
+# risk-scoring — Python 3.12 slim
+# Fuses neural state vector + immune embedding into a 0–100 composite risk score.
+# Drives the RL policy engine and JSL-Gemma rationale generation.
+
+FROM python:3.12-slim
+RUN useradd -m -u 1000 cloud
+USER cloud
+WORKDIR /app
+COPY main.py .
+ENTRYPOINT ["python", "main.py"]

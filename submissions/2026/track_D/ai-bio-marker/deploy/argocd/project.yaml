@@ -1,0 +1,14 @@
+# Placeholder — Argo CD project configuration.
+# Define allowed source repos, destination clusters/namespaces, and RBAC.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: jsl-biomedical
+  namespace: argocd
+spec:
+  description: JSL Biomedical monorepo deployments
+  sourceRepos:
+    - "https://github.com/jsl-biomedical/jsl-biomedical.git"
+  destinations:
+    - namespace: "jsl-*"
+      server: https://kubernetes.default.svc

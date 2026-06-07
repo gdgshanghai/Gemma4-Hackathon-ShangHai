@@ -1,0 +1,18 @@
+# feature-codec — Go 1.22+ multi-stage build
+# Compresses preprocessed frames into FeatureBundle protobuf messages.
+# Applies schema versioning and residency tagging before cloud upload.
+
+# ---- build stage ----
+FROM golang:1.22-alpine AS build
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o /feature-codec .
+
+# ---- run stage ----
+FROM alpine:3.20
+RUN adduser -D -u 1000 edge
+USER edge
+COPY --from=build /feature-codec /usr/local/bin/feature-codec
+ENTRYPOINT ["feature-codec"]

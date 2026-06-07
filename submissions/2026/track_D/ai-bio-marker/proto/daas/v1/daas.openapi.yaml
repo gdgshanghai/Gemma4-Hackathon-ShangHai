@@ -1,0 +1,189 @@
+openapi: "3.1.0"
+info:
+  title: JSL Biomedical — DaaS API
+  description: >
+    De-identified Data-as-a-Service API for research partners, pharma, and CROs.
+    All endpoints return de-identified, aggregated data compliant with the residency
+    tags carried through the FeatureBundle pipeline.
+  version: "1.0.0"
+  contact:
+    name: JSL Biomedical Engineering
+    email: eng@jsl-biomedical.example.com
+
+servers:
+  - url: https://daas.jsl-biomedical.example.com/v1
+    description: Production DaaS endpoint
+
+paths:
+  /cohorts:
+    get:
+      summary: List available de-identified cohorts
+      description: >
+        Returns metadata for cohorts that match the requester's access policy.
+        No raw patient data is exposed — only aggregate statistics and cohort sizes.
+      parameters:
+        - name: residency
+          in: query
+          schema:
+            type: string
+            pattern: "^[A-Z]{2}$"
+          description: Filter by data residency (ISO 3166-1 alpha-2).
+        - name: risk_range_min
+          in: query
+          schema:
+            type: number
+            minimum: 0
+            maximum: 100
+          description: Minimum risk score for cohort inclusion.
+        - name: risk_range_max
+          in: query
+          schema:
+            type: number
+            minimum: 0
+            maximum: 100
+          description: Maximum risk score for cohort inclusion.
+      responses:
+        "200":
+          description: Paginated cohort list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CohortList"
+
+  /cohorts/{cohortId}/features:
+    get:
+      summary: Export de-identified feature vectors for a cohort
+      description: >
+        Returns pre-computed feature vectors (band-power, ICA components, latent
+        vectors) for the specified cohort. All PII has been removed; only the
+        compressed FeatureBundle fields are exposed.
+      parameters:
+        - name: cohortId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Feature vector export.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeatureExport"
+        "404":
+          description: Cohort not found or access denied.
+
+  /cohorts/{cohortId}/biomarkers:
+    get:
+      summary: Export de-identified AI-BioMarker scores
+      description: >
+        Returns the dual-tower contrastive biomarker vectors and composite risk
+        scores for the cohort. Intended for research validation and biomarker
+        discovery studies.
+      parameters:
+        - name: cohortId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Biomarker vector export.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BiomarkerExport"
+
+components:
+  schemas:
+    CohortList:
+      type: object
+      properties:
+        cohorts:
+          type: array
+          items:
+            $ref: "#/components/schemas/CohortSummary"
+        next_cursor:
+          type: string
+          nullable: true
+
+    CohortSummary:
+      type: object
+      properties:
+        cohort_id:
+          type: string
+          format: uuid
+        residency:
+          type: string
+        subject_count:
+          type: integer
+        mean_risk_score:
+          type: number
+        date_range_start:
+          type: string
+          format: date-time
+        date_range_end:
+          type: string
+          format: date-time
+
+    FeatureExport:
+      type: object
+      properties:
+        cohort_id:
+          type: string
+          format: uuid
+        features:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeatureRecord"
+
+    FeatureRecord:
+      type: object
+      properties:
+        record_id:
+          type: string
+          format: uuid
+        window_start:
+          type: string
+          format: date-time
+        band_power:
+          type: array
+          items:
+            type: number
+        ica_components:
+          type: array
+          items:
+            type: number
+        latent_vector:
+          type: array
+          items:
+            type: number
+
+    BiomarkerExport:
+      type: object
+      properties:
+        cohort_id:
+          type: string
+          format: uuid
+        biomarkers:
+          type: array
+          items:
+            $ref: "#/components/schemas/BiomarkerRecord"
+
+    BiomarkerRecord:
+      type: object
+      properties:
+        record_id:
+          type: string
+          format: uuid
+        biomarker_vector:
+          type: array
+          items:
+            type: number
+        risk_score:
+          type: number
+        immune_state_label:
+          type: string
+          enum: [normal, elevated, critical]

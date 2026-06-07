@@ -1,0 +1,7 @@
+# Development overlay: force single replicas for all deployments.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "*"
+spec:
+  replicas: 1

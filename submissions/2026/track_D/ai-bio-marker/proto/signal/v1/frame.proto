@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package signal.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// Raw multimodal biosignal frame from the 8-channel dry-electrode BCI headset.
+// Emitted by acquisition-svc at 250 Hz and consumed by preprocess-svc.
+message Frame {
+  // Globally unique frame identifier (UUID v7).
+  string frame_id = 1;
+
+  // Timestamp from the device ADC clock, set at signal acquisition.
+  google.protobuf.Timestamp device_ts = 2;
+
+  // EEG amplitude per channel (8 channels, microvolts).
+  // Expected range: [-500, 500] µV. NaN indicates a dead or disconnected channel.
+  repeated float eeg = 3;
+
+  // Heart rate variability — inter-beat interval in milliseconds.
+  // Set to 0 if HRV sensor is unavailable.
+  float hrv = 4;
+
+  // Electrodermal activity in microsiemens.
+  // Set to 0 if EDA sensor is unavailable.
+  float eda = 5;
+
+  // Device battery level, normalized [0.0, 1.0].
+  float battery = 6;
+
+  // Per-channel signal quality indicator [0.0, 1.0].
+  // 1.0 = optimal contact; values below 0.3 should be discarded.
+  repeated float quality = 7;
+
+  // Data residency tag (ISO 3166-1 alpha-2 country code).
+  // Travels with the frame through the entire pipeline.
+  string residency = 8;
+
+  // Monotonically increasing frame sequence number.
+  // Used by downstream consumers for gap detection and reordering.
+  uint64 seq = 9;
+}

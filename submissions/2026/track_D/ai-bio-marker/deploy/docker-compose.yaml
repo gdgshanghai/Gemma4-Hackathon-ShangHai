@@ -1,0 +1,178 @@
+# JSL Biomedical — Local Development Compose
+#
+# This file defines the full Device → Edge → Cloud service topology for local
+# development. All services are stubs that exit immediately; replace each with
+# a working implementation before expecting end-to-end data flow.
+#
+# Usage:
+#   podman compose up --build    # Build and start all services
+#   podman compose down          # Tear down
+
+version: "3.9"
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  edge-net:
+    driver: bridge
+    labels:
+      - "jsl.tier=edge"
+  cloud-net:
+    driver: bridge
+    labels:
+      - "jsl.tier=cloud"
+
+# =============================================================================
+# Edge Tier — Signal acquisition, preprocessing, compression, safety
+# =============================================================================
+services:
+  acquisition-svc:
+    build:
+      context: ./edge/acquisition-svc
+    networks:
+      - edge-net
+    restart: "no"
+    labels:
+      jsl.module: acquisition-svc
+      jsl.tier: edge
+
+  preprocess-svc:
+    build:
+      context: ./edge/preprocess-svc
+    networks:
+      - edge-net
+    restart: "no"
+    labels:
+      jsl.module: preprocess-svc
+      jsl.tier: edge
+
+  feature-codec:
+    build:
+      context: ./edge/feature-codec
+    networks:
+      - edge-net
+      - cloud-net
+    restart: "no"
+    labels:
+      jsl.module: feature-codec
+      jsl.tier: edge
+
+  safety-guard:
+    build:
+      context: ./edge/safety-guard
+    networks:
+      - edge-net
+    restart: "no"
+    labels:
+      jsl.module: safety-guard
+      jsl.tier: edge
+
+# =============================================================================
+# Cloud Tier — Ingestion, inference, decision, DaaS
+# =============================================================================
+  ingest-gateway:
+    build:
+      context: ./cloud/ingest-gateway
+    networks:
+      - cloud-net
+    ports:
+      - "8443:8443"  # mTLS gRPC
+    restart: "no"
+    labels:
+      jsl.module: ingest-gateway
+      jsl.tier: cloud
+
+  feature-store:
+    build:
+      context: ./cloud/feature-store
+    networks:
+      - cloud-net
+    restart: "no"
+    labels:
+      jsl.module: feature-store
+      jsl.tier: cloud
+
+  risk-scoring:
+    build:
+      context: ./cloud/risk-scoring
+    networks:
+      - cloud-net
+    restart: "no"
+    labels:
+      jsl.module: risk-scoring
+      jsl.tier: cloud
+
+  intervention-planner:
+    build:
+      context: ./cloud/intervention-planner
+    networks:
+      - cloud-net
+      - edge-net
+    restart: "no"
+    labels:
+      jsl.module: intervention-planner
+      jsl.tier: cloud
+
+  fl-aggregator:
+    build:
+      context: ./cloud/fl-aggregator
+    networks:
+      - cloud-net
+    restart: "no"
+    labels:
+      jsl.module: fl-aggregator
+      jsl.tier: cloud
+
+  daas-api:
+    build:
+      context: ./cloud/daas-api
+    networks:
+      - cloud-net
+    ports:
+      - "8080:8080"  # REST / OpenAPI
+    restart: "no"
+    labels:
+      jsl.module: daas-api
+      jsl.tier: cloud
+
+# =============================================================================
+# ML Model Services (not built yet — placeholders)
+# =============================================================================
+  # htsf-attention:
+  #   build:
+  #     context: ./cloud/models/htsf-attention
+  #   networks:
+  #     - cloud-net
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+
+  # ai-biomarker:
+  #   build:
+  #     context: ./cloud/models/ai-biomarker
+  #   networks:
+  #     - cloud-net
+
+  # rl-policy-engine:
+  #   build:
+  #     context: ./cloud/models/rl-policy-engine
+  #   networks:
+  #     - cloud-net
+
+  # jsl-gemma:
+  #   build:
+  #     context: ./cloud/models/jsl-gemma
+  #   networks:
+  #     - cloud-net
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]

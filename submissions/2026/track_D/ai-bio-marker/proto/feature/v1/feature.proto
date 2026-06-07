@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package feature.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// Compressed feature bundle emitted by feature-codec on the edge tier.
+// Represents a ~20% payload reduction compared to raw frames while preserving
+// clinically relevant information for cloud-side inference.
+message FeatureBundle {
+  // Globally unique bundle identifier (UUID v7).
+  string bundle_id = 1;
+
+  // Start of the processing window (inclusive).
+  google.protobuf.Timestamp window_start = 2;
+
+  // End of the processing window (exclusive).
+  google.protobuf.Timestamp window_end = 3;
+
+  // EEG band-power features [delta, theta, alpha, beta, gamma].
+  // Normalized to [0, 1] per channel. Length = 5 * num_channels.
+  repeated float band_power = 4;
+
+  // ICA-decomposed independent components (flattened).
+  // The preprocess-svc performs ICA artifact removal; these are the
+  // residual components after ocular/muscular artifact rejection.
+  repeated float ica_components = 5;
+
+  // Heart rate variability features:
+  // [mean_ibi, sdnn, rmssd, pnn50, lf_power, hf_power, lf_hf_ratio].
+  repeated float hrv_features = 6;
+
+  // Compressed latent representation from the edge autoencoder bottleneck.
+  // Dimensionality TBD; typically 64–128 floats.
+  repeated float latent_vector = 7;
+
+  // Schema version — must be incremented on breaking changes.
+  // Consumers MUST reject bundles with unsupported schema_version.
+  uint32 schema_version = 8;
+
+  // Data residency tag (ISO 3166-1 alpha-2).
+  string residency = 9;
+
+  // Number of raw frames this bundle aggregates.
+  uint64 frame_count = 10;
+
+  // Fraction of frames with quality < 0.3 (indicates poor signal).
+  float low_quality_ratio = 11;
+}

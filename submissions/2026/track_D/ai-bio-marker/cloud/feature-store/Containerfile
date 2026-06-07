@@ -1,0 +1,10 @@
+# feature-store — Python 3.12 slim
+# Versioned object-store backend for FeatureBundle persistence and replay.
+# Supports replay for model training, backfill, and audit.
+
+FROM python:3.12-slim
+RUN useradd -m -u 1000 cloud
+USER cloud
+WORKDIR /app
+COPY main.py .
+ENTRYPOINT ["python", "main.py"]

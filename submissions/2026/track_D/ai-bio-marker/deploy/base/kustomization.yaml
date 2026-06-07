@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Base resources shared across all environments (dev, staging, prod).
+# Overlays should add environment-specific patches, images, and replicas.
+
+resources:
+  - ../../cloud/ingest-gateway/deployment.yaml
+  - ../../cloud/feature-store/deployment.yaml
+  - ../../cloud/risk-scoring/deployment.yaml
+  - ../../cloud/intervention-planner/deployment.yaml
+  - ../../cloud/fl-aggregator/deployment.yaml
+  - ../../cloud/daas-api/deployment.yaml
+  - ../../edge/acquisition-svc/deployment.yaml
+  - ../../edge/preprocess-svc/deployment.yaml
+  - ../../edge/feature-codec/deployment.yaml
+  - ../../edge/safety-guard/deployment.yaml
+
+# Common labels applied to all resources.
+commonLabels:
+  app.kubernetes.io/part-of: jsl-biomedical

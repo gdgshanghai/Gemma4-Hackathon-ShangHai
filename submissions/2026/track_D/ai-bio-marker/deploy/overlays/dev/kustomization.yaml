@@ -1,0 +1,41 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Development overlay.
+# Uses single-replica, no resource limits, and local images.
+# Intended for kind / crc / local OKD development clusters.
+
+bases:
+  - ../../base
+
+namePrefix: dev-
+
+commonLabels:
+  environment: dev
+
+# Override images to use local dev tags.
+images:
+  - name: ingest-gateway
+    newTag: dev
+  - name: feature-store
+    newTag: dev
+  - name: risk-scoring
+    newTag: dev
+  - name: intervention-planner
+    newTag: dev
+  - name: fl-aggregator
+    newTag: dev
+  - name: daas-api
+    newTag: dev
+  - name: acquisition-svc
+    newTag: dev
+  - name: preprocess-svc
+    newTag: dev
+  - name: feature-codec
+    newTag: dev
+  - name: safety-guard
+    newTag: dev
+
+patchesStrategicMerge:
+  - replica-patch.yaml
+  - resource-patch.yaml

@@ -1,0 +1,11 @@
+# Development overlay: remove resource limits/requests.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "*"
+spec:
+  template:
+    spec:
+      containers:
+        - name: "*"
+          resources: {}

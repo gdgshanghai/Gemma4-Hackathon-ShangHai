@@ -1,0 +1,18 @@
+# daas-api — Go 1.22+ multi-stage build
+# De-identified Data-as-a-Service REST gateway for research partners.
+# Never exposes raw patient data; enforces residency-based access policies.
+
+# ---- build stage ----
+FROM golang:1.22-alpine AS build
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o /daas-api .
+
+# ---- run stage ----
+FROM alpine:3.20
+RUN adduser -D -u 1000 cloud
+USER cloud
+COPY --from=build /daas-api /usr/local/bin/daas-api
+ENTRYPOINT ["daas-api"]
