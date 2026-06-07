@@ -2,7 +2,7 @@
 <p align="center">
   <a href="https://huggingface.co/spaces/Laura-smith/voice-spoof-detector">🌐 Live Demo</a> |
   <a href="./demo_video.mp4">🎥 Demo Video</a> |
-  <a href="./technical_report.pdf">📄 Technical Report</a>
+  <a href="./gemmashield_technical_report.pdf">📄 Technical Report</a>
 </p>
 
 <p align="center">
