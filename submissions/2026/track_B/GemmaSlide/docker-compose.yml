@@ -1,0 +1,126 @@
+# =============================================================================
+# GemmaSlide Deployment Docker Compose
+# =============================================================================
+# Self-contained stack with its own Traefik reverse proxy.
+# Traefik auto-discovers services via Docker labels and provisions
+# Let's Encrypt TLS certificates automatically.
+#
+# ⚠️  If you also run /home/shuaixr/Projects/dk/docker-compose.yml on the same
+#    machine, stop it first (docker compose down) because both stacks bind
+#    host ports 80/443 and will conflict.
+#
+# Domains — set in .env file (same directory):
+#   FRONTEND_DOMAIN=slide.shuaixr.dev
+#   BACKEND_DOMAIN=api.slide.shuaixr.dev
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Traefik – reverse proxy & TLS termination
+  # ---------------------------------------------------------------------------
+  traefik:
+    image: traefik:v3.6.4
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Mount the entire traefik/ directory so Traefik can read its config
+      # AND write certificates to acme.json (required on first provision).
+      # Not using :ro because acme.json must be writable.
+      - ./traefik:/etc/traefik
+    labels:
+      - "traefik.enable=false"
+
+  # ---------------------------------------------------------------------------
+  # Frontend – Vite + React SPA served by Nginx
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Baked into the JS bundle at build time.
+        VITE_API_BASE_URL: https://${BACKEND_DOMAIN}
+    pull_policy: build
+    container_name: gemmaslide-frontend
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      # Router
+      - "traefik.http.routers.gemmaslide-frontend.rule=Host(`${FRONTEND_DOMAIN}`)"
+      - "traefik.http.routers.gemmaslide-frontend.entrypoints=websecure"
+      - "traefik.http.routers.gemmaslide-frontend.tls.certresolver=le"
+      # Service
+      - "traefik.http.services.gemmaslide-frontend.loadbalancer.server.port=80"
+
+  # ---------------------------------------------------------------------------
+  # Backend API – FastAPI (Uvicorn)
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    pull_policy: build
+    container_name: gemmaslide-backend
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      # Router
+      - "traefik.http.routers.gemmaslide-backend.rule=Host(`${BACKEND_DOMAIN}`)"
+      - "traefik.http.routers.gemmaslide-backend.entrypoints=websecure"
+      - "traefik.http.routers.gemmaslide-backend.tls.certresolver=le"
+      # Service
+      - "traefik.http.services.gemmaslide-backend.loadbalancer.server.port=8000"
+    depends_on:
+      - redis
+    volumes:
+      - gemmaslide-temp:/tmp/gemmaslide
+
+  # ---------------------------------------------------------------------------
+  # Celery worker – background task processing
+  # ---------------------------------------------------------------------------
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    pull_policy: build
+    container_name: gemmaslide-worker
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    command:
+      - celery
+      - -A
+      - app.celery_app.celery_app
+      - worker
+      - --loglevel
+      - INFO
+      - --concurrency
+      - "1"
+    depends_on:
+      - redis
+    volumes:
+      - gemmaslide-temp:/tmp/gemmaslide
+    # Worker does not need to be exposed via Traefik.
+
+  # ---------------------------------------------------------------------------
+  # Redis – job queue / result backend
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: gemmaslide-redis
+    restart: unless-stopped
+    # Internal only – no Traefik labels needed.
+
+# ---------------------------------------------------------------------------
+# Persisted volumes
+# ---------------------------------------------------------------------------
+volumes:
+  gemmaslide-temp:

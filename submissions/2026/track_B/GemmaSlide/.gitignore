@@ -1,0 +1,5 @@
+# Deployment configuration (domain names, etc.)
+.env
+
+# Traefik TLS certificate (contains private keys)
+traefik/acme.json

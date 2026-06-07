@@ -1,0 +1,69 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gemmaslide-backend:dev
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    environment:
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-*}
+      TEMP_ROOT: ${TEMP_ROOT:-/tmp/gemmaslide}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/0}
+    command:
+      - uvicorn
+      - app.main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --reload
+      - --reload-dir
+      - /app/app
+    volumes:
+      - ./app:/app/app
+      - ./tests:/app/tests
+      - ./docker:/app/docker:ro
+      - gemmaslide-temp:/tmp/gemmaslide
+    depends_on:
+      - redis
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gemmaslide-backend:dev
+    env_file:
+      - .env
+    environment:
+      TEMP_ROOT: ${TEMP_ROOT:-/tmp/gemmaslide}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/0}
+    command:
+      - celery
+      - -A
+      - app.celery_app.celery_app
+      - worker
+      - --loglevel
+      - INFO
+      - --concurrency
+      - "1"
+    volumes:
+      - ./app:/app/app
+      - ./docker:/app/docker:ro
+      - gemmaslide-temp:/tmp/gemmaslide
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  gemmaslide-temp:
