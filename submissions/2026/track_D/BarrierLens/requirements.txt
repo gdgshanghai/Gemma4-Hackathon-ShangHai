@@ -1,0 +1,7 @@
+# BarrierLens — Node.js Web 应用（非 Python）
+# 依赖声明见主仓库 package.json
+# https://github.com/timeyour/barrierlens/blob/main/package.json
+#
+# 环境：Node.js >= 20, npm >= 10
+# 安装：npm install
+# 启动：npm run dev
