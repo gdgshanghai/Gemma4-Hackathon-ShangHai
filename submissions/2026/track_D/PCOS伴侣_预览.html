@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>她健康·PCOS伴侣 — 预览</title>
+<style>
+/* ========== 设计系统 ========== */
+:root {
+  --rose: #E8D5C4;
+  --lavender: #C9B8D8;
+  --sage: #A8C5B5;
+  --warm-white: #FAF8F5;
+  --text: #2D2D2D;
+  --text-light: #8A8A8A;
+  --coral: #E8998D;
+  --coral-dark: #D4837A;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+  --shadow-card: 0 2px 12px rgba(200,180,160,0.12);
+  --shadow-soft: 0 1px 6px rgba(200,180,160,0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  overflow: hidden;
+}
+
+/* ========== 手机框架 ========== */
+.phone-frame {
+  width: 375px;
+  height: 812px;
+  background: var(--warm-white);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 0 0 2px rgba(255,255,255,0.1);
+}
+
+/* 刘海 */
+.notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 28px;
+  background: #1a1a2e;
+  border-radius: 0 0 18px 18px;
+  z-index: 100;
+}
+
+/* 状态栏 */
+.status-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  position: relative;
+  z-index: 50;
+}
+
+/* 导航栏 */
+.nav-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid rgba(232,213,196,0.2);
+  position: relative;
+}
+
+.nav-back {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--coral);
+  cursor: pointer;
+  display: none;
+}
+
+/* ========== 页面容器 ========== */
+.page-container {
+  height: calc(812px - 44px - 44px - 60px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page-container::-webkit-scrollbar { display: none; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ========== TabBar ========== */
+.tabbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: rgba(250,248,245,0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(232,213,196,0.2);
+  z-index: 50;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.tab-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-label {
+  font-size: 10px;
+  color: #999;
+}
+
+.tab-item.active .tab-label { color: var(--lavender); }
+.tab-item.active svg { stroke: var(--lavender); }
+
+/* ========== 首页 ========== */
+.greeting-section { padding: 16px 20px 24px; }
+.greeting-time {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  display: block;
+}
+.greeting-warm {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-top: 4px;
+  display: block;
+}
+
+/* AI 入口卡片 */
+.chat-entry {
+  margin: 0 16px 16px;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 18px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.chat-entry:active { transform: scale(0.98); }
+
+.chat-entry-left { display: flex; align-items: center; gap: 12px; }
+
+.avatar-flower {
+  width: 44px; height: 44px;
+  position: relative;
+}
+.petal {
+  position: absolute;
+  width: 12px; height: 18px;
+  border-radius: 50%;
+  opacity: 0.85;
+}
+.p1 { background: var(--rose); top: 0; left: 16px; }
+.p2 { background: var(--lavender); top: 4px; right: 2px; transform: rotate(72deg); }
+.p3 { background: var(--coral); bottom: 2px; right: 6px; transform: rotate(144deg); }
+.p4 { background: var(--sage); bottom: 2px; left: 6px; transform: rotate(216deg); }
+.p5 { background: var(--rose); top: 4px; left: 2px; transform: rotate(288deg); }
+.pcenter {
+  position: absolute;
+  width: 10px; height: 10px;
+  background: #F5E6D3;
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.chat-entry-text { display: flex; flex-direction: column; }
+.chat-entry-title { font-size: 16px; font-weight: 600; color: var(--text); }
+.chat-entry-desc { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+.chat-entry-arrow { font-size: 20px; color: var(--lavender); font-weight: 300; }
+
+/* 功能卡片 */
+.feature-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.feature-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(232,213,196,0.12);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.feature-card:active { transform: scale(0.98); }
+
+.card-icon-circle {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(201,184,216,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.card-icon-circle.sage { background: rgba(168,197,181,0.2); }
+
+.card-info { flex: 1; }
+.card-info-title { font-size: 15px; font-weight: 600; color: var(--text); display: block; }
+.card-info-desc { font-size: 12px; color: var(--text-light); margin-top: 2px; display: block; }
+
+/* 温暖小语 */
+.warm-quote {
+  text-align: center;
+  padding: 32px 20px;
+  font-size: 13px;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+/* 免责声明 */
+.disclaimer {
+  position: absolute;
+  bottom: 60px;
+  left: 0; right: 0;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 10px;
+  color: var(--text-light);
+  background: rgba(250,248,245,0.9);
+  z-index: 10;
+}
+
+/* ========== 问卷页 ========== */
+.survey-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.survey-progress {
+  padding: 10px 16px 6px;
+  background: rgba(250,248,245,0.95);
+  z-index: 10;
+}
+
+.progress-bar {
+  height: 4px;
+  background: rgba(201,184,216,0.2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--lavender), var(--coral));
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+.progress-text {
+  font-size: 11px;
+  color: var(--text-light);
+  text-align: center;
+  display: block;
+}
+
+.survey-chat {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+}
+.survey-chat::-webkit-scrollbar { display: none; }
+
+.chat-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.row-left { flex-direction: row; }
+.row-right { flex-direction: row-reverse; }
+
+.msg-avatar-mini {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(201,184,216,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.bubble {
+  max-width: 75%;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  border-radius: 16px;
+  word-wrap: break-word;
+}
+.bubble-ai {
+  background: rgba(201,184,216,0.18);
+  border-radius: 4px 16px 16px 16px;
+  color: var(--text);
+}
+.bubble-user {
+  background: rgba(232,213,196,0.35);
+  border-radius: 16px 4px 16px 16px;
+  color: var(--text);
+}
+
+.question-hint {
+  display: block;
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+/* 选项区域 */
+.options-area {
+  background: rgba(250,248,245,0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(232,213,196,0.3);
+  padding: 12px 16px;
+}
+.options-list { display: flex; flex-direction: column; gap: 8px; }
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.8);
+  border-radius: var(--radius-md);
+  border: 1.5px solid rgba(201,184,216,0.15);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: var(--text);
+}
+.option-btn:hover { background: rgba(255,255,255,1); }
+.option-btn.selected {
+  background: rgba(232,153,141,0.12);
+  border-color: var(--coral);
+}
+.option-btn:active { transform: scale(0.98); }
+
+.option-icon { font-size: 16px; flex-shrink: 0; }
+.option-label { flex: 1; }
+.option-check {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--coral);
+  color: #fff;
+  font-size: 12px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.option-btn.selected .option-check { display: flex; }
+
+.confirm-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 0;
+  background: var(--coral);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(232,153,141,0.3);
+  transition: all 0.2s;
+}
+.confirm-btn:active { background: var(--coral-dark); transform: scale(0.98); }
+.confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ========== 结果页 ========== */
+.report-header { text-align: center; padding: 20px 0 16px; }
+.report-greeting { display: block; font-size: 13px; color: var(--coral); }
+.report-title {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 4px;
+}
+.report-time { display: block; font-size: 11px; color: var(--text-light); margin-top: 4px; }
+
+.result-card {
+  margin: 0 16px 16px;
+  background: rgba(255,255,255,0.7);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 18px 16px;
+}
+
+.risk-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.risk-icon { font-size: 24px; }
+.risk-label { font-size: 12px; color: var(--text-light); display: block; }
+.risk-level { font-size: 18px; font-weight: 700; display: block; }
+.risk-low { color: var(--sage); }
+.risk-medium { color: #E8B44D; }
+.risk-high { color: var(--coral); }
+
+.risk-bar-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.risk-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: rgba(201,184,216,0.15);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.risk-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 1s ease;
+}
+.risk-fill-low { background: var(--sage); }
+.risk-fill-medium { background: #E8B44D; }
+.risk-fill-high { background: var(--coral); }
+.risk-score { font-size: 13px; font-weight: 600; color: var(--text-light); }
+.risk-desc { font-size: 12px; color: var(--text-light); line-height: 1.6; }
+
+.result-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 16px 8px;
+  display: block;
+}
+
+.symptom-list, .advice-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+
+.symptom-item, .advice-item {
+  padding: 12px 14px;
+  background: rgba(232,213,196,0.12);
+  border-radius: var(--radius-md);
+}
+.symptom-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.symptom-name { flex: 1; font-size: 14px; font-weight: 500; }
+.symptom-status {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+}
+.status-normal { background: rgba(168,197,181,0.2); color: var(--sage); }
+.status-attention { background: rgba(232,180,77,0.15); color: #D4A03C; }
+.status-concern { background: rgba(232,153,141,0.15); color: var(--coral); }
+.symptom-detail { font-size: 12px; color: var(--text-light); line-height: 1.5; padding-left: 24px; }
+
+.advice-item { display: flex; gap: 10px; }
+.advice-icon-wrap {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(232,153,141,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.advice-title { font-size: 14px; font-weight: 600; display: block; }
+.advice-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; margin-top: 2px; display: block; }
+
+.result-action { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+/* ========== 聊天页 ========== */
+.chat-page { display: flex; flex-direction: column; height: 100%; }
+
+.chat-header-bar {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(250,248,245,0.95);
+  border-bottom: 1px solid rgba(232,213,196,0.2);
+}
+
+.chat-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(201,184,216,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.chat-header-name { font-size: 15px; font-weight: 600; display: block; }
+.chat-header-status { font-size: 11px; color: var(--text-light); display: block; }
+
+.chat-messages {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+}
+.chat-messages::-webkit-scrollbar { display: none; }
+
+.welcome-section { text-align: center; padding: 40px 0 20px; }
+.welcome-emoji { font-size: 36px; display: block; margin-bottom: 8px; }
+.welcome-name { font-size: 20px; font-weight: 600; display: block; margin-bottom: 6px; }
+.welcome-desc { font-size: 13px; color: var(--text-light); line-height: 1.6; display: block; }
+
+.quick-topics { padding: 0 12px 8px; }
+.topics-title { font-size: 11px; color: var(--text-light); display: block; margin-bottom: 6px; }
+.topics-list { display: flex; gap: 6px; flex-wrap: wrap; }
+.topic-chip {
+  padding: 7px 12px;
+  background: rgba(201,184,216,0.15);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  color: var(--lavender);
+  border: 1px solid rgba(201,184,216,0.25);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.topic-chip:hover { background: rgba(201,184,216,0.25); }
+
+.chat-input-area {
+  background: rgba(250,248,245,0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(232,213,196,0.2);
+  padding: 8px 12px;
+}
+.input-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 20px;
+  padding: 4px 4px 4px 14px;
+  border: 1px solid rgba(201,184,216,0.2);
+}
+.chat-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  min-height: 22px;
+  max-height: 80px;
+  color: var(--text);
+}
+.chat-input::placeholder { color: var(--text-light); }
+
+.send-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(201,184,216,0.3);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+.send-btn.active { background: var(--coral); }
+
+.typing-indicator { display: flex; gap: 4px; padding: 4px 0; }
+.typing-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--lavender);
+  animation: bounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* ========== Profile 页 ========== */
+.profile-header { text-align: center; padding: 24px 0 16px; }
+.profile-avatar-wrap {
+  width: 60px; height: 60px;
+  margin: 0 auto 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profile-name { font-size: 20px; font-weight: 600; display: block; }
+.profile-desc { font-size: 12px; color: var(--text-light); display: block; margin-top: 4px; }
+
+.profile-card {
+  margin: 0 16px 16px;
+  background: rgba(255,255,255,0.7);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 14px 16px;
+}
+.profile-card-title { font-size: 14px; font-weight: 600; display: block; margin-bottom: 10px; }
+.data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.data-label { font-size: 11px; color: var(--text-light); display: block; }
+.data-value { font-size: 14px; font-weight: 500; display: block; margin-top: 2px; }
+.edit-link {
+  text-align: right;
+  font-size: 12px;
+  color: var(--coral);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(232,213,196,0.2);
+  cursor: pointer;
+}
+
+.profile-menu { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(232,213,196,0.12);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.profile-menu-item:active { transform: scale(0.98); }
+.profile-menu-icon { font-size: 16px; }
+.profile-menu-text { flex: 1; font-size: 14px; }
+.profile-menu-arrow { font-size: 16px; color: var(--text-light); }
+
+.profile-footer { text-align: center; padding: 32px 0 16px; }
+.footer-text { font-size: 11px; color: var(--text-light); display: block; }
+.footer-sub { font-size: 10px; color: rgba(138,138,138,0.5); display: block; margin-top: 2px; }
+
+/* ========== 动画 ========== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* 遮罩 */
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(250,248,245,0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.overlay.show { display: flex; }
+.overlay-card { text-align: center; padding: 40px; }
+.overlay-icon { font-size: 48px; display: block; margin-bottom: 12px; }
+.overlay-title { font-size: 20px; font-weight: 600; display: block; margin-bottom: 6px; }
+.overlay-desc { font-size: 13px; color: var(--text-light); }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="status-bar">9:41</div>
+  <div class="nav-bar">
+    <span class="nav-back" id="navBack" onclick="goBack()">‹</span>
+    <span id="navTitle">她健康</span>
+  </div>
+
+  <!-- ====== 首页 ====== -->
+  <div class="page-container">
+    <div class="page active" id="page-index">
+      <div class="greeting-section animate-in">
+        <span class="greeting-time">下午好</span>
+        <span class="greeting-warm">你比你想象的更强大 💪</span>
+      </div>
+
+      <div class="chat-entry animate-in" onclick="switchTab('chat')" style="animation-delay:0.05s">
+        <div class="chat-entry-left">
+          <div class="avatar-flower">
+            <div class="petal p1"></div><div class="petal p2"></div>
+            <div class="petal p3"></div><div class="petal p4"></div>
+            <div class="petal p5"></div><div class="pcenter"></div>
+          </div>
+          <div class="chat-entry-text">
+            <span class="chat-entry-title">跟小暖聊聊</span>
+            <span class="chat-entry-desc">有什么困扰，我都在这里陪你</span>
+          </div>
+        </div>
+        <span class="chat-entry-arrow">›</span>
+      </div>
+
+      <div class="feature-cards">
+        <div class="feature-card animate-in" style="animation-delay:0.1s" onclick="startSurvey()">
+          <div class="card-icon-circle">?</div>
+          <div class="card-info">
+            <span class="card-info-title">了解你的身体</span>
+            <span class="card-info-desc">几个简单问题，帮你更了解自己</span>
+          </div>
+        </div>
+        <div class="feature-card animate-in" style="animation-delay:0.15s" onclick="switchTab('chat')">
+          <div class="card-icon-circle sage">🥗</div>
+          <div class="card-info">
+            <span class="card-info-title">今天吃什么</span>
+            <span class="card-info-desc">基于你的身体情况，给你一些小建议</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="warm-quote animate-in" style="animation-delay:0.2s">
+        你不需要被修理，你需要被理解 💛
+      </div>
+    </div>
+
+    <!-- ====== 问卷页 ====== -->
+    <div class="page" id="page-survey">
+      <div class="survey-container">
+        <div class="survey-progress">
+          <div class="progress-bar"><div class="progress-fill" id="surveyProgress" style="width:10%"></div></div>
+          <span class="progress-text" id="surveyProgressText">1 / 10</span>
+        </div>
+        <div class="survey-chat" id="surveyChat"></div>
+        <div class="options-area" id="surveyOptions"></div>
+      </div>
+    </div>
+
+    <!-- ====== 结果页 ====== -->
+    <div class="page" id="page-result"></div>
+
+    <!-- ====== 小暖聊天页 ====== -->
+    <div class="page" id="page-chat">
+      <div class="chat-page">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="quick-topics" id="quickTopics">
+          <span class="topics-title">可以聊这些</span>
+          <div class="topics-list">
+            <div class="topic-chip" onclick="sendQuick('我最近月经不规律')">我最近月经不规律</div>
+            <div class="topic-chip" onclick="sendQuick('有什么适合的运动？')">有什么适合的运动？</div>
+            <div class="topic-chip" onclick="sendQuick('饮食方面要注意什么？')">饮食方面要注意什么？</div>
+            <div class="topic-chip" onclick="sendQuick('感觉很焦虑怎么办？')">感觉很焦虑怎么办？</div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="input-wrap">
+            <textarea class="chat-input" id="chatInput" placeholder="跟小暖说点什么..." rows="1" oninput="onChatInput()"></textarea>
+            <button class="send-btn" id="sendBtn" onclick="sendChat()">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== 我的页面 ====== -->
+    <div class="page" id="page-profile">
+      <div class="profile-header">
+        <div class="profile-avatar-wrap">
+          <div class="avatar-flower" style="width:60px;height:60px">
+            <div class="petal p1" style="width:14px;height:20px"></div>
+            <div class="petal p2" style="width:14px;height:20px"></div>
+            <div class="petal p3" style="width:14px;height:20px"></div>
+            <div class="petal p4" style="width:14px;height:20px"></div>
+            <div class="petal p5" style="width:14px;height:20px"></div>
+            <div class="pcenter" style="width:12px;height:12px"></div>
+          </div>
+        </div>
+        <span class="profile-name">我的健康档案</span>
+        <span class="profile-desc">完成自查，开始了解你的身体</span>
+      </div>
+      <div class="profile-menu">
+        <div class="profile-menu-item" onclick="startSurvey()">
+          <span class="profile-menu-icon">📝</span>
+          <span class="profile-menu-text">开始身体自查</span>
+          <span class="profile-menu-arrow">›</span>
+        </div>
+        <div class="profile-menu-item">
+          <span class="profile-menu-icon">💛</span>
+          <span class="profile-menu-text">推荐给闺蜜</span>
+          <span class="profile-menu-arrow">›</span>
+        </div>
+        <div class="profile-menu-item" onclick="alert('小暖是\"她健康·PCOS伴侣\"的AI陪伴者，用温柔和科学帮助你更好地了解自己的身体。\n\n小暖不能替代医生，但可以在你身边，陪你一起面对。')">
+          <span class="profile-menu-icon">🌸</span>
+          <span class="profile-menu-text">关于小暖</span>
+          <span class="profile-menu-arrow">›</span>
+        </div>
+      </div>
+      <div class="profile-footer">
+        <span class="footer-text">她健康 · PCOS伴侣 v1.0</span>
+        <span class="footer-sub">用温柔和科学陪伴每一位女性</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 完成遮罩 -->
+  <div class="overlay" id="completeOverlay">
+    <div class="overlay-card">
+      <span class="overlay-icon">💛</span>
+      <span class="overlay-title">谢谢你告诉我这些</span>
+      <span class="overlay-desc">正在为你生成专属报告...</span>
+    </div>
+  </div>
+
+  <!-- 免责声明 -->
+  <div class="disclaimer" id="disclaimer">本内容仅供参考，不构成医学诊断，如有疑问请咨询专业医生</div>
+
+  <!-- TabBar -->
+  <div class="tabbar" id="tabbar">
+    <div class="tab-item active" onclick="switchTab('index')" data-tab="index">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9B8D8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <span class="tab-label" style="color:#C9B8D8">首页</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('chat')" data-tab="chat">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <span class="tab-label">小暖</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('profile')" data-tab="profile">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== 状态 ==========
+let currentTab = 'index';
+let currentSurveyQ = 0;
+let selectedValue = '';
+let surveyAnswers = {};
+let chatMessages = [];
+let msgId = 0;
+
+// ========== 问卷题目 ==========
+const questions = [
+  { key:'q1', text:'你的月经周期大约是几天？', hint:'从第一天到下一次第一天的天数', options:[
+    {label:'不到 21 天',value:'不到21天',icon:'🩸'},{label:'21-35 天（正常范围）',value:'21-35天',icon:'✅'},
+    {label:'超过 35 天',value:'超过35天',icon:'📅'},{label:'经常不来或完全没来',value:'经常不来',icon:'❓'}
+  ]},
+  { key:'q2', text:'最近几个月的经期情况？', hint:'回忆近 3 个月', options:[
+    {label:'每月准时来',value:'每月准时',icon:'🎯'},{label:'偶尔推迟几天',value:'偶尔推迟',icon:'⏰'},
+    {label:'经常推迟或不规律',value:'经常不规律',icon:'📊'},{label:'已经很久没来了',value:'很久没来',icon:'⏸️'}
+  ]},
+  { key:'q3', text:'你有痤疮（痘痘）困扰吗？', hint:'包括下巴、脸颊、额头的反复长痘', options:[
+    {label:'没有',value:'没有',icon:'✨'},{label:'偶尔长几颗',value:'偶尔',icon:'🌼'},
+    {label:'持续有，反复发作',value:'持续有',icon:'🔴'},{label:'很严重，影响心情',value:'很严重',icon:'💜'}
+  ]},
+  { key:'q4', text:'你有体毛增多的困扰吗？', hint:'如唇周、下巴、胸口、手臂腿上的毛发变粗变多', options:[
+    {label:'没有',value:'没有',icon:'✨'},{label:'有一点，不太明显',value:'有一点',icon:'🤏'},
+    {label:'比较明显，会困扰我',value:'比较明显',icon:'😰'},{label:'很明显，经常需要处理',value:'很明显',icon:'💅'}
+  ]},
+  { key:'q5', text:'体重方面有什么变化？', hint:'和之前相比', options:[
+    {label:'体重稳定',value:'稳定',icon:'⚖️'},{label:'容易胖，尤其是肚子',value:'容易胖',icon:'🍞'},
+    {label:'很难减重，努力了也瘦不了',value:'难减重',icon:'💪'},{label:'体重波动很大',value:'波动大',icon:'📈'}
+  ]},
+  { key:'q6', text:'有没有血糖方面的问题？', hint:'如体检发现血糖偏高、胰岛素抵抗等', options:[
+    {label:'没有，体检正常',value:'正常',icon:'💚'},{label:'体检提示血糖偏高',value:'偏高',icon:'⚠️'},
+    {label:'医生说过胰岛素抵抗',value:'胰岛素抵抗',icon:'🔬'},{label:'不太清楚',value:'不清楚',icon:'❓'}
+  ]},
+  { key:'q7', text:'头发有变化吗？', hint:'掉发增多、发际线后移、头发变稀等', options:[
+    {label:'正常',value:'正常',icon:'💇‍♀️'},{label:'掉发比以前多',value:'掉发增多',icon:'😔'},
+    {label:'头顶或发际线变稀',value:'变稀',icon:'👀'},{label:'非常明显，影响自信',value:'非常明显',icon:'💔'}
+  ]},
+  { key:'q8', text:'情绪方面怎么样？', hint:'包括焦虑、低落、烦躁、压力感', options:[
+    {label:'情绪比较稳定',value:'稳定',icon:'🌈'},{label:'偶尔焦虑或低落',value:'偶尔波动',icon:'🌥️'},
+    {label:'经常焦虑，容易想太多',value:'经常焦虑',icon:'😰'},{label:'情绪波动很大，影响生活',value:'波动很大',icon:'🌊'}
+  ]},
+  { key:'q9', text:'目前有在服用什么药物吗？', hint:'包括避孕药、二甲双胍、中药等', options:[
+    {label:'没有',value:'没有',icon:'💊'},{label:'在吃短效避孕药',value:'避孕药',icon:'🏩'},
+    {label:'在吃二甲双胍',value:'二甲双胍',icon:'💉'},{label:'在吃其他药或中药',value:'其他',icon:'🏥'}
+  ]},
+  { key:'q10', text:'你最想解决的问题是什么？', hint:'选一个你最关心的', options:[
+    {label:'调节月经周期',value:'月经',icon:'🩸'},{label:'改善皮肤和痤疮',value:'皮肤',icon:'✨'},
+    {label:'体重管理',value:'体重',icon:'⚖️'},{label:'情绪和压力',value:'情绪',icon:'🌸'}
+  ]}
+];
+
+// ========== Tab 切换 ==========
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => {
+    t.classList.remove('active');
+    t.querySelector('svg').setAttribute('stroke', '#999');
+    t.querySelector('.tab-label').style.color = '#999';
+  });
+  const activeTab = document.querySelector(`[data-tab="${tab}"]`);
+  activeTab.classList.add('active');
+  activeTab.querySelector('svg').setAttribute('stroke', '#C9B8D8');
+  activeTab.querySelector('.tab-label').style.color = '#C9B8D8';
+
+  // 隐藏/显示 tabbar
+  const tabbar = document.getElementById('tabbar');
+  const disclaimer = document.getElementById('disclaimer');
+  const navBack = document.getElementById('navBack');
+  const navTitle = document.getElementById('navTitle');
+
+  if (tab === 'survey' || tab === 'result') {
+    tabbar.style.display = 'none';
+    disclaimer.style.display = 'none';
+    navBack.style.display = 'block';
+    navTitle.textContent = tab === 'survey' ? '了解你的身体' : '你的身体报告';
+  } else {
+    tabbar.style.display = 'flex';
+    disclaimer.style.display = 'block';
+    navBack.style.display = 'none';
+    navTitle.textContent = tab === 'chat' ? '小暖' : tab === 'profile' ? '我的' : '她健康';
+  }
+
+  if (tab === 'chat') initChat();
+  if (tab === 'profile') updateProfile();
+}
+
+function goBack() {
+  switchTab('index');
+}
+
+// ========== 问卷 ==========
+function startSurvey() {
+  currentSurveyQ = 0;
+  selectedValue = '';
+  surveyAnswers = {};
+  switchTab('survey');
+  renderSurveyQuestion();
+}
+
+function renderSurveyQuestion() {
+  const q = questions[currentSurveyQ];
+  const pct = ((currentSurveyQ + 1) / questions.length) * 100;
+  document.getElementById('surveyProgress').style.width = pct + '%';
+  document.getElementById('surveyProgressText').textContent = `${currentSurveyQ + 1} / ${questions.length}`;
+
+  const chatEl = document.getElementById('surveyChat');
+  // 渲染历史
+  let html = '';
+  for (let i = 0; i < currentSurveyQ; i++) {
+    const prev = questions[i];
+    const ans = surveyAnswers[prev.key];
+    html += `<div class="chat-row row-left"><div class="msg-avatar-mini">🌸</div><div class="bubble bubble-ai">${prev.text}</div></div>`;
+    html += `<div class="chat-row row-right"><div class="bubble bubble-user">${ans}</div></div>`;
+  }
+  // 当前问题
+  html += `<div class="chat-row row-left animate-in"><div class="msg-avatar-mini">🌸</div><div class="bubble bubble-ai">${q.text}<span class="question-hint">${q.hint || ''}</span></div></div>`;
+  chatEl.innerHTML = html;
+  chatEl.scrollTop = chatEl.scrollHeight;
+
+  // 选项
+  let optHtml = '<div class="options-list">';
+  q.options.forEach(o => {
+    optHtml += `<div class="option-btn" onclick="selectOption('${o.value}','${o.label}')" data-value="${o.value}">
+      <span class="option-icon">${o.icon}</span><span class="option-label">${o.label}</span><span class="option-check">✓</span>
+    </div>`;
+  });
+  optHtml += '</div>';
+  optHtml += `<button class="confirm-btn" id="confirmBtn" disabled onclick="confirmAnswer()">下一题</button>`;
+  document.getElementById('surveyOptions').innerHTML = optHtml;
+  selectedValue = '';
+}
+
+function selectOption(value, label) {
+  selectedValue = value;
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('confirmBtn').disabled = false;
+}
+
+function confirmAnswer() {
+  const q = questions[currentSurveyQ];
+  const selectedOpt = q.options.find(o => o.value === selectedValue);
+  surveyAnswers[q.key] = selectedOpt ? selectedOpt.label : selectedValue;
+
+  currentSurveyQ++;
+  if (currentSurveyQ >= questions.length) {
+    // 完成
+    showOverlay();
+    setTimeout(() => {
+      hideOverlay();
+      showResult();
+    }, 1500);
+  } else {
+    renderSurveyQuestion();
+  }
+}
+
+function showOverlay() { document.getElementById('completeOverlay').classList.add('show'); }
+function hideOverlay() { document.getElementById('completeOverlay').classList.remove('show'); }
+
+// ========== 结果页 ==========
+function showResult() {
+  switchTab('result');
+  const a = surveyAnswers;
+  let score = 0;
+  let symptoms = [];
+
+  // 简化评分
+  if (a.q1 === '超过35天' || a.q1 === '经常不来') { score += 20; symptoms.push({icon:'🩸',name:'月经周期',status:'concern',text:'需关注',detail:'月经不规律是PCOS的核心特征之一'}); }
+  else symptoms.push({icon:'🩸',name:'月经周期',status:'normal',text:'正常',detail:'月经周期在正常范围'});
+
+  if (a.q3 === '持续有' || a.q3 === '很严重') { score += 15; symptoms.push({icon:'🔴',name:'皮肤/痤疮',status:'concern',text:'需关注',detail:'反复痤疮可能与雄激素有关'}); }
+  else symptoms.push({icon:'✨',name:'皮肤/痤疮',status:'normal',text:'良好',detail:'皮肤状况不错'});
+
+  if (a.q5 === '容易胖' || a.q5 === '难减重') { score += 15; symptoms.push({icon:'⚖️',name:'体重',status:'concern',text:'需关注',detail:'体重管理困难与胰岛素抵抗有关'}); }
+  else symptoms.push({icon:'⚖️',name:'体重',status:'normal',text:'稳定',detail:'体重变化需持续关注'});
+
+  if (a.q6 === '胰岛素抵抗' || a.q6 === '偏高') score += 20;
+  symptoms.push({icon:'🔬',name:'血糖/代谢',status:'normal',text:'待查',detail:'建议体检时检查空腹血糖'});
+
+  if (a.q8 === '经常焦虑' || a.q8 === '波动很大') { score += 5; symptoms.push({icon:'🌸',name:'情绪',status:'concern',text:'需关注',detail:'你不需要独自承受'}); }
+  else symptoms.push({icon:'🌸',name:'情绪',status:'normal',text:'稳定',detail:'情绪状态良好'});
+
+  score = Math.min(score, 100);
+  const level = score >= 50 ? 'high' : score >= 25 ? 'medium' : 'low';
+  const levelText = score >= 50 ? '风险较高' : score >= 25 ? '需要关注' : '目前还好';
+  const levelIcon = score >= 50 ? '⚠️' : score >= 25 ? '💛' : '💚';
+  const desc = score >= 50 ? '建议尽早就医确认' : score >= 25 ? '建议进一步了解和观察' : '继续保持良好习惯';
+
+  let html = `
+    <div class="report-header animate-in">
+      <span class="report-greeting">💛 下午好</span>
+      <span class="report-title">你的身体报告</span>
+      <span class="report-time">基于你刚才的回答 · 今天生成</span>
+    </div>
+    <div class="result-card animate-in" style="animation-delay:0.1s">
+      <div class="risk-header">
+        <span class="risk-icon">${levelIcon}</span>
+        <div><span class="risk-label">PCOS 风险评估</span><span class="risk-level risk-${level}">${levelText}</span></div>
+      </div>
+      <div class="risk-bar-wrap">
+        <div class="risk-bar-bg"><div class="risk-bar-fill risk-fill-${level}" style="width:${score}%"></div></div>
+        <span class="risk-score">${score}%</span>
+      </div>
+      <span class="risk-desc">${desc}</span>
+    </div>
+    <span class="result-section-title animate-in" style="animation-delay:0.15s">症状分析</span>
+    <div class="symptom-list animate-in" style="animation-delay:0.2s">
+  `;
+  symptoms.forEach(s => {
+    html += `<div class="symptom-item"><div class="symptom-header"><span>${s.icon}</span><span class="symptom-name">${s.name}</span><span class="symptom-status status-${s.status}">${s.text}</span></div><span class="symptom-detail">${s.detail}</span></div>`;
+  });
+  html += '</div>';
+
+  html += `<span class="result-section-title animate-in" style="animation-delay:0.25s">小暖的建议</span>
+    <div class="advice-list animate-in" style="animation-delay:0.3s">
+      <div class="advice-item"><div class="advice-icon-wrap">📝</div><div><span class="advice-title">记录月经周期</span><span class="advice-desc">建议用日历或APP记录每月经期</span></div></div>
+      <div class="advice-item"><div class="advice-icon-wrap">🥗</div><div><span class="advice-title">饮食调整</span><span class="advice-desc">选择低GI食物，增加蛋白质和膳食纤维</span></div></div>
+      <div class="advice-item"><div class="advice-icon-wrap">🏃‍♀️</div><div><span class="advice-title">规律运动</span><span class="advice-desc">每周3-5次中等强度运动</span></div></div>
+      <div class="advice-item"><div class="advice-icon-wrap">💤</div><div><span class="advice-title">充足睡眠</span><span class="advice-desc">尽量保证 7-8 小时睡眠</span></div></div>
+    </div>
+    <div class="result-action animate-in" style="animation-delay:0.35s">
+      <button class="confirm-btn" onclick="switchTab('chat')">开始跟小暖对话</button>
+      <button class="confirm-btn" style="background:transparent;color:var(--lavender);border:1.5px solid var(--lavender)" onclick="startSurvey()">重新填写问卷</button>
+    </div>
+  `;
+  document.getElementById('page-result').innerHTML = html;
+}
+
+// ========== 聊天页 ==========
+function initChat() {
+  if (chatMessages.length === 0) {
+    addChatMsg('assistant', '你好呀～我是小暖，你的PCOS陪伴者。有什么想聊的随时告诉我 💛');
+  }
+  renderChat();
+}
+
+function addChatMsg(role, content) {
+  chatMessages.push({ id: ++msgId, role, content });
+}
+
+function renderChat() {
+  let html = '';
+  if (chatMessages.length <= 1) {
+    html += `<div class="welcome-section"><span class="welcome-emoji">💛</span><span class="welcome-name">Hi，我是小暖</span><span class="welcome-desc">关于 PCOS、饮食、运动、情绪，<br>任何想聊的都可以告诉我</span></div>`;
+  }
+  chatMessages.forEach(m => {
+    const rowClass = m.role === 'assistant' ? 'row-left' : 'row-right';
+    const avatar = m.role === 'assistant' ? '<div class="msg-avatar-mini">🌸</div>' : '';
+    const bubbleClass = m.role === 'assistant' ? 'bubble-ai' : 'bubble-user';
+    html += `<div class="chat-row ${rowClass} animate-in">${avatar}<div class="bubble ${bubbleClass}">${m.content.replace(/\n/g, '<br>')}</div></div>`;
+  });
+  document.getElementById('chatMessages').innerHTML = html;
+  const el = document.getElementById('chatMessages');
+  el.scrollTop = el.scrollHeight;
+}
+
+function sendQuick(text) {
+  addChatMsg('user', text);
+  renderChat();
+  document.getElementById('quickTopics').style.display = 'none';
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    const replies = {
+      '我最近月经不规律': '月经不规律是很多姐妹都会遇到的情况，不用太担心 💛 先帮你了解一下：你的周期大概多少天？有没有做过相关检查呢？',
+      '有什么适合的运动？': 'PCOS 姐妹适合的运动有很多！推荐你试试：\n\n🧘 瑜伽 — 帮助减压和调节激素\n🚶‍♀️ 快走 — 每天30分钟就很棒\n🏊 游泳 — 全身运动，关节友好\n\n关键是坚持，不是强度。你平时有运动习惯吗？',
+      '饮食方面要注意什么？': '饮食方面有几个小建议：\n\n🥦 多吃蔬菜和优质蛋白\n🍚 选粗粮代替白米饭（低GI）\n🚫 少喝奶茶和甜饮料\n🥜 坚果当零食不错\n\n不用一下子全改，慢慢来就好～你平时饮食习惯怎么样？',
+      '感觉很焦虑怎么办？': '听到你这样说，我想先告诉你：有这些情绪是完全正常的，你不是一个人在面对 💛\n\n可以试试：\n🫁 深呼吸 — 吸4秒，呼6秒\n📝 写下来 — 把担心的事写在纸上\n🚶‍♀️ 出去走走 — 换个环境会好一些\n\n如果焦虑持续影响生活，建议找专业心理咨询师聊聊，这不是软弱，是勇敢 🌸'
+    };
+    addChatMsg('assistant', replies[text] || '我理解你的感受。可以跟我说说更多细节吗？我想更好地帮助你 💛');
+    renderChat();
+  }, 1000);
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  onChatInput();
+  addChatMsg('user', text);
+  renderChat();
+  document.getElementById('quickTopics').style.display = 'none';
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    const lower = text.toLowerCase();
+    let reply;
+    if (lower.includes('月经') || lower.includes('经期') || lower.includes('周期')) {
+      reply = '月经方面的问题我陪你一起了解 💛 你的周期大概多少天？规律吗？如果超过35天或者经常不来，建议做个B超和激素检查哦。';
+    } else if (lower.includes('吃') || lower.includes('饮食') || lower.includes('食物')) {
+      reply = '饮食对 PCOS 管理很重要！简单记住：少糖、多蛋白、多蔬菜。不用太严格，慢慢调整就好 🥗';
+    } else if (lower.includes('运动') || lower.includes('锻炼')) {
+      reply = '运动是很好的方式！推荐瑜伽、快走、游泳，每周3-5次，每次30分钟。关键是选你喜欢的，能坚持的 🏃‍♀️';
+    } else if (lower.includes('焦虑') || lower.includes('压力') || lower.includes('难过')) {
+      reply = '我听到你了，你现在一定很不好受。有这些情绪是正常的，你不是一个人 💛\n\n可以试试深呼吸：吸4秒，呼6秒。如果持续影响生活，建议找心理咨询师聊聊，这是勇敢的选择。';
+    } else if (lower.includes('痘痘') || lower.includes('痤疮') || lower.includes('皮肤')) {
+      reply = 'PCOS 相关的痤疮通常和雄激素有关。护肤方面：温和清洁 + 防晒 + 不要挤痘痘。如果反复发作，皮肤科医生可以帮你开合适的药 🧴';
+    } else if (lower.includes('胖') || lower.includes('体重') || lower.includes('减肥')) {
+      reply = '体重管理确实是 PCOS 的挑战之一，和胰岛素抵抗有关。建议：低GI饮食 + 规律运动 + 充足睡眠。不要节食，那样反而不好 ⚖️';
+    } else {
+      reply = '我理解你说的。能再跟我多说一些吗？这样我能更好地帮助你 💛';
+    }
+    addChatMsg('assistant', reply);
+    renderChat();
+  }, 1200);
+}
+
+function onChatInput() {
+  const input = document.getElementById('chatInput');
+  const btn = document.getElementById('sendBtn');
+  btn.classList.toggle('active', input.value.trim().length > 0);
+  // 自动增高
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 80) + 'px';
+}
+
+function showTyping() {
+  const el = document.getElementById('chatMessages');
+  el.innerHTML += `<div class="chat-row row-left" id="typing-indicator"><div class="msg-avatar-mini">🌸</div><div class="bubble bubble-ai"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function hideTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+// ========== Profile ==========
+function updateProfile() {
+  // 如果做过问卷，显示数据
+  if (Object.keys(surveyAnswers).length > 0) {
+    const card = document.querySelector('.profile-card');
+    if (card) card.style.display = 'block';
+  }
+}
+
+// ========== 初始化 ==========
+document.getElementById('chatInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChat();
+  }
+});
+</script>
+</body>
+</html>

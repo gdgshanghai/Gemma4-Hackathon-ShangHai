@@ -1,0 +1,22 @@
+# 一键启动：端侧 Gemma 4 4B (ollama) + 后端服务。
+# 云端 26B MoE 多模态需 GPU，见 README 的 vLLM 章节，可作为可选 profile 接入。
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
+    volumes: ["ollama_models:/root/.ollama"]
+    # 首次启动后执行：docker compose exec ollama ollama pull gemma-4-4b-it-q4
+
+  backend:
+    build: .
+    ports: ["9000:9000"]
+    env_file: [.env]
+    environment:
+      - GEMMA_EDGE_ENDPOINT=http://ollama:11434/v1
+      - PROFILE_STORE=/data/pcos_profiles
+    volumes: ["profiles:/data/pcos_profiles"]
+    depends_on: [ollama]
+
+volumes:
+  ollama_models:
+  profiles:
