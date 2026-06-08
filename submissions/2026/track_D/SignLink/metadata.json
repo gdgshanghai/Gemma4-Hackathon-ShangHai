@@ -1,0 +1,6 @@
+{
+  "name": "SignLink HD Accessible Hub",
+  "description": "An interactive sign language video chat and personalized learning platform with real-time hand gesture recognition, low-latency visual transmission, and spaced-repetition learning.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,14 @@
+python 3.12
+mediapipe 0.10.35
+opencv-python 4.13.0
+numpy 2.4.4
+sounddevice >= 0.5
+flatbuffers >= 25.9 
+matplotlib 3.10.9
+cffi    2.0.0
+pillow >= 8 
+pyparsing >= 3 
+six >= 1.5 
+pycparser 3.0
+tensorflow 2.21.0
+keras >= 3.12.0
