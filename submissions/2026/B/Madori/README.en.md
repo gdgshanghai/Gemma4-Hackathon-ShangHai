@@ -25,6 +25,10 @@
 
 🎬 **[Demo video](web/demo/madori-demo.mp4)** &nbsp;·&nbsp; 🖥 **[Try the white model online](web/madori.html)** &nbsp;·&nbsp; 📄 **[Technical report](TECHNICAL_REPORT.en.md)**
 
+> **🌐 About the online demo**: it is a **live showcase of one floor plan** (interactive — rotate 3D / switch daylight / click rooms).
+> **To read YOUR own plan** → one local command: `./run.sh your-plan.png`. Gemma runs on **your machine** and the plan **never leaves it** (privacy-first), producing an analysis page for your specific image.
+> Why no in-browser upload? Because Gemma runs locally (the whole point of "privacy/offline") — a browser can't run the model. This is a deliberate local-first trade-off, not a missing feature.
+
 ---
 
 ## What it is
