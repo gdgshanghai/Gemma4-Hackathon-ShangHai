@@ -1,0 +1,47 @@
+{
+  "vision": {
+    "fall_detected": false,
+    "confidence": 0,
+    "label": "none",
+    "fps": 0,
+    "detections": [],
+    "mode": "idle",
+    "source": "initial-state",
+    "model": "ai_backend/yolo/best_urfall_finetuned.pt",
+    "person_model": "ai_backend/yolo/person.pt",
+    "model_ready": false
+  },
+  "speech": {
+    "transcript": "",
+    "intent": "none"
+  },
+  "context": {
+    "no_response_seconds": 0,
+    "last_interaction_at": null
+  },
+  "intervention": {
+    "active": false,
+    "voice_prompt": "System is monitoring."
+  },
+  "decision": {
+    "risk_level": "low",
+    "risk_score": 0,
+    "emergency_alert": false,
+    "action": "Continue monitoring",
+    "reason": "Initial state.",
+    "reply_analysis": "No active voice check.",
+    "model": "gemma4-initial-state"
+  },
+  "emergency": {
+    "triggered": false,
+    "countdown_seconds": 10,
+    "contact_status": "Standby"
+  },
+  "ai_backend": {
+    "last_update_at": null,
+    "source": "initial-state",
+    "pipeline_id": null
+  },
+  "updated_at": null,
+  "system_state": "NORMAL"
+}

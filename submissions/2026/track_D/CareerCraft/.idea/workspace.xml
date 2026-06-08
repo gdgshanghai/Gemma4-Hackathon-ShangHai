@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="bd5d1e92-862d-42e6-9f39-ef51d3f5ed70" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.next/app-build-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/.next/app-build-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/client-development/4.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/client-development/4.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/client-development/5.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/client-development/5.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/client-development/6.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/client-development/6.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/client-development/7.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/client-development/7.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/client-development/8.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/client-development/8.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/client-development/9.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/client-development/9.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/client-development/index.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/client-development/index.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/client-development/index.pack.gz.old" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/client-development/index.pack.gz.old" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/server-development/0.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/server-development/0.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/server-development/1.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/server-development/1.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/server-development/2.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/server-development/2.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/server-development/index.pack.gz" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/server-development/index.pack.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/cache/webpack/server-development/index.pack.gz.old" beforeDir="false" afterPath="$PROJECT_DIR$/.next/cache/webpack/server-development/index.pack.gz.old" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/server/app-paths-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/.next/server/app-paths-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/server/server-reference-manifest.js" beforeDir="false" afterPath="$PROJECT_DIR$/.next/server/server-reference-manifest.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/server/server-reference-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/.next/server/server-reference-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/server/webpack-runtime.js" beforeDir="false" afterPath="$PROJECT_DIR$/.next/server/webpack-runtime.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/chunks/app/feynman/[missionId]/page.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/chunks/app/layout.js" beforeDir="false" afterPath="$PROJECT_DIR$/.next/static/chunks/app/layout.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/chunks/app/mission/[missionId]/feedback/page.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/chunks/app/mission/[missionId]/page.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/chunks/app/mission/[missionId]/submit/page.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/chunks/webpack.js" beforeDir="false" afterPath="$PROJECT_DIR$/.next/static/chunks/webpack.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/30d0bbfb204b18a8.webpack.hot-update.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/638ea77d392aa9b2.webpack.hot-update.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/6a2a7510e5156336.webpack.hot-update.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/96de16a84091360c.webpack.hot-update.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/a5993a7b39ea393b.webpack.hot-update.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/ae35832abc76abb7.webpack.hot-update.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/app/layout.30d0bbfb204b18a8.hot-update.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/d1aa2023596ece66.webpack.hot-update.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/fd8c668ee0979058.webpack.hot-update.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/webpack.30d0bbfb204b18a8.hot-update.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/webpack.638ea77d392aa9b2.hot-update.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/webpack.6a2a7510e5156336.hot-update.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/webpack.96de16a84091360c.hot-update.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/webpack.a5993a7b39ea393b.hot-update.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/webpack.ae35832abc76abb7.hot-update.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/webpack.d1aa2023596ece66.hot-update.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/static/webpack/webpack.fd8c668ee0979058.hot-update.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.next/trace" beforeDir="false" afterPath="$PROJECT_DIR$/.next/trace" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3DTNlDBD1Yfh0hI1FRHRubeQJwu" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CareerMC.ui&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.gitee.ui.GiteeSettingsConfigurable&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\CareerMC.ui\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="npm.Next.js: server-side">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-WS-251.26094.131" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\13104\AppData\Roaming\Subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bd5d1e92-862d-42e6-9f39-ef51d3f5ed70" name="Changes" comment="" />
+      <created>1778302248576</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1778302248576</updated>
+      <workItem from="1778302249675" duration="25869000" />
+      <workItem from="1778598054673" duration="599000" />
+      <workItem from="1779378535964" duration="1422000" />
+      <workItem from="1779461731022" duration="526000" />
+      <workItem from="1780412829623" duration="394000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

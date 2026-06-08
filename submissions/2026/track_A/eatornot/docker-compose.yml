@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  # ===== 前端 (Vue 3 SPA + nginx) =====
+  web:
+    build:
+      context: ./apps/web
+      args:
+        # 空 = nginx 反向代理 /api → api:8000，浏览器不需要跨域
+        VITE_API_URL: ""
+    ports:
+      - "5173:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ===== 后端 (FastAPI + SQLite) =====
+  api:
+    build: ./apps/api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./data/eatornot.db
+      - APP_NAME=EatOrNot
+      - DEBUG=true
+    volumes:
+      - db-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+volumes:
+  db-data:

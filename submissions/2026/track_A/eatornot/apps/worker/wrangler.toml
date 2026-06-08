@@ -1,0 +1,15 @@
+name = "eatornot-api"
+main = "src/index.ts"
+compatibility_date = "2026-06-05"
+
+# Cron triggers for meal reminders (UTC → CST+8)
+# 0:03 UTC = 08:03 CST (breakfast)
+# 4:07 UTC = 12:07 CST (lunch)
+# 10:03 UTC = 18:03 CST (dinner)
+[triggers]
+crons = ["3 0 * * *", "7 4 * * *", "3 10 * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "eatornot-db"
+database_id = "d01b9859-dd10-4e6c-bcdf-7bcf2fb33606"

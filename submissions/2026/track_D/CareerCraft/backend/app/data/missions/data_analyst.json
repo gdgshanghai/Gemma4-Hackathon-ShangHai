@@ -1,0 +1,46 @@
+[
+  {
+    "id": "mvp_mission_data_1",
+    "title": "数据侦探：用户活跃行为空值清洗与流失归因",
+    "description": "星海电商平台最近日活跃用户数出现异常下滑。郑莹交给你原始点击流日志 user_activities.csv。请在 Pandas 中完成数据清洗、空值填充并计算漏斗各步流失率，定位最跌幅巨大的瓶颈层，写出排查结论与两点促活建议。",
+    "mock_data_url": "https://example.com/mock_data/user_activities.csv",
+    "delivery_requirements": [
+      "正确处理 Null/NaN 异常空值并完成列类型转换",
+      "计算漏斗流失率并定位环比跌幅最大的业务环节",
+      "写出流失高点的排查根因以及 2 条具体促活建议"
+    ]
+  },
+  {
+    "id": "mvp_mission_data_2",
+    "title": "洞察炼金术：特惠促销活动转化漏斗下钻分析",
+    "description": "促销活动点击量很高但最终下单转化却极低。郑莹需要你对促销点击流日志 promo_data_raw.csv进行深度下钻分析，计算各推广分组的用户转化漏斗（点击 -> 领券 -> 下单），定位流失断崖层并提出挽回改进方案。",
+    "mock_data_url": "https://example.com/mock_data/promo_data_raw.csv",
+    "delivery_requirements": [
+      "按推广渠道和客群分组下钻，计算各步的留存转化率",
+      "定位转化跌幅最大的主要层级并附带明确的数据支撑",
+      "从商业洞察视角撰写报告并提出具体的促活挽回建议"
+    ]
+  },
+  {
+    "id": "mvp_mission_data_3",
+    "title": "看板设计师：多部门统一 KPI 指标体系设计",
+    "description": "销售、市场与产品在周会上吵翻了天，各执一套业务数据。郑莹交给你一个核心任务：为主管们设计一套统一的 KPI 看板。指标包含付费转化、客单价与留存，设计直观的可视化仪表盘布局，并编写 dashboard_design.md 指明如何平衡说服各部门。",
+    "mock_data_url": "https://example.com/mock_data/kpi_metrics_definition.md",
+    "delivery_requirements": [
+      "科学定义涵盖付费转化、客单、次日留存的统一核心 KPI 公式",
+      "绘制仪表盘布局方案（含核心数值卡片、趋势图与下钻明细）",
+      "撰写 dashboard_design.md 分析并调和多部门的需求冲突"
+    ]
+  },
+  {
+    "id": "mvp_mission_data_4",
+    "title": "决策参谋长：高价值岛民流失留存召回 A/B 测试设计",
+    "description": "高价值复购岛民月留存率从 35% 断崖跌至 25%，CEO 督战要求立刻解决。你需要利用流失预测模型设计一套 A/B 测试留存召回实验，计算最小样本量与周期，设计分流与核心效果评价指标，输出完整的策略提案报告。",
+    "mock_data_url": "https://example.com/mock_data/ab_test_calc.xlsx",
+    "delivery_requirements": [
+      "设计符合统计学规范的 A/B 测试，明确实验组分流与对照规则",
+      "计算出该实验所需的最小样本量及合理的在线运行周期",
+      "撰写完整的留存召回策略提案 strategy_proposal.md 提交 CEO 评审"
+    ]
+  }
+]

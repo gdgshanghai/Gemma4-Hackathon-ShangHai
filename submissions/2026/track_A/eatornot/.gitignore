@@ -1,0 +1,46 @@
+﻿# Environment
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Database
+*.db
+*.sqlite3
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# RAG/Vector DB
+knowledge/chroma_db/
+
+# Claude Code (local config ignored, but project setup templates tracked in scripts/)
+.claude/
+.env
+!scripts/claude-setup/
+
+# Wrangler
+.wrangler/

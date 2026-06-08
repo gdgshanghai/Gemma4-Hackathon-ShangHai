@@ -1,0 +1,13 @@
+name = "eatornot-api"
+main = "entry.py"
+compatibility_flags = ["python_workers"]
+compatibility_date = "2026-06-05"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "eatornot-db"
+database_id = "d01b9859-dd10-4e6c-bcdf-7bcf2fb33606"
+
+[vars]
+GEMINI_MODEL = "gemma-4-31b-it"
+USE_MOCK_MCP = "true"

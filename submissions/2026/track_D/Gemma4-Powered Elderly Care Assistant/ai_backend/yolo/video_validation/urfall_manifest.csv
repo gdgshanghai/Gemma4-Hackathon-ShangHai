@@ -1,0 +1,11 @@
+id,split,label,source_path,source_url,frames,fps,width,height
+urfall_fall_01,validation,fall,inputs/urfall_fall_01_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/fall-01-cam0.mp4,160,30.0,640,240
+urfall_fall_02,validation,fall,inputs/urfall_fall_02_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/fall-02-cam0.mp4,110,30.0,640,240
+urfall_fall_03,validation,fall,inputs/urfall_fall_03_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/fall-03-cam0.mp4,215,30.0,640,240
+urfall_fall_04,validation,fall,inputs/urfall_fall_04_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/fall-04-cam0.mp4,96,30.0,640,240
+urfall_fall_05,validation,fall,inputs/urfall_fall_05_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/fall-05-cam0.mp4,151,30.0,640,240
+urfall_adl_01,validation,no_fall,inputs/urfall_adl_01_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/adl-01-cam0.mp4,150,30.0,640,240
+urfall_adl_02,validation,no_fall,inputs/urfall_adl_02_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/adl-02-cam0.mp4,180,30.0,640,240
+urfall_adl_03,validation,no_fall,inputs/urfall_adl_03_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/adl-03-cam0.mp4,180,30.0,640,240
+urfall_adl_04,validation,no_fall,inputs/urfall_adl_04_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/adl-04-cam0.mp4,150,30.0,640,240
+urfall_adl_05,validation,no_fall,inputs/urfall_adl_05_cam0.mp4,https://fenix.ur.edu.pl/~mkepski/ds/data/adl-05-cam0.mp4,180,30.0,640,240

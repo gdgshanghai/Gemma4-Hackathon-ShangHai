@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemma4 Elderly Care Assistant</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div id="emergencyModal" class="emergency-modal hidden">
+    <div class="modal-grid">
+      <section class="modal-alert">
+        <span class="modal-siren"></span>
+        <p class="eyebrow red">Emergency Protocol</p>
+        <h2>RESCUE REQUIRED</h2>
+        <p id="modalReason">Gemma4 has classified this event as high risk.</p>
+      </section>
+      <section class="modal-panel">
+        <div class="modal-countdown">
+          <span>Dispatch countdown</span>
+          <strong id="modalCountdown">0</strong>
+        </div>
+        <dl class="modal-details">
+          <div><dt>Contact status</dt><dd id="modalContact">Notifying family</dd></div>
+          <div><dt>Last reply</dt><dd id="modalReply">No reply</dd></div>
+          <div><dt>Current state</dt><dd id="modalState">EMERGENCY</dd></div>
+        </dl>
+      </section>
+    </div>
+  </div>
+
+  <main class="dashboard-shell">
+    <header class="command-header">
+      <div>
+        <p class="eyebrow">AI Elderly Care Control Center</p>
+        <h1>Gemma4 Elderly Care Assistant</h1>
+      </div>
+      <div class="header-actions">
+        <span id="apiStatus" class="status-chip status-offline">API Offline</span>
+        <span id="stateChip" class="state-chip">NORMAL</span>
+        <span id="clock" class="clock">--:--:--</span>
+      </div>
+    </header>
+
+    <section class="main-grid">
+      <section class="card video-card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Realtime Vision</p>
+            <h2>OpenCV Stream and YOLO Overlay</h2>
+          </div>
+          <div class="segmented">
+            <button id="cameraModeBtn" class="segment active" type="button">Camera</button>
+            <button id="demoModeBtn" class="segment" type="button">Video Upload</button>
+          </div>
+        </div>
+
+        <div class="video-stage">
+          <video id="cameraVideo" class="monitor-video" autoplay muted playsinline></video>
+          <video id="demoVideo" class="monitor-video hidden" muted loop playsinline>
+            <source src="assets/videos/demo-fall.mp4" type="video/mp4">
+          </video>
+          <div id="videoFallback" class="video-fallback">
+            <div class="pulse-ring"></div>
+            <span>Waiting for video source</span>
+          </div>
+          <canvas id="detectionCanvas"></canvas>
+
+          <div id="videoUploadPanel" class="video-upload-panel hidden">
+            <label id="videoDropZone" class="drop-zone" for="videoFileInput">
+              <strong>Upload local video</strong>
+              <span>MP4, AVI, or MOV for YOLO fall analysis</span>
+              <input id="videoFileInput" type="file" accept="video/mp4,video/avi,video/quicktime,.mp4,.avi,.mov">
+            </label>
+            <div class="upload-meta">
+              <span id="videoFileName">No file selected</span>
+              <strong id="videoUploadStatus">Ready</strong>
+            </div>
+          </div>
+
+          <div class="video-hud top-left">
+            <span id="videoModeLabel">CAMERA</span>
+            <strong id="fallLabel">NO FALL</strong>
+          </div>
+          <div class="video-hud top-right">
+            <span>FPS</span>
+            <strong id="fpsValue">0</strong>
+          </div>
+          <div id="fallBanner" class="fall-banner hidden">FALL DETECTED</div>
+        </div>
+      </section>
+
+      <aside class="side-stack">
+        <section class="card risk-card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">Gemma4 Decision</p>
+              <h2>AI Reasoning Visualizer</h2>
+            </div>
+            <span id="riskBadge" class="risk-badge low">LOW</span>
+          </div>
+
+          <div class="risk-meter">
+            <svg viewBox="0 0 140 140" aria-label="Risk score">
+              <circle class="meter-track" cx="70" cy="70" r="58"></circle>
+              <circle id="riskArc" class="meter-value" cx="70" cy="70" r="58"></circle>
+            </svg>
+            <div class="meter-text">
+              <strong id="riskScore">0</strong>
+              <span>Risk Score</span>
+            </div>
+          </div>
+
+          <dl class="status-list">
+            <div><dt>Needs rescue</dt><dd id="needsRescueText">No</dd></div>
+            <div><dt>Risk level</dt><dd id="riskText">Low</dd></div>
+            <div><dt>User response</dt><dd id="userResponseText">No check active</dd></div>
+            <div><dt>Gemma4 action</dt><dd id="gemmaActionText">Monitor</dd></div>
+          </dl>
+
+          <div class="reason-box">
+            <span>Reasoning explanation</span>
+            <p id="aiReasonText">Waiting for multimodal data.</p>
+          </div>
+        </section>
+
+        <section class="card intervention-card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">Active Intervention</p>
+              <h2>Safety Voice Check</h2>
+            </div>
+            <span id="interventionDot" class="live-dot"></span>
+          </div>
+          <div class="voice-wave" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <button id="voiceCheckBtn" class="ghost-action full-action" type="button">Ask and Record Reply</button>
+          <dl class="status-list compact">
+            <div><dt>Check prompt</dt><dd id="voiceStatusText">Standby</dd></div>
+            <div><dt>Recorded reply</dt><dd id="replyText">No reply</dd></div>
+            <div><dt>AI feedback</dt><dd id="voiceFeedbackText">Waiting</dd></div>
+            <div><dt>Rescue triggered</dt><dd id="rescueText">No</dd></div>
+          </dl>
+        </section>
+      </aside>
+    </section>
+
+    <section class="flow-grid">
+      <section class="card flow-card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">State Machine</p>
+            <h2>Elderly Care Assistant Flow</h2>
+          </div>
+        </div>
+        <div class="state-flow">
+          <span data-flow-state="NORMAL">NORMAL</span>
+          <i></i>
+          <span data-flow-state="SUSPECTED_FALL">SUSPECTED FALL</span>
+          <i></i>
+          <span data-flow-state="VOICE_CHECKING">VOICE CHECKING</span>
+          <i></i>
+          <span data-flow-state="WAITING_RESPONSE">WAITING RESPONSE</span>
+          <i></i>
+          <span data-flow-state="CONFIRMED_FALL">CONFIRMED FALL</span>
+          <i></i>
+          <span data-flow-state="EMERGENCY">EMERGENCY</span>
+        </div>
+      </section>
+
+      <section class="card process-card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">AI Reasoning Pipeline</p>
+            <h2>Multimodal Decision Flow</h2>
+          </div>
+        </div>
+        <div class="pipeline">
+          <div><strong>YOLO</strong><span>Fall posture</span></div>
+          <b></b>
+          <div><strong>Whisper</strong><span>User reply</span></div>
+          <b></b>
+          <div><strong>Gemma4</strong><span>Risk reasoning</span></div>
+          <b></b>
+          <div><strong>Rescue</strong><span>Emergency action</span></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="bottom-grid">
+      <section id="emergencyCard" class="card emergency-card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow red">Emergency Alert</p>
+            <h2>Hospital Security Alarm Panel</h2>
+          </div>
+          <button id="manualEmergencyBtn" class="danger-action" type="button">Manual Alarm</button>
+        </div>
+        <div class="emergency-content">
+          <div class="alarm-light"></div>
+          <div>
+            <strong id="emergencyTitle">No active alarm</strong>
+            <p id="emergencyMessage">Gemma4 will trigger emergency mode when rescue is required.</p>
+          </div>
+          <div class="countdown">
+            <span>Countdown</span>
+            <strong id="countdownValue">--</strong>
+          </div>
+          <div class="contact-status">
+            <span>Family contact</span>
+            <strong id="contactStatusText">Standby</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="card log-card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">System Event Stream</p>
+            <h2>Realtime Timeline</h2>
+          </div>
+          <button id="refreshLogsBtn" class="ghost-action" type="button">Refresh</button>
+        </div>
+        <ul id="logList" class="event-log"></ul>
+      </section>
+    </section>
+  </main>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

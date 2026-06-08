@@ -1,0 +1,19 @@
+{
+  "php_api_base_url": "http://127.0.0.1:8080/api",
+  "ai_backend_base_url": "http://127.0.0.1:8001",
+  "gemma4": {
+    "api_key": "YOUR_GEMMA4_API_KEY",
+    "endpoint": "YOUR_GEMMA4_ENDPOINT",
+    "model": "gemma4"
+  },
+  "emergency": {
+    "no_response_alarm_seconds": 60,
+    "fall_confidence_threshold": 0.85,
+    "contacts": [
+      {
+        "name": "Emergency Contact",
+        "phone": "+10000000000"
+      }
+    ]
+  }
+}

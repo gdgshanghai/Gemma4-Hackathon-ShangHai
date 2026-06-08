@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8003:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - backend_data:/app/data
+    environment:
+      # Redirect application database, chroma data, and logs into a single persisted volume directory
+      - SQLITE_URL=sqlite:////app/data/careercraft_mvp.db
+      - CHROMA_PERSIST_DIR=/app/data/chroma_data
+      - LOG_DIR=/app/data/logs
+      - ENVIRONMENT=production
+      # Tighten CORS_ORIGINS as needed. Using ["*"] inside Docker by default simplifies frontend connectivity.
+      - CORS_ORIGINS=["*"]
+      # Public URL prefix used in API responses for generated mission artifacts.
+      # Override in .env for LAN/domain deployments, e.g. https://career.example.com/mock_data
+      - MOCK_DATA_PUBLIC_BASE=${MOCK_DATA_PUBLIC_BASE:-http://localhost:8003/mock_data}
+      # Unified LLM provider configurations, falling back to mock agent output if LLM_API_KEY is not supplied
+      - MOCK_AGENT_OUTPUT=${MOCK_AGENT_OUTPUT:-true}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-}
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend_new/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8003}
+    ports:
+      - "8004:3000"
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  backend_data:
+    driver: local

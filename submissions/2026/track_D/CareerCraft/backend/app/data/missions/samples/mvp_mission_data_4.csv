@@ -1,0 +1,12 @@
+cohort_month,cohort_size,month_1_retained,month_2_retained,month_3_retained,arppu,churn_flag_pred
+2025-12,4820,2210,1680,1402,142.50,0.18
+2026-01,5230,2390,1740,1410,138.20,0.21
+2026-02,5610,2510,1755,1390,135.80,0.24
+2026-03,5940,2545,1690,1305,131.40,0.28
+2026-04,6210,2520,1620,1245,128.90,0.31
+2026-05,6480,2440,1545,1180,125.10,0.34
+group_id,group_label,sample_size,baseline_retention,target_retention,mde
+g_a,control,1500,0.25,0.25,0.00
+g_b,push_only,1500,0.25,0.30,0.05
+g_c,push_plus_coupon,1500,0.25,0.33,0.08
+g_d,coupon_only,1500,0.25,0.28,0.03

@@ -1,0 +1,17 @@
+campaign_id,channel,user_segment,impressions,clicks,coupon_claims,orders,gmv
+camp_001,email,new_user,12000,1450,420,38,4180
+camp_001,email,returning,8400,1320,580,112,16800
+camp_001,push,new_user,9500,1100,260,18,1980
+camp_001,push,returning,7100,980,310,72,10080
+camp_002,sms,new_user,15000,900,180,9,810
+camp_002,sms,returning,11000,820,220,55,7700
+camp_002,banner,new_user,22000,1600,340,21,2100
+camp_002,banner,returning,18500,1400,520,98,13720
+camp_003,email,new_user,9800,1250,410,42,4620
+camp_003,email,returning,7600,1180,520,134,20100
+camp_003,push,new_user,8200,860,200,11,1100
+camp_003,push,returning,6900,910,300,80,12000
+camp_004,banner,new_user,25000,1850,360,17,1530
+camp_004,banner,returning,21000,1620,560,105,14700
+camp_004,sms,new_user,13500,720,150,7,560
+camp_004,sms,returning,10200,690,180,46,6440

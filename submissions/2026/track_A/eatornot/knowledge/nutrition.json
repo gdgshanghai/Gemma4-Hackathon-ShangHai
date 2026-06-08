@@ -1,0 +1,115 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-05-30",
+  "sources": {
+    "chinese_dietary_guidelines_2022": {
+      "name": "《中国居民膳食指南》(2022)",
+      "publisher": "中国营养学会",
+      "key_points": [
+        "每天摄入谷薯类200-300g，其中全谷物和杂豆类50-150g",
+        "餐餐有蔬菜，每天蔬菜不少于300g",
+        "天天有水果，每天水果200-350g",
+        "每天摄入奶及奶制品300-500g",
+        "鱼、禽、蛋类和瘦肉摄入要适量，每天120-200g",
+        "少盐少油，控糖限酒",
+        "成年人每天食盐不超过5g",
+        "控制添加糖的摄入，每天不超过50g"
+      ]
+    },
+    "chinese_food_composition_6th": {
+      "name": "《中国食物成分表》(第6版)",
+      "publisher": "中国疾病预防控制中心营养与健康所",
+      "key_points": [
+        "食物热量计算基于蛋白质、脂肪、碳水化合物三大营养素",
+        "1g蛋白质=4kcal，1g脂肪=9kcal，1g碳水化合物=4kcal",
+        "膳食纤维不产生热量",
+        "钠的每日推荐摄入量为2000mg",
+        "成人每日蛋白质需求为0.8-1.2g/kg体重"
+      ]
+    },
+    "who_nutrition_guidelines": {
+      "name": "WHO 营养指南",
+      "publisher": "世界卫生组织",
+      "key_points": [
+        "成年人每日钠摄入量应低于2000mg（约5g食盐）",
+        "添加糖应低于总能量的10%",
+        "饱和脂肪应低于总能量的10%",
+        "每天至少400g蔬菜水果",
+        "成年人每周至少150分钟中等强度运动"
+      ]
+    }
+  },
+  "formulas": {
+    "mifflin_st_jeor": {
+      "name": "Mifflin-St Jeor 公式",
+      "description": "计算基础代谢率(BMR)的最准确公式",
+      "formula": {
+        "male": "BMR = 10×体重(kg) + 6.25×身高(cm) - 5×年龄 - 161 + 5",
+        "female": "BMR = 10×体重(kg) + 6.25×身高(cm) - 5×年龄 - 161"
+      },
+      "source": "Mifflin MD, et al. Am J Clin Nutr. 1990;51(2):241-247"
+    },
+    "tdee_multiplier": {
+      "name": "TDEE 活动系数",
+      "description": "总日能量消耗(TDEE) = BMR × 活动系数",
+      "values": {
+        "sedentary": 1.2,
+        "light": 1.375,
+        "moderate": 1.55,
+        "active": 1.725,
+        "very_active": 1.9
+      }
+    },
+    "calorie_deficit": {
+      "name": "热量缺口理论",
+      "description": "减重需要创造热量缺口",
+      "guidelines": {
+        "safe_deficit": "300-500 kcal/天",
+        "weight_loss_rate": "0.5-1 kg/周",
+        "minimum_intake": "不低于BMR的80%"
+      },
+      "source": "美国运动医学会(ACSM)"
+    }
+  },
+  "food_categories": {
+    "mcdonalds": {
+      "grilled_items": {
+        "特点": "烤制，脂肪含量较低",
+        "推荐": "减脂期间优先选择",
+        "例子": "板烧鸡腿堡、烤鸡腿堡"
+      },
+      "fried_items": {
+        "特点": "油炸，脂肪和热量较高",
+        "建议": "偶尔食用，不建议频繁选择",
+        "例子": "麦辣鸡腿堡、麦香鸡"
+      },
+      "zero_sugar_drinks": {
+        "特点": "无糖，热量接近0",
+        "推荐": "替代含糖饮料的好选择",
+        "例子": "零度可乐、美式咖啡"
+      },
+      "sugary_drinks": {
+        "特点": "含糖，热量较高",
+        "建议": "减脂期间避免",
+        "例子": "可口可乐、雪碧"
+      }
+    }
+  },
+  "emotional_eating": {
+    "name": "情绪性进食研究",
+    "description": "压力、疲劳等情绪状态对饮食行为的影响",
+    "key_findings": [
+      "疲惫状态会增加对高糖、高热量食物的渴望",
+      "压力会触发皮质醇分泌，增加食欲",
+      "情绪性进食通常选择安慰食物（高糖、高脂）",
+      "适度放纵可以缓解压力，但需要控制频率"
+    ],
+    "management_strategies": [
+      "识别情绪触发因素",
+      "建立健康的应对机制",
+      "允许适度放纵，但设定限额",
+      "选择能提供持久能量的食物"
+    ],
+    "source": "多项心理学和营养学研究综述"
+  }
+}

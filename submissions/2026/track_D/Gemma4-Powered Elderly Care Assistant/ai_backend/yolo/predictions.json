@@ -1,0 +1,2893 @@
+{
+  "task": "fall_detection",
+  "mode": "image",
+  "created_at": "2026-05-18T09:38:47",
+  "source": "dataset\\images\\val",
+  "weights": "E:\\traumatology\\weights\\best.pt",
+  "run_dir": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045",
+  "json_path": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\predictions.json",
+  "output_video": null,
+  "summary": {
+    "items": 111,
+    "fall_detected_items": 82,
+    "no_fall_items": 29
+  },
+  "results": [
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000001_fall001.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000001_fall001.jpg",
+      "image_shape": [
+        192,
+        262
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.855399,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.855399,
+          "bbox_xyxy": [
+            24.014,
+            71.599,
+            240.828,
+            165.233
+          ],
+          "bbox_xywh": [
+            132.421,
+            118.416,
+            216.814,
+            93.633
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000002_fall002.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000002_fall002.jpg",
+      "image_shape": [
+        408,
+        612
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000003_fall003.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000003_fall003.jpg",
+      "image_shape": [
+        408,
+        612
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.83291,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.83291,
+          "bbox_xyxy": [
+            250.984,
+            62.06,
+            579.307,
+            293.672
+          ],
+          "bbox_xywh": [
+            415.146,
+            177.866,
+            328.323,
+            231.612
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000004_fall004.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000004_fall004.jpg",
+      "image_shape": [
+        280,
+        390
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.962171,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.962171,
+          "bbox_xyxy": [
+            51.758,
+            28.538,
+            351.991,
+            224.307
+          ],
+          "bbox_xywh": [
+            201.874,
+            126.423,
+            300.234,
+            195.769
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000005_fall005.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000005_fall005.jpg",
+      "image_shape": [
+        423,
+        600
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.591852,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.591852,
+          "bbox_xyxy": [
+            142.669,
+            120.216,
+            567.693,
+            330.958
+          ],
+          "bbox_xywh": [
+            355.181,
+            225.587,
+            425.024,
+            210.742
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000006_fall006.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000006_fall006.jpg",
+      "image_shape": [
+        720,
+        1280
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.865309,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.865309,
+          "bbox_xyxy": [
+            385.534,
+            10.266,
+            1280.0,
+            473.196
+          ],
+          "bbox_xywh": [
+            832.767,
+            241.731,
+            894.466,
+            462.93
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000007_fall007.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000007_fall007.jpg",
+      "image_shape": [
+        280,
+        390
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.850515,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.850515,
+          "bbox_xyxy": [
+            98.785,
+            30.542,
+            357.884,
+            203.162
+          ],
+          "bbox_xywh": [
+            228.335,
+            116.852,
+            259.098,
+            172.62
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000008_fall008.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000008_fall008.jpg",
+      "image_shape": [
+        956,
+        1300
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.909426,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.909426,
+          "bbox_xyxy": [
+            219.48,
+            105.339,
+            1117.032,
+            475.477
+          ],
+          "bbox_xywh": [
+            668.256,
+            290.408,
+            897.552,
+            370.138
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000009_fall009.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000009_fall009.jpg",
+      "image_shape": [
+        185,
+        272
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.886093,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.886093,
+          "bbox_xyxy": [
+            52.683,
+            44.682,
+            271.818,
+            158.836
+          ],
+          "bbox_xywh": [
+            162.251,
+            101.759,
+            219.136,
+            114.154
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000010_fall010.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000010_fall010.jpg",
+      "image_shape": [
+        192,
+        262
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.68451,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.68451,
+          "bbox_xyxy": [
+            61.153,
+            50.425,
+            258.205,
+            174.289
+          ],
+          "bbox_xywh": [
+            159.679,
+            112.357,
+            197.052,
+            123.863
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000011_fall011.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000011_fall011.jpg",
+      "image_shape": [
+        187,
+        269
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.873095,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.873095,
+          "bbox_xyxy": [
+            73.524,
+            57.744,
+            215.7,
+            122.522
+          ],
+          "bbox_xywh": [
+            144.612,
+            90.133,
+            142.176,
+            64.779
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000012_fall012.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000012_fall012.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.943147,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.943147,
+          "bbox_xyxy": [
+            54.462,
+            60.244,
+            179.328,
+            164.374
+          ],
+          "bbox_xywh": [
+            116.895,
+            112.309,
+            124.867,
+            104.13
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000013_fall013.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000013_fall013.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.849861,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.849861,
+          "bbox_xyxy": [
+            53.764,
+            77.092,
+            173.035,
+            128.924
+          ],
+          "bbox_xywh": [
+            113.4,
+            103.008,
+            119.27,
+            51.832
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000014_fall014.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000014_fall014.jpg",
+      "image_shape": [
+        280,
+        389
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.510066,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.510066,
+          "bbox_xyxy": [
+            61.992,
+            19.777,
+            351.844,
+            239.953
+          ],
+          "bbox_xywh": [
+            206.918,
+            129.865,
+            289.852,
+            220.177
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000015_fall015.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000015_fall015.jpg",
+      "image_shape": [
+        408,
+        612
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000016_fall016.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000016_fall016.jpg",
+      "image_shape": [
+        408,
+        612
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.935897,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.935897,
+          "bbox_xyxy": [
+            230.064,
+            34.776,
+            571.325,
+            301.039
+          ],
+          "bbox_xywh": [
+            400.694,
+            167.907,
+            341.261,
+            266.262
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000017_fall017.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000017_fall017.jpg",
+      "image_shape": [
+        191,
+        264
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.935379,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.935379,
+          "bbox_xyxy": [
+            60.597,
+            121.569,
+            248.205,
+            182.674
+          ],
+          "bbox_xywh": [
+            154.401,
+            152.122,
+            187.608,
+            61.106
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000018_fall018.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000018_fall018.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.878817,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.878817,
+          "bbox_xyxy": [
+            50.082,
+            4.251,
+            271.174,
+            151.639
+          ],
+          "bbox_xywh": [
+            160.628,
+            77.945,
+            221.092,
+            147.388
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000019_fall019.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000019_fall019.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.875366,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.875366,
+          "bbox_xyxy": [
+            93.603,
+            4.91,
+            240.524,
+            151.93
+          ],
+          "bbox_xywh": [
+            167.064,
+            78.42,
+            146.921,
+            147.019
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000020_fall020.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000020_fall020.jpg",
+      "image_shape": [
+        275,
+        183
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.669035,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.669035,
+          "bbox_xyxy": [
+            10.37,
+            51.405,
+            170.029,
+            246.702
+          ],
+          "bbox_xywh": [
+            90.199,
+            149.054,
+            159.658,
+            195.298
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000021_fall021.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000021_fall021.jpg",
+      "image_shape": [
+        242,
+        208
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.869075,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.869075,
+          "bbox_xyxy": [
+            17.143,
+            49.252,
+            148.452,
+            220.276
+          ],
+          "bbox_xywh": [
+            82.797,
+            134.764,
+            131.308,
+            171.024
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000022_fall022.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000022_fall022.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.868098,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.868098,
+          "bbox_xyxy": [
+            91.144,
+            4.118,
+            244.171,
+            152.349
+          ],
+          "bbox_xywh": [
+            167.657,
+            78.233,
+            153.027,
+            148.231
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000023_fall023.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000023_fall023.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.83124,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.83124,
+          "bbox_xyxy": [
+            41.053,
+            35.547,
+            228.831,
+            156.441
+          ],
+          "bbox_xywh": [
+            134.942,
+            95.994,
+            187.778,
+            120.895
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000024_fall024.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000024_fall024.jpg",
+      "image_shape": [
+        194,
+        259
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.690654,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.690654,
+          "bbox_xyxy": [
+            47.042,
+            0.0,
+            231.113,
+            177.224
+          ],
+          "bbox_xywh": [
+            139.077,
+            88.612,
+            184.071,
+            177.224
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000025_fall025.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000025_fall025.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.79627,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.79627,
+          "bbox_xyxy": [
+            46.17,
+            4.944,
+            183.421,
+            161.431
+          ],
+          "bbox_xywh": [
+            114.795,
+            83.188,
+            137.251,
+            156.487
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000026_fall026.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000026_fall026.jpg",
+      "image_shape": [
+        192,
+        263
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.81511,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.81511,
+          "bbox_xyxy": [
+            0.0,
+            25.513,
+            189.358,
+            150.403
+          ],
+          "bbox_xywh": [
+            94.679,
+            87.958,
+            189.358,
+            124.89
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000027_fall027.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000027_fall027.jpg",
+      "image_shape": [
+        192,
+        262
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.889667,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.889667,
+          "bbox_xyxy": [
+            10.663,
+            42.357,
+            244.103,
+            163.411
+          ],
+          "bbox_xywh": [
+            127.383,
+            102.884,
+            233.44,
+            121.055
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000028_fall028.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000028_fall028.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.712489,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.712489,
+          "bbox_xyxy": [
+            34.771,
+            16.289,
+            269.175,
+            130.685
+          ],
+          "bbox_xywh": [
+            151.973,
+            73.487,
+            234.404,
+            114.397
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000029_fall029.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000029_fall029.jpg",
+      "image_shape": [
+        168,
+        300
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.694928,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.694928,
+          "bbox_xyxy": [
+            90.071,
+            47.806,
+            247.745,
+            142.998
+          ],
+          "bbox_xywh": [
+            168.908,
+            95.402,
+            157.673,
+            95.191
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000030_fall030.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000030_fall030.jpg",
+      "image_shape": [
+        192,
+        263
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.954005,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.954005,
+          "bbox_xyxy": [
+            34.108,
+            14.415,
+            246.434,
+            149.081
+          ],
+          "bbox_xywh": [
+            140.271,
+            81.748,
+            212.326,
+            134.666
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000031_fall031.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000031_fall031.jpg",
+      "image_shape": [
+        194,
+        259
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.454646,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.454646,
+          "bbox_xyxy": [
+            69.165,
+            92.52,
+            192.733,
+            181.014
+          ],
+          "bbox_xywh": [
+            130.949,
+            136.767,
+            123.568,
+            88.494
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000032_fall032.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000032_fall032.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.920506,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.920506,
+          "bbox_xyxy": [
+            84.069,
+            25.671,
+            273.47,
+            129.332
+          ],
+          "bbox_xywh": [
+            178.769,
+            77.501,
+            189.401,
+            103.661
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000033_fall033.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000033_fall033.jpg",
+      "image_shape": [
+        168,
+        300
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.78811,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.78811,
+          "bbox_xyxy": [
+            35.479,
+            13.657,
+            263.326,
+            140.582
+          ],
+          "bbox_xywh": [
+            149.403,
+            77.12,
+            227.847,
+            126.925
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000034_fall034.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000034_fall034.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.479584,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.479584,
+          "bbox_xyxy": [
+            19.171,
+            20.056,
+            274.781,
+            174.982
+          ],
+          "bbox_xywh": [
+            146.976,
+            97.519,
+            255.61,
+            154.926
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000035_fall035.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000035_fall035.jpg",
+      "image_shape": [
+        146,
+        346
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.863716,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.863716,
+          "bbox_xyxy": [
+            22.629,
+            16.645,
+            310.391,
+            144.813
+          ],
+          "bbox_xywh": [
+            166.51,
+            80.729,
+            287.762,
+            128.168
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000036_fall036.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000036_fall036.jpg",
+      "image_shape": [
+        168,
+        300
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.934239,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.934239,
+          "bbox_xyxy": [
+            77.664,
+            71.55,
+            291.631,
+            161.818
+          ],
+          "bbox_xywh": [
+            184.648,
+            116.684,
+            213.967,
+            90.267
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000037_fall037.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000037_fall037.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.831406,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.831406,
+          "bbox_xyxy": [
+            18.155,
+            9.884,
+            201.492,
+            167.121
+          ],
+          "bbox_xywh": [
+            109.824,
+            88.503,
+            183.337,
+            157.237
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000038_fall038.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000038_fall038.jpg",
+      "image_shape": [
+        600,
+        800
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.624701,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.624701,
+          "bbox_xyxy": [
+            299.699,
+            132.65,
+            549.831,
+            505.51
+          ],
+          "bbox_xywh": [
+            424.765,
+            319.08,
+            250.133,
+            372.86
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000039_fall039.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000039_fall039.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.888566,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.888566,
+          "bbox_xyxy": [
+            59.839,
+            17.066,
+            273.573,
+            173.436
+          ],
+          "bbox_xywh": [
+            166.706,
+            95.251,
+            213.735,
+            156.37
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000040_fall040.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000040_fall040.jpg",
+      "image_shape": [
+        194,
+        259
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000041_fall041.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000041_fall041.jpg",
+      "image_shape": [
+        178,
+        283
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.829949,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.829949,
+          "bbox_xyxy": [
+            29.558,
+            63.943,
+            272.921,
+            162.035
+          ],
+          "bbox_xywh": [
+            151.24,
+            112.989,
+            243.363,
+            98.092
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000042_fall042.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000042_fall042.jpg",
+      "image_shape": [
+        168,
+        300
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.864073,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.864073,
+          "bbox_xyxy": [
+            96.244,
+            54.517,
+            298.284,
+            151.284
+          ],
+          "bbox_xywh": [
+            197.264,
+            102.9,
+            202.04,
+            96.767
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000043_fall043.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000043_fall043.jpg",
+      "image_shape": [
+        190,
+        265
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.77732,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.77732,
+          "bbox_xyxy": [
+            59.671,
+            34.671,
+            210.424,
+            157.104
+          ],
+          "bbox_xywh": [
+            135.047,
+            95.888,
+            150.752,
+            122.433
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000044_fall044.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000044_fall044.jpg",
+      "image_shape": [
+        211,
+        238
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.657344,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.657344,
+          "bbox_xyxy": [
+            14.275,
+            41.769,
+            236.635,
+            158.468
+          ],
+          "bbox_xywh": [
+            125.455,
+            100.119,
+            222.36,
+            116.698
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000045_fall045.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000045_fall045.jpg",
+      "image_shape": [
+        183,
+        276
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.918221,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.918221,
+          "bbox_xyxy": [
+            70.322,
+            66.321,
+            252.153,
+            141.849
+          ],
+          "bbox_xywh": [
+            161.238,
+            104.085,
+            181.831,
+            75.528
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000046_fall046.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000046_fall046.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.809008,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.809008,
+          "bbox_xyxy": [
+            202.503,
+            334.439,
+            627.091,
+            480.0
+          ],
+          "bbox_xywh": [
+            414.797,
+            407.219,
+            424.587,
+            145.561
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000047_fall047.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000047_fall047.jpg",
+      "image_shape": [
+        352,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.890762,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.890762,
+          "bbox_xyxy": [
+            110.539,
+            156.425,
+            632.143,
+            347.039
+          ],
+          "bbox_xywh": [
+            371.341,
+            251.732,
+            521.604,
+            190.615
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000048_fall048.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000048_fall048.jpg",
+      "image_shape": [
+        352,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.840815,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.840815,
+          "bbox_xyxy": [
+            90.859,
+            133.16,
+            616.539,
+            327.817
+          ],
+          "bbox_xywh": [
+            353.699,
+            230.488,
+            525.68,
+            194.657
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000049_fall049.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000049_fall049.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.908827,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.908827,
+          "bbox_xyxy": [
+            244.967,
+            186.872,
+            380.154,
+            377.797
+          ],
+          "bbox_xywh": [
+            312.56,
+            282.335,
+            135.187,
+            190.925
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000050_fall050.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000050_fall050.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.890159,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.890159,
+          "bbox_xyxy": [
+            141.323,
+            337.579,
+            439.135,
+            480.0
+          ],
+          "bbox_xywh": [
+            290.229,
+            408.79,
+            297.813,
+            142.421
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000051_fall051.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000051_fall051.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.873973,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.873973,
+          "bbox_xyxy": [
+            192.38,
+            361.082,
+            498.583,
+            479.607
+          ],
+          "bbox_xywh": [
+            345.481,
+            420.345,
+            306.202,
+            118.525
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000052_fall052.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000052_fall052.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.959646,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.959646,
+          "bbox_xyxy": [
+            139.092,
+            321.611,
+            497.133,
+            477.857
+          ],
+          "bbox_xywh": [
+            318.112,
+            399.734,
+            358.041,
+            156.247
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000053_fall053.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000053_fall053.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.943814,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.943814,
+          "bbox_xyxy": [
+            195.128,
+            164.367,
+            432.372,
+            319.868
+          ],
+          "bbox_xywh": [
+            313.75,
+            242.118,
+            237.244,
+            155.501
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000054_fall054.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000054_fall054.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.978175,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.978175,
+          "bbox_xyxy": [
+            176.35,
+            300.208,
+            494.426,
+            462.765
+          ],
+          "bbox_xywh": [
+            335.388,
+            381.487,
+            318.075,
+            162.556
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000055_fall055.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000055_fall055.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.958864,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.958864,
+          "bbox_xyxy": [
+            155.845,
+            66.38,
+            371.432,
+            311.738
+          ],
+          "bbox_xywh": [
+            263.639,
+            189.059,
+            215.587,
+            245.358
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000056_fall056.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000056_fall056.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.961665,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.961665,
+          "bbox_xyxy": [
+            133.302,
+            139.524,
+            389.559,
+            321.682
+          ],
+          "bbox_xywh": [
+            261.431,
+            230.603,
+            256.257,
+            182.158
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000057_fall057.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000057_fall057.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.786184,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.786184,
+          "bbox_xyxy": [
+            73.328,
+            316.832,
+            523.013,
+            479.561
+          ],
+          "bbox_xywh": [
+            298.171,
+            398.197,
+            449.685,
+            162.729
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000058_fall058.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000058_fall058.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.906576,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.906576,
+          "bbox_xyxy": [
+            138.166,
+            379.292,
+            371.989,
+            478.478
+          ],
+          "bbox_xywh": [
+            255.078,
+            428.885,
+            233.823,
+            99.186
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000059_fall059.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000059_fall059.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.932148,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.932148,
+          "bbox_xyxy": [
+            307.694,
+            7.432,
+            517.111,
+            352.46
+          ],
+          "bbox_xywh": [
+            412.403,
+            179.946,
+            209.417,
+            345.028
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000060_fall060.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000060_fall060.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.561796,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.561796,
+          "bbox_xyxy": [
+            264.768,
+            356.326,
+            633.502,
+            478.261
+          ],
+          "bbox_xywh": [
+            449.135,
+            417.293,
+            368.734,
+            121.935
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000061_fall061.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000061_fall061.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 2,
+      "max_confidence": 0.934181,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.934181,
+          "bbox_xyxy": [
+            186.868,
+            236.1,
+            634.561,
+            442.004
+          ],
+          "bbox_xywh": [
+            410.714,
+            339.052,
+            447.693,
+            205.904
+          ]
+        },
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.731736,
+          "bbox_xyxy": [
+            0.0,
+            306.667,
+            149.194,
+            404.805
+          ],
+          "bbox_xywh": [
+            74.597,
+            355.736,
+            149.194,
+            98.139
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000062_fall062.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000062_fall062.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.773448,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.773448,
+          "bbox_xyxy": [
+            0.0,
+            342.444,
+            508.52,
+            480.0
+          ],
+          "bbox_xywh": [
+            254.26,
+            411.222,
+            508.52,
+            137.556
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000063_fall063.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000063_fall063.jpg",
+      "image_shape": [
+        480,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.812569,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.812569,
+          "bbox_xyxy": [
+            111.019,
+            319.051,
+            476.589,
+            478.389
+          ],
+          "bbox_xywh": [
+            293.804,
+            398.72,
+            365.57,
+            159.338
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000064_fall064.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000064_fall064.jpg",
+      "image_shape": [
+        352,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.80376,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.80376,
+          "bbox_xyxy": [
+            80.399,
+            132.203,
+            636.963,
+            308.563
+          ],
+          "bbox_xywh": [
+            358.681,
+            220.383,
+            556.564,
+            176.361
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000065_fall065.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000065_fall065.jpg",
+      "image_shape": [
+        352,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.890833,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.890833,
+          "bbox_xyxy": [
+            51.525,
+            123.26,
+            573.442,
+            328.529
+          ],
+          "bbox_xywh": [
+            312.484,
+            225.894,
+            521.917,
+            205.269
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000066_fall066.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000066_fall066.jpg",
+      "image_shape": [
+        352,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.742708,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.742708,
+          "bbox_xyxy": [
+            23.104,
+            141.989,
+            607.814,
+            332.737
+          ],
+          "bbox_xywh": [
+            315.459,
+            237.363,
+            584.709,
+            190.748
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000067_fall067.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000067_fall067.jpg",
+      "image_shape": [
+        352,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.734764,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.734764,
+          "bbox_xyxy": [
+            0.0,
+            162.073,
+            603.566,
+            342.37
+          ],
+          "bbox_xywh": [
+            301.783,
+            252.222,
+            603.566,
+            180.297
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000068_fall068.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000068_fall068.jpg",
+      "image_shape": [
+        352,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.888303,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.888303,
+          "bbox_xyxy": [
+            67.254,
+            85.84,
+            416.904,
+            336.247
+          ],
+          "bbox_xywh": [
+            242.079,
+            211.043,
+            349.651,
+            250.407
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000069_fall069.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000069_fall069.jpg",
+      "image_shape": [
+        352,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.925813,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.925813,
+          "bbox_xyxy": [
+            75.913,
+            107.854,
+            514.187,
+            347.46
+          ],
+          "bbox_xywh": [
+            295.05,
+            227.657,
+            438.274,
+            239.606
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000070_fall070.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000070_fall070.jpg",
+      "image_shape": [
+        352,
+        640
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.920299,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.920299,
+          "bbox_xyxy": [
+            157.805,
+            85.631,
+            453.698,
+            338.062
+          ],
+          "bbox_xywh": [
+            305.751,
+            211.847,
+            295.894,
+            252.431
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000071_not_fallen001.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000071_not_fallen001.jpg",
+      "image_shape": [
+        527,
+        1280
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000072_not_fallen002.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000072_not_fallen002.jpg",
+      "image_shape": [
+        480,
+        852
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.570165,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.570165,
+          "bbox_xyxy": [
+            125.283,
+            62.774,
+            852.0,
+            407.214
+          ],
+          "bbox_xywh": [
+            488.641,
+            234.994,
+            726.717,
+            344.441
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000073_not_fallen003.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000073_not_fallen003.jpg",
+      "image_shape": [
+        480,
+        852
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000074_not_fallen004.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000074_not_fallen004.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000075_not_fallen005.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000075_not_fallen005.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000076_not_fallen006.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000076_not_fallen006.jpg",
+      "image_shape": [
+        168,
+        299
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000077_not_fallen007.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000077_not_fallen007.jpg",
+      "image_shape": [
+        183,
+        275
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000078_not_fallen008.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000078_not_fallen008.jpg",
+      "image_shape": [
+        450,
+        299
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000079_not_fallen009.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000079_not_fallen009.jpg",
+      "image_shape": [
+        1216,
+        1300
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000080_not_fallen010.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000080_not_fallen010.jpg",
+      "image_shape": [
+        533,
+        800
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000081_not_fallen011.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000081_not_fallen011.jpg",
+      "image_shape": [
+        956,
+        1300
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000082_not_fallen012.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000082_not_fallen012.jpg",
+      "image_shape": [
+        957,
+        1300
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.57504,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.57504,
+          "bbox_xyxy": [
+            274.295,
+            41.395,
+            1293.245,
+            826.32
+          ],
+          "bbox_xywh": [
+            783.77,
+            433.857,
+            1018.95,
+            784.925
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000083_not_fallen013.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000083_not_fallen013.jpg",
+      "image_shape": [
+        599,
+        958
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000084_not_fallen014.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000084_not_fallen014.jpg",
+      "image_shape": [
+        500,
+        720
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000085_not_fallen015.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000085_not_fallen015.jpg",
+      "image_shape": [
+        956,
+        1300
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000086_not_fallen016.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000086_not_fallen016.jpg",
+      "image_shape": [
+        1050,
+        700
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000087_not_fallen017.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000087_not_fallen017.jpg",
+      "image_shape": [
+        858,
+        1400
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000088_not_fallen018.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000088_not_fallen018.jpg",
+      "image_shape": [
+        417,
+        626
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000089_not_fallen019.jpg",
+      "output_image": "E:\\traumatology\\outputs\\detection\\final_pretrained_best_conf045\\visualizations\\fall_dataset_val_000089_not_fallen019.jpg",
+      "image_shape": [
+        1390,
+        866
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000090_not_fallen020.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.637825,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.637825,
+          "bbox_xyxy": [
+            26.992,
+            48.876,
+            309.126,
+            231.08
+          ],
+          "bbox_xywh": [
+            168.059,
+            139.978,
+            282.134,
+            182.204
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000091_not_fallen021.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000092_not_fallen022.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000093_not_fallen023.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000094_not_fallen024.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000095_not_fallen025.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 2,
+      "max_confidence": 0.666999,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.666999,
+          "bbox_xyxy": [
+            241.011,
+            109.836,
+            319.862,
+            190.234
+          ],
+          "bbox_xywh": [
+            280.437,
+            150.035,
+            78.851,
+            80.398
+          ]
+        },
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.662237,
+          "bbox_xyxy": [
+            4.711,
+            70.818,
+            172.314,
+            208.12
+          ],
+          "bbox_xywh": [
+            88.513,
+            139.469,
+            167.603,
+            137.302
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000096_not_fallen026.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000097_not_fallen027.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.707694,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.707694,
+          "bbox_xyxy": [
+            240.856,
+            110.013,
+            319.824,
+            190.692
+          ],
+          "bbox_xywh": [
+            280.34,
+            150.353,
+            78.967,
+            80.679
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000098_not_fallen028.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000099_not_fallen029.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000100_not_fallen030.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.703749,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.703749,
+          "bbox_xyxy": [
+            240.547,
+            79.858,
+            320.0,
+            189.448
+          ],
+          "bbox_xywh": [
+            280.274,
+            134.653,
+            79.453,
+            109.59
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000101_not_fallen031.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.558096,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.558096,
+          "bbox_xyxy": [
+            241.132,
+            110.45,
+            320.0,
+            190.26
+          ],
+          "bbox_xywh": [
+            280.566,
+            150.355,
+            78.868,
+            79.81
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000102_not_fallen032.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.699578,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.699578,
+          "bbox_xyxy": [
+            240.557,
+            109.269,
+            320.0,
+            189.739
+          ],
+          "bbox_xywh": [
+            280.278,
+            149.504,
+            79.443,
+            80.47
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000103_not_fallen033.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000104_not_fallen034.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.559918,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.559918,
+          "bbox_xyxy": [
+            241.513,
+            110.115,
+            319.827,
+            190.718
+          ],
+          "bbox_xywh": [
+            280.67,
+            150.416,
+            78.315,
+            80.603
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000105_not_fallen035.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": false,
+      "detection_count": 0,
+      "max_confidence": 0.0,
+      "detections": []
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000106_not_fallen036.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 2,
+      "max_confidence": 0.591819,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.591819,
+          "bbox_xyxy": [
+            240.854,
+            110.101,
+            319.87,
+            190.547
+          ],
+          "bbox_xywh": [
+            280.362,
+            150.324,
+            79.016,
+            80.446
+          ]
+        },
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.591103,
+          "bbox_xyxy": [
+            3.827,
+            72.475,
+            170.642,
+            209.988
+          ],
+          "bbox_xywh": [
+            87.235,
+            141.232,
+            166.815,
+            137.514
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000107_not_fallen037.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 2,
+      "max_confidence": 0.769046,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.769046,
+          "bbox_xyxy": [
+            1.608,
+            112.033,
+            129.734,
+            200.703
+          ],
+          "bbox_xywh": [
+            65.671,
+            156.368,
+            128.126,
+            88.67
+          ]
+        },
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.726183,
+          "bbox_xyxy": [
+            240.213,
+            111.43,
+            319.822,
+            190.512
+          ],
+          "bbox_xywh": [
+            280.018,
+            150.971,
+            79.609,
+            79.081
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000108_not_fallen038.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.713825,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.713825,
+          "bbox_xyxy": [
+            240.789,
+            110.341,
+            319.843,
+            190.37
+          ],
+          "bbox_xywh": [
+            280.316,
+            150.356,
+            79.054,
+            80.029
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000109_not_fallen039.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.702614,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.702614,
+          "bbox_xyxy": [
+            241.255,
+            110.239,
+            320.0,
+            189.341
+          ],
+          "bbox_xywh": [
+            280.628,
+            149.79,
+            78.745,
+            79.102
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000110_not_fallen040.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.718789,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.718789,
+          "bbox_xyxy": [
+            239.756,
+            110.662,
+            320.0,
+            190.178
+          ],
+          "bbox_xywh": [
+            279.878,
+            150.42,
+            80.244,
+            79.516
+          ]
+        }
+      ]
+    },
+    {
+      "source": "E:\\traumatology\\dataset\\images\\val\\fall_dataset_val_000111_not_fallen041.png",
+      "output_image": null,
+      "image_shape": [
+        240,
+        320
+      ],
+      "fall_detected": true,
+      "detection_count": 1,
+      "max_confidence": 0.68096,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fall",
+          "confidence": 0.68096,
+          "bbox_xyxy": [
+            177.68,
+            113.898,
+            320.0,
+            240.0
+          ],
+          "bbox_xywh": [
+            248.84,
+            176.949,
+            142.32,
+            126.102
+          ]
+        }
+      ]
+    }
+  ]
+}

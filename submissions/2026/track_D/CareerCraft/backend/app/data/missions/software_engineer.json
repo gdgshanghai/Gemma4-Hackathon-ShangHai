@@ -1,0 +1,46 @@
+[
+  {
+    "id": "mvp_mission_software_1",
+    "title": "漏洞捕手：UserService 用户名空格登录缺陷",
+    "description": "入职星海科技！新手酒馆登录功能有岛民反馈：用户名包含空格时注册成功，但后续登录却提示失败。请阅读 UserService.java，在 UserServiceTest.java 中编写测试用例复现该 Bug，定位其根本原因并修复，使其能对用户名做 .trim() 规范化清洗。",
+    "mock_data_url": "https://example.com/mock_data/UserService.java",
+    "delivery_requirements": [
+      "在 UserServiceTest.java 中编写测试成功复现 Bug 场景",
+      "修复 UserService.java 并对用户名进行 trim 规范化清洗",
+      "用一句话精准总结 Bug 的根本原因"
+    ]
+  },
+  {
+    "id": "mvp_mission_software_2",
+    "title": "需求炼金术师：签到功能 API 规格设计",
+    "description": "产品经理 Amy 提议做一个'签到功能'以增加日活，但需求极其模糊。你需要提问并澄清：每天一次判定条件（自然日还是24小时）、积分和连续签到梯度奖励。随后，撰写符合 RESTful 规范的 API 设计文档 api-design.md（含 POST /check-in、GET /check-in/status）。",
+    "mock_data_url": "https://example.com/mock_data/api_design_template.md",
+    "delivery_requirements": [
+      "澄清自然日、积分额度与连续中断等核心业务规则",
+      "设计包含请求、响应及状态返回的 RESTful API",
+      "提供用于连续签到判定和重置逻辑的伪代码"
+    ]
+  },
+  {
+    "id": "mvp_mission_software_3",
+    "title": "守护与演进：优惠券服务重构与多态扩展",
+    "description": "签到上线后，旧的 CouponService.java 优惠券服务因代码杂乱、职责不清单体冗长而性能告急。高凌要求你重构：方法拆分、配置抽取，并设计面向接口的'多优惠券类型'（折扣券、满减券）多态扩展方案，编写验证测试。",
+    "mock_data_url": "https://example.com/mock_data/CouponService.java",
+    "delivery_requirements": [
+      "将冗长 issueCoupon 方法重构，拆分为高内聚的微方法",
+      "通过多态（Coupon 接口 + 子类）优雅实现新增券类型的演进",
+      "撰写架构设计文档 refactor_design.md 并配有单元测试"
+    ]
+  },
+  {
+    "id": "mvp_mission_software_4",
+    "title": "线上消防员：订单 N+1 SQL 慢查询性能调优",
+    "description": "凌晨线上报警：数据库 CPU 飙至 100%，订单接口超时挂起！高凌拉你紧急救火。分析慢日志与 OrderDAO.java，定位循环查询 orders 导致的经典 N+1 性能死穴，将其重构为批量 IN 检索并配置复合索引，输出事故总结报告。",
+    "mock_data_url": "https://example.com/mock_data/slow_query.log",
+    "delivery_requirements": [
+      "分析慢查询日志与 OrderDAO 源码，完成瓶颈定位选择题",
+      "将 orders N+1 拼接重写为高性能的批量 SQL 及复合索引设计",
+      "撰写事故分析报告 postmortem_report.md（包含根因与预防措施）"
+    ]
+  }
+]

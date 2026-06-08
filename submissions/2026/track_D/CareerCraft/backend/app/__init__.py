@@ -1,0 +1,1 @@
+"""CareerCraft FastAPI application package."""

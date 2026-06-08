@@ -1,0 +1,32 @@
+# Generic ignore patterns
+.git
+.gitignore
+.vscode
+.idea
+*.md
+LICENSE
+
+# Backend exclusions
+backend/venv/
+backend/logs/
+backend/*.db
+backend/*.db-journal
+backend/chroma_data/
+backend/__pycache__/
+backend/app/__pycache__/
+backend/app/*/__pycache__/
+backend/app/*/*/__pycache__/
+backend/.env
+
+# Frontend exclusions
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.development
+frontend/.env.production
+frontend/*.log
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*

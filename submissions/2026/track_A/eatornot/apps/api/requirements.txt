@@ -1,0 +1,11 @@
+fastapi==0.136.3
+uvicorn[standard]==0.34.0
+pydantic==2.13.4
+pydantic-settings==2.7.1
+python-dotenv==1.0.1
+httpx==0.28.1
+openai==1.58.1
+sqlalchemy==2.0.36
+aiosqlite==0.22.1
+google-adk==2.1.0
+mcp==1.27.2
