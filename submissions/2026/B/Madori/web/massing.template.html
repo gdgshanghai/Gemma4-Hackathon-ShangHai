@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STUDY MODEL · 白模</title>
+<style>
+  :root{
+    --paper:#efe9df; --ink:#2b2823; --ink-soft:#6b655c;
+    --card:rgba(250,247,241,0.78); --line:rgba(70,64,56,0.14);
+    --serif:"Songti SC","Source Han Serif SC",Georgia,serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);}
+  #app{position:fixed;inset:0;} canvas{display:block;}
+  .title{position:fixed;top:26px;left:28px;z-index:10;pointer-events:none;user-select:none;}
+  .title h1{font-family:var(--serif);font-weight:600;font-size:21px;letter-spacing:.04em;color:var(--ink);margin:0 0 4px;}
+  .title .sub{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin:0;}
+  .panel{position:fixed;left:28px;bottom:26px;z-index:10;background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px;padding:16px 18px 15px;width:248px;box-shadow:0 8px 30px rgba(60,52,40,.10);}
+  .panel .row{display:flex;align-items:center;justify-content:space-between;}
+  .panel .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--ink-soft);text-transform:uppercase;}
+  .panel .val{font-family:var(--mono);font-size:11px;color:var(--ink);min-width:64px;text-align:right;}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;margin:14px 0 4px;background:var(--line);border-radius:2px;outline:none;cursor:pointer;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:15px;height:15px;border-radius:50%;background:#fbfaf6;border:1.5px solid var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.18);cursor:pointer;}
+  .divider{height:1px;background:var(--line);margin:14px 0 13px;}
+  .stepper{display:flex;align-items:center;gap:10px;}
+  .stepper button{font-family:var(--mono);font-size:15px;width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.5);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .stepper button:disabled{opacity:.35;cursor:not-allowed;}
+  .stepper .fval{font-family:var(--mono);font-size:12px;color:var(--ink);flex:1;text-align:center;}
+  .hint{position:fixed;right:24px;bottom:22px;z-index:10;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);opacity:.7;pointer-events:none;}
+</style></head>
+<body>
+<div id="app"></div>
+<div class="title"><h1>STUDY MODEL · 白模</h1><p class="sub">Architectural Massing Study</p></div>
+<div class="panel">
+  <div class="row"><span class="lbl">平面 ⟷ 立体</span><span class="val" id="morphLabel">立体 100%</span></div>
+  <input type="range" id="morph" min="0" max="100" value="100">
+  <div class="divider"></div>
+  <div class="row"><span class="lbl">楼层</span>
+    <div class="stepper"><button id="fminus">−</button><span class="fval" id="floorVal">3 F</span><button id="fplus">+</button></div>
+  </div>
+</div>
+<div class="hint">拖拽旋转 · 滚轮缩放</div>
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const BUILDING = __BUILDING_JSON__;
+function normalizeBuilding(b){
+  b=(b&&typeof b==='object')?b:{}; let W=12,H=9;
+  if(Array.isArray(b.dims)&&b.dims.length>=2){W=+b.dims[0]||W;H=+b.dims[1]||H;}
+  let walls=Array.isArray(b.walls)?b.walls.filter(w=>Array.isArray(w)&&w.length>=4&&w.every(n=>isFinite(+n))).map(w=>w.map(Number)):[];
+  if(walls.length===0){walls=[[0,0,W,0],[W,0,W,H],[W,H,0,H],[0,H,0,0]];}
+  let rooms=Array.isArray(b.rooms)?b.rooms.filter(r=>r&&Array.isArray(r.rect)):[];
+  return {dims:[W,H],walls,rooms};
+}
+const DATA=normalizeBuilding(BUILDING);
+const WALL_H=3.0,WALL_T=0.2,SLAB_T=0.28,FLOOR_GAP=WALL_H+SLAB_T;
+let FLOORS=3; const MIN_FLOORS=1,MAX_FLOORS=6; const [W,H]=DATA.dims;
+function computeBounds(){let minX=0,maxX=W,minZ=0,maxZ=H;DATA.walls.forEach(([x1,z1,x2,z2])=>{minX=Math.min(minX,x1,x2);maxX=Math.max(maxX,x1,x2);minZ=Math.min(minZ,z1,z2);maxZ=Math.max(maxZ,z1,z2);});return {minX,maxX,minZ,maxZ};}
+const Bd=computeBounds(); const spanX=Math.max(Bd.maxX-Bd.minX,1),spanZ=Math.max(Bd.maxZ-Bd.minZ,1);
+const cx=(Bd.minX+Bd.maxX)/2,cz=(Bd.minZ+Bd.maxZ)/2;
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;document.getElementById('app').appendChild(renderer.domElement);
+const scene=new THREE.Scene();const BG=new THREE.Color(0xefe9df);scene.background=BG;
+const totalSpan=Math.max(spanX,spanZ);scene.fog=new THREE.Fog(BG,totalSpan*2.4,totalSpan*8);
+const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,0.1,5000);
+const modelHeight=FLOOR_GAP*MAX_FLOORS,frame=Math.max(spanX,spanZ,6);
+camera.position.set(cx+frame*1.15,frame*0.95+modelHeight*0.4,cz+frame*1.5);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=0.06;controls.minDistance=frame*0.5;controls.maxDistance=frame*6;controls.maxPolarAngle=Math.PI*0.495;
+scene.add(new THREE.HemisphereLight(0xffffff,0xddd5c6,0.62));
+const key=new THREE.DirectionalLight(0xfff6ea,1.05);key.position.set(frame*0.9,frame*1.5,frame*0.7);key.castShadow=true;key.shadow.mapSize.set(2048,2048);const sd=frame*1.8;key.shadow.camera.left=-sd;key.shadow.camera.right=sd;key.shadow.camera.top=sd;key.shadow.camera.bottom=-sd;key.shadow.camera.near=0.5;key.shadow.camera.far=frame*8;key.shadow.bias=-0.0004;key.shadow.radius=4;scene.add(key);
+const fill=new THREE.DirectionalLight(0xeaf0ff,0.28);fill.position.set(-frame*0.8,frame*0.6,-frame*0.6);scene.add(fill);
+scene.add(new THREE.AmbientLight(0xffffff,0.18));
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(totalSpan*14,totalSpan*14),new THREE.MeshStandardMaterial({color:0xe7e0d4,roughness:0.97}));ground.rotation.x=-Math.PI/2;ground.position.set(cx,0,cz);ground.receiveShadow=true;scene.add(ground);
+const grid=new THREE.GridHelper(totalSpan*10,Math.round(totalSpan*10),0xcfc6b6,0xddd5c7);grid.position.set(cx,0.002,cz);grid.material.transparent=true;grid.material.opacity=0.18;scene.add(grid);
+const wallMat=new THREE.MeshStandardMaterial({color:0xf3efe8,roughness:0.85});
+const slabMat=new THREE.MeshStandardMaterial({color:0xe6dfd2,roughness:0.9});
+let building=new THREE.Group();scene.add(building);
+function disposeGroup(g){g.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.sprite_tex)o.sprite_tex.dispose();});while(g.children.length)g.remove(g.children[0]);}
+function buildFloor(){const g=new THREE.Group();const slab=new THREE.Mesh(new THREE.BoxGeometry(spanX,SLAB_T,spanZ),slabMat);slab.position.set(cx,SLAB_T/2,cz);slab.castShadow=true;slab.receiveShadow=true;g.add(slab);
+  DATA.walls.forEach(([x1,z1,x2,z2])=>{const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz);if(len<1e-4)return;const wall=new THREE.Mesh(new THREE.BoxGeometry(len+WALL_T,WALL_H,WALL_T),wallMat);wall.position.set((x1+x2)/2,SLAB_T+WALL_H/2,(z1+z2)/2);wall.rotation.y=-Math.atan2(dz,dx);wall.castShadow=true;wall.receiveShadow=true;g.add(wall);});
+  return g;}
+function makeLabelSprite(text){const pad=16,fs=44,c=document.createElement('canvas'),ctx=c.getContext('2d');ctx.font=`${fs}px Georgia,"Songti SC",serif`;const tw=ctx.measureText(text).width;c.width=Math.ceil(tw+pad*2);c.height=Math.ceil(fs+pad*2);ctx.font=`${fs}px Georgia,"Songti SC",serif`;ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillStyle='rgba(43,40,35,0.82)';ctx.fillText(text,c.width/2,c.height/2);const tex=new THREE.CanvasTexture(c);tex.anisotropy=4;const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));spr.sprite_tex=tex;const s=0.012;spr.scale.set(c.width*s,c.height*s,1);return spr;}
+function buildRoomLabels(){const g=new THREE.Group();DATA.rooms.forEach(r=>{if(!r||!r.name||!Array.isArray(r.rect))return;const [rx,ry,rw,rh]=r.rect.map(Number);if(![rx,ry,rw,rh].every(isFinite))return;const spr=makeLabelSprite(String(r.name));spr.position.set(rx+rw/2,SLAB_T+WALL_H+0.6,ry+rh/2);g.add(spr);});return g;}
+function rebuild(){disposeGroup(building);const tpl=buildFloor();for(let i=0;i<FLOORS;i++){const f=tpl.clone();f.position.y=i*FLOOR_GAP;building.add(f);}if(DATA.rooms.length)building.add(buildRoomLabels());applyMorph();}
+let morphValue=100;function applyMorph(){building.scale.y=Math.max(morphValue/100,0.0001);}
+const morphSlider=document.getElementById('morph'),morphLabel=document.getElementById('morphLabel'),floorVal=document.getElementById('floorVal'),fminus=document.getElementById('fminus'),fplus=document.getElementById('fplus');
+function updateMorphLabel(){morphLabel.textContent=morphValue<=1?'平面':'立体 '+morphValue+'%';}
+morphSlider.addEventListener('input',e=>{morphValue=+e.target.value;applyMorph();updateMorphLabel();});
+function updateFloorUI(){floorVal.textContent=FLOORS+' F';fminus.disabled=FLOORS<=MIN_FLOORS;fplus.disabled=FLOORS>=MAX_FLOORS;}
+fminus.addEventListener('click',()=>{if(FLOORS>MIN_FLOORS){FLOORS--;rebuild();updateFloorUI();}});
+fplus.addEventListener('click',()=>{if(FLOORS<MAX_FLOORS){FLOORS++;rebuild();updateFloorUI();}});
+rebuild();updateFloorUI();updateMorphLabel();
+controls.target.set(cx,FLOOR_GAP*FLOORS*0.45,cz);controls.update();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);})();
+</script></body></html>

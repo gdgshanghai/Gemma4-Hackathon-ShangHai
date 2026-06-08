@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="UTF-8">
+<title>Madori outro</title>
+<style>
+  :root{--paper:#efe9df;--ink:#2b2823;--soft:#6b655c;--red:#b34a26;--teal:#3a6b6e;
+    --serif:"Songti SC","Source Han Serif SC",Georgia,serif;--mono:"SF Mono",ui-monospace,Menlo,monospace;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1440px;height:900px;overflow:hidden;background:var(--paper);font-family:var(--serif);color:var(--ink);}
+  .wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 120px;}
+  .kicker{opacity:0;font-family:var(--mono);font-size:16px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:44px;animation:fin 1s ease forwards .4s;}
+  .claim{opacity:0;display:flex;align-items:flex-start;gap:22px;max-width:880px;width:100%;margin-bottom:30px;text-align:left;}
+  .claim .num{font-family:var(--mono);font-size:18px;color:var(--red);padding-top:6px;min-width:34px;}
+  .claim .t{font-size:30px;line-height:1.45;}
+  .claim .t b{font-weight:600;}
+  .claim .t span{color:var(--soft);font-size:24px;}
+  .c1{animation:fin 1s ease forwards 1.4s;}
+  .c2{animation:fin 1s ease forwards 3.2s;}
+  .c3{animation:fin 1s ease forwards 5s;}
+  .mission{opacity:0;margin-top:40px;font-size:26px;color:var(--ink);text-align:center;max-width:840px;line-height:1.5;animation:fin 1.2s ease forwards 7s;}
+  .mission .red{color:var(--red);}
+  @keyframes fin{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+</style></head>
+<body>
+  <div class="wrap">
+    <div class="kicker">三个技术决定 · 都是 Gemma 4</div>
+    <div class="claim c1"><div class="num">01</div><div class="t"><b>Gemma 4 多模态编排</b><br><span>理解归 LLM，计算归代码 — 抽取→锁定→多镜头，防漂移</span></div></div>
+    <div class="claim c2"><div class="num">02</div><div class="t"><b>本地隐私 + 云端精度，双轨</b><br><span>e4b 离线私密 ⟷ 31b 大模型，同一套编排</span></div></div>
+    <div class="claim c3"><div class="num">03</div><div class="t"><b>诚实分级：能算的算实，该标的标清</b><br><span>采光＝确定性几何计算；几何由代码锁定校验，不画一个骗你的精细模型</span></div></div>
+    <p class="mission">把建筑师的读图能力，<span class="red">免费、私密地交到每个人手里。</span></p>
+  </div>
+</body></html>

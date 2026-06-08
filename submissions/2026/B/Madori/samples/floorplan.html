@@ -1,0 +1,71 @@
+<!doctype html><meta charset="utf-8">
+<body style="margin:0;background:#fff">
+<!-- Ground truth (metres, origin top-left):
+ interior 9.0 x 7.0 | 寝室 [0,0,4,3.5] | 台所 [4,0,5,3.5] | 居間 [0,3.5,9,3.5]
+ entrance door bottom wall x4-5 | interior doors: 居間↔寝室, 居間↔台所 | windows top & sides -->
+<svg width="620" height="500" viewBox="0 0 620 500" xmlns="http://www.w3.org/2000/svg"
+     font-family="Helvetica,Arial,sans-serif">
+  <rect width="620" height="500" fill="#fff"/>
+  <!-- S=46px/m, origin (70,60) -->
+  <g transform="translate(70,60)">
+    <!-- faint grid -->
+    <g stroke="#eee" stroke-width="1">
+      <!-- 1m grid 9x7 -->
+      <line x1="0" y1="0" x2="0" y2="322"/><line x1="46" y1="0" x2="46" y2="322"/>
+      <line x1="92" y1="0" x2="92" y2="322"/><line x1="138" y1="0" x2="138" y2="322"/>
+      <line x1="184" y1="0" x2="184" y2="322"/><line x1="230" y1="0" x2="230" y2="322"/>
+      <line x1="276" y1="0" x2="276" y2="322"/><line x1="322" y1="0" x2="322" y2="322"/>
+      <line x1="368" y1="0" x2="368" y2="322"/><line x1="414" y1="0" x2="414" y2="322"/>
+      <line x1="0" y1="0" x2="414" y2="0"/><line x1="0" y1="46" x2="414" y2="46"/>
+      <line x1="0" y1="92" x2="414" y2="92"/><line x1="0" y1="138" x2="414" y2="138"/>
+      <line x1="0" y1="184" x2="414" y2="184"/><line x1="0" y1="230" x2="414" y2="230"/>
+      <line x1="0" y1="276" x2="414" y2="276"/><line x1="0" y1="322" x2="414" y2="322"/>
+    </g>
+    <!-- outer walls (thick), interior 9x7 = 414x322 -->
+    <g stroke="#111" stroke-width="7" fill="none" stroke-linecap="square">
+      <!-- top wall, with two window gaps -->
+      <line x1="0" y1="0" x2="60" y2="0"/><line x1="120" y1="0" x2="240" y2="0"/><line x1="300" y1="0" x2="414" y2="0"/>
+      <!-- right wall -->
+      <line x1="414" y1="0" x2="414" y2="120"/><line x1="414" y1="180" x2="414" y2="322"/>
+      <!-- bottom wall, with entrance door gap x4-5 (184-230) -->
+      <line x1="414" y1="322" x2="230" y2="322"/><line x1="184" y1="322" x2="0" y2="322"/>
+      <!-- left wall, with window gap -->
+      <line x1="0" y1="322" x2="0" y2="200"/><line x1="0" y1="140" x2="0" y2="0"/>
+    </g>
+    <!-- interior walls -->
+    <g stroke="#111" stroke-width="5" fill="none">
+      <!-- vertical wall x=4 (184), top band only y0->3.5(161) -->
+      <line x1="184" y1="0" x2="184" y2="161"/>
+      <!-- horizontal wall y=3.5 (161) full width, with 2 door gaps -->
+      <line x1="0" y1="161" x2="55" y2="161"/><line x1="105" y1="161" x2="270" y2="161"/><line x1="320" y1="161" x2="414" y2="161"/>
+    </g>
+    <!-- window marks (thin double lines in the gaps) -->
+    <g stroke="#111" stroke-width="1.5">
+      <line x1="60" y1="-3" x2="120" y2="-3"/><line x1="60" y1="3" x2="120" y2="3"/>
+      <line x1="240" y1="-3" x2="300" y2="-3"/><line x1="240" y1="3" x2="300" y2="3"/>
+      <line x1="-3" y1="140" x2="-3" y2="200"/><line x1="3" y1="140" x2="3" y2="200"/>
+      <line x1="411" y1="120" x2="411" y2="180"/><line x1="417" y1="120" x2="417" y2="180"/>
+    </g>
+    <!-- door swings (arcs) -->
+    <g stroke="#888" stroke-width="1.2" fill="none">
+      <path d="M55,161 A50,50 0 0,1 55,111"/>            <!-- 居間↔寝室 -->
+      <path d="M270,161 A50,50 0 0,0 270,111"/>          <!-- 居間↔台所 -->
+      <path d="M184,322 A46,46 0 0,1 230,322"/>          <!-- entrance -->
+    </g>
+    <!-- room labels -->
+    <g fill="#111" font-size="20" text-anchor="middle">
+      <text x="92" y="86">寝室</text>
+      <text x="299" y="86">台所</text>
+      <text x="207" y="250">居間 (LDK)</text>
+    </g>
+    <text x="207" y="312" font-size="11" fill="#666" text-anchor="middle">玄関 ENTRANCE</text>
+    <!-- dimensions -->
+    <g stroke="#c33" stroke-width="0.8" fill="#c33" font-size="13">
+      <line x1="0" y1="350" x2="414" y2="350"/><text x="207" y="368" text-anchor="middle">9000</text>
+      <line x1="-25" y1="0" x2="-25" y2="322"/><text x="-30" y="165" text-anchor="end">7000</text>
+      <text x="92" y="-12" text-anchor="middle">4000</text><text x="299" y="-12" text-anchor="middle">5000</text>
+    </g>
+  </g>
+</svg>
+</body>
+</html>

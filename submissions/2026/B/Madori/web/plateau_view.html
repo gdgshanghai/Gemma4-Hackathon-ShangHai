@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PLATEAU 真实白模 · Madori</title>
+<style>
+  :root{--paper:#efe9df;--ink:#2b2823;--soft:#6b655c;--card:rgba(250,247,241,.82);--line:rgba(70,64,56,.14);
+    --serif:"Songti SC",Georgia,serif;--mono:"SF Mono",ui-monospace,Menlo,monospace}
+  *{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:var(--paper)}
+  #app{position:fixed;inset:0}canvas{display:block}
+  .title{position:fixed;top:24px;left:26px;z-index:10;pointer-events:none}
+  .title h1{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--ink);margin:0}
+  .title .s{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-top:4px}
+  .info{position:fixed;left:26px;bottom:24px;z-index:10;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:13px 16px;backdrop-filter:blur(12px);font-family:var(--mono);font-size:11px;color:var(--ink);line-height:1.7;max-width:340px}
+  .info b{color:#b34a26}
+  .attr{position:fixed;right:14px;bottom:12px;z-index:10;font-family:var(--mono);font-size:10px;color:var(--soft)}
+  .hint{position:fixed;right:18px;top:24px;z-index:10;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--soft);opacity:.75}
+</style></head>
+<body>
+<div id="app"></div>
+<div class="title"><h1>PLATEAU 真实白模</h1><div class="s" id="src">city-gml footprint extrude · all-local</div></div>
+<div class="info" id="info">渲染中…</div>
+<div class="attr">3D都市モデル PLATEAU · 国土交通省 · CC BY 4.0</div>
+<div class="hint">拖拽旋转 · 滚轮缩放</div>
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const BUILDINGS = [{"pts": [[19.2, 3.58], [18.29, -3.63], [9.38, -2.5], [10.28, 4.72], [19.2, 3.58]], "height": 6.5}, {"pts": [[3.22, -11.21], [-0.82, -25.94], [-8.94, -23.69], [-4.56, -9.05], [3.22, -11.21]], "height": 6.9}, {"pts": [[-11.33, -7.25], [-14.04, -16.6], [-27.78, -12.58], [-26.25, -7.5], [-27.95, -7.0], [-26.03, -0.37], [-12.15, -4.43], [-12.84, -6.81], [-11.33, -7.25]], "height": 9.1}, {"pts": [[17.84, -5.58], [17.32, -11.48], [5.23, -10.39], [5.76, -4.51], [17.84, -5.58]], "height": 6.2}, {"pts": [[16.0, 35.96], [14.86, 33.28], [7.39, 36.5], [9.52, 41.49], [10.14, 41.22], [10.69, 42.48], [9.65, 42.92], [12.84, 50.41], [13.53, 50.11], [14.65, 52.73], [20.75, 50.12], [16.49, 40.15], [17.2, 39.85], [15.62, 36.12], [16.0, 35.96]], "height": 8.7}, {"pts": [[-2.94, -39.84], [-6.68, -52.27], [-15.01, -49.74], [-14.48, -47.97], [-15.64, -47.63], [-12.44, -36.95], [-2.94, -39.84]], "height": 9.4}, {"pts": [[13.9, 26.98], [12.53, 23.33], [3.69, 26.68], [5.07, 30.33], [13.9, 26.98]], "height": 7.7}, {"pts": [[5.84, -53.2], [4.92, -56.31], [1.33, -55.23], [1.64, -54.21], [-3.26, -52.72], [-0.36, -43.05], [-0.12, -43.13], [0.13, -42.3], [8.17, -44.73], [7.93, -45.55], [8.11, -45.61], [6.52, -50.93], [8.64, -51.57], [7.96, -53.84], [5.84, -53.2]], "height": 9.5}, {"pts": [[11.73, 20.74], [8.9, 13.36], [-0.35, 17.23], [2.23, 23.96], [8.13, 21.59], [8.37, 22.25], [11.73, 20.74]], "height": 7.0}, {"pts": [[8.79, 11.24], [5.18, -1.54], [-2.3, 0.58], [1.61, 14.49], [9.11, 12.37], [8.79, 11.24]], "height": 7.4}, {"pts": [[-1.0, -30.45], [-3.17, -37.92], [-11.81, -35.39], [-9.65, -27.91], [-1.0, -30.45]], "height": 7.4}, {"pts": [[9.35, 53.94], [6.61, 47.02], [-1.41, 50.21], [1.32, 57.14], [9.35, 53.94]], "height": 6.8}, {"pts": [[15.33, 31.81], [13.91, 28.24], [5.48, 31.6], [6.85, 35.16], [15.33, 31.81]], "height": 7.9}, {"pts": [[1.66, 37.84], [-1.1, 30.51], [-8.53, 33.31], [-7.56, 35.88], [-8.69, 36.32], [-6.91, 41.08], [1.66, 37.84]], "height": 9.7}, {"pts": [[-18.61, -40.15], [-20.38, -46.32], [-31.07, -43.24], [-27.3, -30.07], [-17.39, -32.93], [-19.39, -39.91], [-18.61, -40.15]], "height": 8.6}, {"pts": [[4.72, 46.2], [2.36, 40.4], [-5.17, 43.49], [-2.82, 49.28], [4.72, 46.2]], "height": 7.9}, {"pts": [[-13.63, -22.83], [-15.61, -30.09], [-27.34, -26.66], [-27.07, -21.55], [-26.36, -19.09], [-13.63, -22.83]], "height": 7.4}, {"pts": [[21.57, -34.24], [18.46, -44.36], [-0.84, -38.54], [-0.75, -37.23], [2.74, -24.24], [21.49, -30.31], [20.31, -34.18], [21.57, -34.24]], "height": 7.9}, {"pts": [[-3.26, 27.54], [-5.96, 20.82], [-14.62, 24.31], [-11.6, 30.91], [-3.26, 27.54]], "height": 8.7}, {"pts": [[-6.5, 12.99], [-9.85, 1.02], [-20.89, 4.12], [-17.54, 16.12], [-18.12, 16.28], [-16.88, 20.71], [-7.01, 17.93], [-8.25, 13.47], [-6.5, 12.99]], "height": 9.2}];   // [{pts:[[x,z],...], height}]  (metres, local origin)
+const META = {"mesh": "53393496", "count": 20};             // {mesh, count, area}
+
+// ---- bounds ----
+let minX=1e9,maxX=-1e9,minZ=1e9,maxZ=-1e9;
+BUILDINGS.forEach(b=>b.pts.forEach(([x,z])=>{minX=Math.min(minX,x);maxX=Math.max(maxX,x);minZ=Math.min(minZ,z);maxZ=Math.max(maxZ,z);}));
+const cx=(minX+maxX)/2, cz=(minZ+maxZ)/2, span=Math.max(maxX-minX,maxZ-minZ,30);
+
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0xefe9df);
+scene.fog=new THREE.Fog(0xefe9df, span*1.6, span*5);
+const cam=new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.5, span*20);
+cam.position.set(cx+span*0.7, span*0.75, cz+span*0.95);
+const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping; document.getElementById('app').appendChild(renderer.domElement);
+const controls=new THREE.OrbitControls(cam,renderer.domElement); controls.enableDamping=true; controls.dampingFactor=.07;
+controls.target.set(cx, span*0.04, cz); controls.maxPolarAngle=Math.PI*0.495;
+
+scene.add(new THREE.HemisphereLight(0xffffff,0xddd5c6,.66));
+const key=new THREE.DirectionalLight(0xfff4e6,1.05); key.position.set(cx+span,span*1.5,cz-span*0.4);
+key.castShadow=true; key.shadow.mapSize.set(2048,2048); const sd=span*0.9;
+key.shadow.camera.left=-sd;key.shadow.camera.right=sd;key.shadow.camera.top=sd;key.shadow.camera.bottom=-sd;key.shadow.camera.far=span*6;key.shadow.bias=-0.0003;key.shadow.radius=4;
+scene.add(key);
+const fill2=new THREE.DirectionalLight(0xeaf0ff,.26); fill2.position.set(cx-span,span*0.7,cz+span); scene.add(fill2);
+scene.add(new THREE.AmbientLight(0xffffff,.2));
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(span*10,span*10),new THREE.MeshStandardMaterial({color:0xe7e0d4,roughness:.98}));
+ground.rotation.x=-Math.PI/2; ground.position.set(cx,-0.02,cz); ground.receiveShadow=true; scene.add(ground);
+const grid=new THREE.GridHelper(span*8, Math.round(span*8/10), 0xcfc6b6,0xddd5c7); grid.position.set(cx,0,cz);
+grid.material.transparent=true; grid.material.opacity=.16; scene.add(grid);
+
+const wallMat=new THREE.MeshStandardMaterial({color:0xf3efe8,roughness:.88,metalness:0});
+let drawn=0;
+for(const b of BUILDINGS){
+  if(b.pts.length<3) continue;
+  const shape=new THREE.Shape();
+  b.pts.forEach(([x,z],i)=> i? shape.lineTo(x,z): shape.moveTo(x,z));
+  const geo=new THREE.ExtrudeGeometry(shape,{depth:Math.max(b.height,2),bevelEnabled:false,steps:1});
+  geo.rotateX(-Math.PI/2);                 // footprint(XY)→ground(XZ), extrude→up(Y)
+  const m=new THREE.Mesh(geo,wallMat); m.castShadow=m.receiveShadow=true; scene.add(m); drawn++;
+}
+document.getElementById('info').innerHTML =
+  `<b>${META.mesh||'PLATEAU'}</b> · 真实建筑 <b>${drawn}</b> 栋<br>`+
+  `从 CityGML 的 footprint + 高度挤出 · <b>全本地</b>，断网可渲<br>`+
+  `<span style="color:var(--soft)">国交省开放数据 · 无 key 无云</span>`;
+window.__drawn = drawn;
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+(function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,cam);})();
+</script></body></html>

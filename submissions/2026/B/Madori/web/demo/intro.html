@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="UTF-8">
+<title>Madori intro</title>
+<style>
+  :root{--paper:#efe9df;--ink:#2b2823;--soft:#6b655c;--red:#b34a26;
+    --serif:"Songti SC","Source Han Serif SC",Georgia,serif;--mono:"SF Mono",ui-monospace,Menlo,monospace;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1440px;height:900px;overflow:hidden;background:var(--paper);font-family:var(--serif);color:var(--ink);}
+  .stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 120px;}
+  .line{opacity:0;font-size:38px;line-height:1.6;color:var(--soft);max-width:1000px;}
+  .line.l2{margin-top:34px;color:var(--ink);font-size:40px;}
+  .l1{animation:fin 1.1s ease forwards .8s;}
+  .l2{animation:fin 1.1s ease forwards 3.9s;}
+  #problem{animation:fout 1s ease forwards 7.2s;}
+  #brand{opacity:0;animation:fin 1.3s ease forwards 8s;}
+  #brand .kicker{font-family:var(--mono);font-size:17px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:30px;}
+  #brand h1{font-size:62px;font-weight:600;line-height:1.28;letter-spacing:.01em;}
+  #brand .red{color:var(--red);}
+  #brand .sub{margin-top:30px;font-size:24px;color:var(--soft);}
+  @keyframes fin{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes fout{to{opacity:0;}}
+</style></head>
+<body>
+  <div class="stage" id="problem">
+    <p class="line l1">普通人看一张户型图，<br>只看得懂「几室几厅」。</p>
+    <p class="line l2">图上写着什么、缺了什么、哪里有坑——<br>看不出来。</p>
+  </div>
+  <div class="stage" id="brand">
+    <div class="kicker">户型解读 · Madori</div>
+    <h1>把建筑师的读图能力，<br><span class="red">降维成普通人一眼看懂。</span></h1>
+    <p class="sub">一张图 → 3D 白模 + 四个专业视图</p>
+  </div>
+</body></html>

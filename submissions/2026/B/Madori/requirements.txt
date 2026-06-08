@@ -1,0 +1,16 @@
+# Madori — Python dependencies
+#
+# Inference is via the local Ollama HTTP API (and optionally the Google AI
+# Studio API for the larger Gemma 4 path) — both called through the standard
+# library `urllib`, so no model SDK is required here.
+#
+# The only third-party dependency is Pillow, used to read EXIF GPS from a
+# building photo in pipeline/locate.py (leg B).
+
+Pillow>=10.0
+
+# --- runtime (not pip) ---
+# Ollama        : https://ollama.com  (local Gemma 4 inference)
+#   ollama pull gemma4:e4b            # local privacy path (multimodal, edge)
+#   ollama pull gemma4:26b            # local high-accuracy path (optional)
+# Node + puppeteer-core (dev only)    : visual regression in pipeline/visual_regression.mjs

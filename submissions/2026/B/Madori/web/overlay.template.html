@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>户型解读 · 镜头空间叠加 (mockup)</title>
+<style>
+  :root{--paper:#efe9df;--ink:#2b2823;--soft:#6b655c;--hair:rgba(70,64,56,0.16);
+    --card:rgba(250,247,241,0.88);--serif:"Songti SC",Georgia,serif;--mono:"SF Mono",ui-monospace,Menlo,monospace;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);}
+  #app{position:fixed;inset:0;}canvas{display:block;}
+  .title{position:fixed;top:24px;left:28px;z-index:10;pointer-events:none;}
+  .title h1{font-family:var(--serif);font-weight:600;font-size:20px;margin:0 0 3px;}
+  .title .sub{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0;}
+  .tag{position:fixed;top:24px;right:28px;z-index:10;font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);border:1px solid var(--hair);border-radius:20px;padding:5px 12px;background:var(--card);}
+  .bar{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);z-index:10;display:flex;gap:8px;
+    background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--hair);border-radius:30px;padding:7px 8px;box-shadow:0 10px 34px rgba(60,52,40,.12);}
+  .bar button{font-family:var(--serif);font-size:.86rem;border:none;background:transparent;color:#5a5046;padding:7px 16px;border-radius:22px;cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:7px;}
+  .bar button .d{width:8px;height:8px;border-radius:50%;}
+  .bar button:hover{background:rgba(0,0,0,.04);}
+  .bar button.on{color:#fff;}
+  .read{position:fixed;left:28px;bottom:96px;z-index:10;max-width:340px;font-family:var(--serif);font-size:.9rem;line-height:1.7;
+    background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--hair);border-radius:12px;padding:14px 16px;box-shadow:0 8px 28px rgba(60,52,40,.1);display:none;}
+  .read .lab{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+  .read .ti{font-weight:600;}
+  .hint{position:fixed;right:28px;bottom:34px;z-index:10;font-family:var(--mono);font-size:10px;color:var(--soft);opacity:.7;pointer-events:none;}
+</style></head>
+<body>
+<div id="app"></div>
+<div class="title"><h1>镜头空间叠加</h1><p class="sub">lens overlays · mockup</p></div>
+<div class="tag">#2 效果预览</div>
+<div class="bar" id="bar"></div>
+<div class="read" id="read"></div>
+<div class="hint">拖拽旋转 · 点按钮切换镜头</div>
+
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const M=__DATA_JSON__;
+function norm(b){b=b||{};let W=9,H=7;if(Array.isArray(b.dims)){W=+b.dims[0]||W;H=+b.dims[1]||H;}
+  let walls=Array.isArray(b.walls)?b.walls.filter(w=>Array.isArray(w)&&w.length>=4):[[0,0,W,0],[W,0,W,H],[W,H,0,H],[0,H,0,0]];
+  let rooms=Array.isArray(b.rooms)?b.rooms.filter(r=>r&&Array.isArray(r.rect)):[];return{dims:[W,H],walls,rooms,lenses:b.lenses||{}};}
+const D=norm(M),[W,H]=D.dims;
+const WALL_H=3.0,WALL_T=0.2,SLAB_T=0.28;
+const cx=W/2,cz=H/2,frame=Math.max(W,H,6);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;document.getElementById('app').appendChild(renderer.domElement);
+const scene=new THREE.Scene();const BG=new THREE.Color(0xefe9df);scene.background=BG;scene.fog=new THREE.Fog(BG,frame*2.6,frame*9);
+const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,0.1,5000);camera.position.set(cx+frame*0.55,frame*1.95+WALL_H,cz+frame*1.05);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=0.06;controls.minDistance=frame*0.5;controls.maxDistance=frame*6;controls.maxPolarAngle=Math.PI*0.495;controls.target.set(cx,WALL_H*0.35,cz);
+scene.add(new THREE.HemisphereLight(0xffffff,0xddd5c6,0.6));
+const key=new THREE.DirectionalLight(0xfff6ea,1.0);key.position.set(frame*0.9,frame*1.5,frame*0.7);key.castShadow=true;key.shadow.mapSize.set(2048,2048);const sd=frame*1.8;key.shadow.camera.left=-sd;key.shadow.camera.right=sd;key.shadow.camera.top=sd;key.shadow.camera.bottom=-sd;key.shadow.camera.far=frame*8;key.shadow.bias=-0.0004;key.shadow.radius=4;scene.add(key);
+scene.add(new THREE.AmbientLight(0xffffff,0.2));
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(W*14,H*14),new THREE.MeshStandardMaterial({color:0xe7e0d4,roughness:0.97}));ground.rotation.x=-Math.PI/2;ground.position.set(cx,0,cz);ground.receiveShadow=true;scene.add(ground);
+const wallMat=new THREE.MeshStandardMaterial({color:0xf3efe8,roughness:0.85,transparent:true,opacity:0.42});
+const slabMat=new THREE.MeshStandardMaterial({color:0xe6dfd2,roughness:0.9});
+const slab=new THREE.Mesh(new THREE.BoxGeometry(W,SLAB_T,H),slabMat);slab.position.set(cx,SLAB_T/2,cz);slab.receiveShadow=true;scene.add(slab);
+D.walls.forEach(([x1,z1,x2,z2])=>{const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz);if(len<1e-4)return;const wm=new THREE.Mesh(new THREE.BoxGeometry(len+WALL_T,WALL_H,WALL_T),wallMat);wm.position.set((x1+x2)/2,SLAB_T+WALL_H/2,(z1+z2)/2);wm.rotation.y=-Math.atan2(dz,dx);wm.castShadow=true;wm.receiveShadow=true;scene.add(wm);});
+// room volumes for tinting
+const roomBox={};D.rooms.forEach(r=>{const[rx,ry,rw,rh]=r.rect.map(Number);if(![rx,ry,rw,rh].every(isFinite))return;const m=new THREE.Mesh(new THREE.BoxGeometry(rw,WALL_H,rh),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:0,roughness:0.7,emissive:0x000000}));m.position.set(rx+rw/2,SLAB_T+WALL_H/2,ry+rh/2);scene.add(m);roomBox[r.name]={m,c:[rx+rw/2,ry+rh/2]};});
+function label(text,color,sz){const fs=46,pad=18,c=document.createElement('canvas'),ctx=c.getContext('2d');ctx.font=`${fs}px Georgia,"Songti SC",serif`;const tw=ctx.measureText(text).width;c.width=Math.ceil(tw+pad*2);c.height=Math.ceil(fs+pad*2);ctx.font=`${fs}px Georgia,"Songti SC",serif`;ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillStyle=color||'rgba(43,40,35,.8)';ctx.fillText(text,c.width/2,c.height/2);const tex=new THREE.CanvasTexture(c);tex.anisotropy=4;const s=(sz||0.013);const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false,depthTest:false}));spr.scale.set(c.width*s,c.height*s,1);return spr;}
+
+// ---------- overlays ----------
+const overlay=new THREE.Group();scene.add(overlay);
+let anim=null;
+function clearOverlay(){while(overlay.children.length)overlay.remove(overlay.children[0]);Object.values(roomBox).forEach(o=>{o.m.material.opacity=0;o.m.material.emissive.setHex(0x000000);o.m.material.color.setHex(0xffffff);});anim=null;document.getElementById('read').style.display='none';}
+const ENTRY=[cx,H+0.3];           // 玄关 at south edge (image bottom = +z)
+function nearestOrder(){const pts=D.rooms.map(r=>roomBox[r.name].c);const order=[];const used=new Set();let cur=ENTRY;while(order.length<pts.length){let bi=-1,bd=1e9;pts.forEach((p,i)=>{if(used.has(i))return;const d=Math.hypot(p[0]-cur[0],p[1]-cur[1]);if(d<bd){bd=d;bi=i;}});if(bi<0)break;used.add(bi);order.push(D.rooms[bi].name);cur=pts[bi];}return order;}
+
+function showCirculation(){const order=nearestOrder();const path=[new THREE.Vector3(ENTRY[0],SLAB_T+0.05,ENTRY[1])];order.forEach(n=>{const c=roomBox[n].c;path.push(new THREE.Vector3(c[0],SLAB_T+0.05,c[1]));});
+  const curve=new THREE.CatmullRomCurve3(path);const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,120,0.09,8,false),new THREE.MeshBasicMaterial({color:0xb34a26}));overlay.add(tube);
+  // entrance marker
+  const em=new THREE.Mesh(new THREE.CircleGeometry(0.4,28),new THREE.MeshBasicMaterial({color:0xb34a26}));em.rotation.x=-Math.PI/2;em.position.set(ENTRY[0],SLAB_T+0.02,ENTRY[1]);overlay.add(em);overlay.add((()=>{const s=label('玄关',' rgba(179,74,38,.95)',0.012);s.position.set(ENTRY[0],SLAB_T+0.9,ENTRY[1]);return s;})());
+  // moving dot
+  const dot=new THREE.Mesh(new THREE.SphereGeometry(0.22,16,16),new THREE.MeshBasicMaterial({color:0x7a2e12}));overlay.add(dot);
+  order.forEach((n,i)=>{const c=roomBox[n].c;const s=label((i+1)+'',' rgba(255,255,255,.95)',0.014);s.position.set(c[0],SLAB_T+WALL_H+0.5,c[1]);const ring=new THREE.Mesh(new THREE.CircleGeometry(0.5,24),new THREE.MeshBasicMaterial({color:0xb34a26,transparent:true,opacity:.85}));ring.rotation.x=-Math.PI/2;ring.position.set(c[0],SLAB_T+0.03,c[1]);overlay.add(ring);overlay.add(s);});
+  anim=t=>{const u=(t*0.12)%1;const p=curve.getPointAt(u);dot.position.copy(p);};
+  showRead('动线','circulation',D.lenses['动线']);}
+
+function showDaylight(){
+  // sun in the south (image bottom = +z), high
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(0.7,24,24),new THREE.MeshBasicMaterial({color:0xffcf6b}));sun.position.set(cx,WALL_H*2.6,H+frame*0.9);overlay.add(sun);
+  const halo=new THREE.Mesh(new THREE.SphereGeometry(1.1,24,24),new THREE.MeshBasicMaterial({color:0xffcf6b,transparent:true,opacity:.18}));halo.position.copy(sun.position);overlay.add(halo);
+  overlay.add((()=>{const s=label('☀ 南 SOUTH',' rgba(168,132,47,.95)',0.012);s.position.set(cx,WALL_H*2.6+1.2,H+frame*0.9);return s;})());
+  // sun rays
+  D.rooms.forEach(r=>{const c=roomBox[r.name].c;const g=new THREE.BufferGeometry().setFromPoints([sun.position,new THREE.Vector3(c[0],SLAB_T+WALL_H*0.5,c[1])]);overlay.add(new THREE.Line(g,new THREE.LineBasicMaterial({color:0xf2c873,transparent:true,opacity:.32})));});
+  // tint rooms by orientation: nearer south edge (bigger z) = more sun
+  const zs=D.rooms.map(r=>roomBox[r.name].c[1]);const zmin=Math.min(...zs),zmax=Math.max(...zs)||1;
+  D.rooms.forEach(r=>{const z=roomBox[r.name].c[1];const lit=(z-zmin)/((zmax-zmin)||1);const o=roomBox[r.name];o.m.material.color.setHex(0xffe2a8);o.m.material.opacity=0.12+lit*0.4;o.m.material.emissive.setHex(lit>0.5?0x3a2a00:0x000000);
+    const s=label(lit>0.55?'採光好':(lit<0.3?'採光弱':'一般'),lit>0.55?' rgba(168,120,20,.95)':' rgba(110,100,80,.85)',0.011);s.position.set(o.c[0],SLAB_T+WALL_H+0.55,o.c[1]);overlay.add(s);});
+  showRead('采光','daylight',D.lenses['采光'],'※ 户型图未标真实朝向，此为示意。接腿 B 真实坐标 → 朝向可算（确定性）。');}
+
+function showCritique(){const lr=(D.lenses['批评']&&D.lenses['批评'].rooms)||[];const target=lr[lr.length-1]||D.rooms[D.rooms.length-1]&&D.rooms[D.rooms.length-1].name;
+  const spot=target&&roomBox[target]?roomBox[target].c:[ENTRY[0],H-1];
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(0.9,0.08,16,40),new THREE.MeshBasicMaterial({color:0xc0392b}));ring.rotation.x=-Math.PI/2;ring.position.set(spot[0],SLAB_T+0.06,spot[1]);overlay.add(ring);
+  const bang=label('!','rgba(192,57,43,.95)',0.02);bang.position.set(spot[0],SLAB_T+WALL_H+0.7,spot[1]);overlay.add(bang);
+  roomBox[target]&&(roomBox[target].m.material.color.setHex(0xc0392b),roomBox[target].m.material.opacity=0.18,roomBox[target].m.material.emissive.setHex(0x3a0a06));
+  anim=t=>{const s=1+Math.sin(t*3)*0.12;ring.scale.set(s,s,s);ring.material.opacity=0.6+0.4*Math.abs(Math.sin(t*3));ring.material.transparent=true;};
+  showRead('批评','critique',D.lenses['批评']);}
+
+function showRead(k,en,v,extra){const r=document.getElementById('read');if(!v){r.style.display='none';return;}r.style.display='block';const col={动线:'#b34a26',采光:'#a8842f',批评:'#c0392b'}[k]||'#b34a26';
+  r.innerHTML=`<div class="lab" style="color:${col}">${k} · ${en}</div><div class="ti">${v.title||''}</div><div style="margin-top:6px;color:#2a241d">${(v.body||'').replace(/</g,'&lt;')}</div>`+(extra?`<div style="font-family:var(--mono);font-size:.56rem;color:var(--soft);margin-top:9px">${extra}</div>`:'');}
+
+// ---------- toggle bar ----------
+const MODES=[{k:'动线',c:'#b34a26',fn:showCirculation},{k:'采光',c:'#a8842f',fn:showDaylight},{k:'批评',c:'#c0392b',fn:showCritique}];
+const bar=document.getElementById('bar');let active=null;
+MODES.forEach(m=>{const b=document.createElement('button');b.innerHTML=`<span class="d" style="background:${m.c}"></span>${m.k}`;
+  b.onclick=()=>{clearOverlay();if(active===m.k){active=null;sync();return;}active=m.k;b.style.background=m.c;m.fn();sync();};bar.appendChild(b);});
+const clr=document.createElement('button');clr.textContent='清除';clr.onclick=()=>{clearOverlay();active=null;sync();};bar.appendChild(clr);
+function sync(){[...bar.children].forEach((b,i)=>{if(i<MODES.length){const on=MODES[i].k===active;b.classList.toggle('on',on);b.style.background=on?MODES[i].c:'transparent';}});}
+
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+const clock=new THREE.Clock();
+(function loop(){requestAnimationFrame(loop);const t=clock.getElapsedTime();if(anim)anim(t);controls.update();renderer.render(scene,camera);})();
+// default: show circulation
+MODES[0].fn();active='动线';sync();
+</script></body></html>

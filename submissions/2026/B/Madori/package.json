@@ -1,0 +1,16 @@
+{
+  "name": "madori",
+  "version": "1.0.0",
+  "description": "> 把一张冷冰冰的户型图，变成一位建筑师坐在你身边、用大白话给你讲这个家——全程本地运行，私密、免费。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "playwright": "^1.60.0",
+    "puppeteer-core": "^25.1.0"
+  }
+}

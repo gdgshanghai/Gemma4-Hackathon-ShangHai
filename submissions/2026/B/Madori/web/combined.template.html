@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>户型解读 · Madori</title>
+<style>
+  :root{
+    --paper:#efe9df; --ink:#2b2823; --soft:#6b655c; --hair:rgba(70,64,56,0.16);
+    --card:rgba(250,247,241,0.86); --accent:#b34a26;
+    --serif:"Songti SC","Source Han Serif SC",Georgia,serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);}
+  #app{position:fixed;inset:0;} canvas{display:block;}
+  .title{position:fixed;top:24px;left:28px;z-index:10;pointer-events:none;user-select:none;}
+  .title h1{font-family:var(--serif);font-weight:600;font-size:20px;letter-spacing:.03em;margin:0 0 3px;}
+  .title .sub{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0;}
+
+  /* reading panel */
+  .read{position:fixed;top:0;right:0;height:100%;width:392px;z-index:9;
+    background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border-left:1px solid var(--hair);box-shadow:-12px 0 40px rgba(60,52,40,.08);
+    display:flex;flex-direction:column;}
+  .read .scroll{overflow-y:auto;padding:24px 26px 30px;}
+  .plan{border:1px solid var(--hair);background:#fff;border-radius:9px;overflow:hidden;margin-bottom:20px;cursor:zoom-in;transition:box-shadow .16s;}
+  .plan:hover{box-shadow:0 6px 20px rgba(60,52,40,.12);}
+  .plan img{width:100%;display:block;}
+  .plan .cap{font-family:var(--mono);font-size:.54rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);padding:6px 10px;border-top:1px solid var(--hair);}
+  #lightbox{position:fixed;inset:0;z-index:50;background:rgba(30,26,22,.82);display:none;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+  #lightbox img{max-width:88vw;max-height:88vh;background:#fff;border-radius:4px;box-shadow:0 24px 64px rgba(0,0,0,.45);}
+  .read .kdr{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin:0 0 7px;}
+  .read h2{font-family:var(--serif);font-size:1.28rem;font-weight:600;margin:0 0 14px;line-height:1.35;}
+  .struct{font-family:var(--mono);font-size:.66rem;color:var(--soft);margin-bottom:6px;letter-spacing:.04em;}
+  .struct b{color:var(--accent);}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 4px;}
+  .chip{font-family:var(--serif);font-size:.8rem;padding:4px 11px;border:1px solid var(--hair);border-radius:20px;
+    background:rgba(255,255,255,.45);cursor:pointer;transition:all .16s;color:#43392f;white-space:nowrap;}
+  .chip:hover,.chip.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .hintline{font-family:var(--mono);font-size:.55rem;color:var(--soft);letter-spacing:.06em;margin:8px 0 18px;opacity:.8;}
+  .lens{border-top:1px solid var(--hair);padding:13px 0;cursor:pointer;transition:background .16s;border-radius:6px;}
+  .lens:hover{background:rgba(179,74,38,.05);}
+  .lens.on{background:rgba(179,74,38,.09);}
+  .lens .lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:8px;}
+  .lens .dot{width:7px;height:7px;border-radius:50%;flex:none;}
+  .lens .ti{color:var(--ink);font-family:var(--serif);font-size:.9rem;text-transform:none;letter-spacing:0;}
+  .lens .rmtag{margin-left:auto;font-family:var(--mono);font-size:.52rem;color:var(--soft);text-transform:none;letter-spacing:.02em;}
+  .lens p{margin:0;font-size:.9rem;line-height:1.72;color:#2a241d;}
+  .note{font-family:var(--mono);font-size:.56rem;line-height:1.7;color:var(--soft);border-top:1px dashed var(--hair);margin-top:20px;padding-top:12px;}
+  .hint{position:fixed;left:28px;bottom:22px;z-index:10;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--soft);opacity:.7;pointer-events:none;}
+  .geowarn{position:fixed;top:70px;left:28px;z-index:11;display:none;max-width:330px;font-family:var(--mono);font-size:10.5px;line-height:1.55;letter-spacing:.02em;color:#9a5a2a;background:rgba(255,243,230,.9);border:1px solid rgba(179,100,40,.32);border-radius:9px;padding:8px 12px;box-shadow:0 4px 16px rgba(150,90,40,.1);}
+  .geowarn b{color:#7a3f12;}
+  .modebar{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:12;display:flex;gap:6px;background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--hair);border-radius:24px;padding:5px 6px;box-shadow:0 8px 26px rgba(60,52,40,.12);}
+  .modebar button{font-family:var(--serif);font-size:.84rem;border:none;background:transparent;color:#5a5046;padding:7px 17px;border-radius:20px;cursor:pointer;transition:all .15s;}
+  .modebar button.on{background:var(--ink);color:#fbfaf6;}
+  .compass{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:12;display:none;align-items:center;gap:5px;background:var(--card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--hair);border-radius:18px;padding:5px 11px;box-shadow:0 6px 20px rgba(60,52,40,.1);}
+  .compass .clbl{font-family:var(--mono);font-size:.6rem;color:var(--soft);letter-spacing:.08em;margin-right:3px;}
+  .cbtn{width:26px;height:26px;border:1px solid var(--hair);background:rgba(255,255,255,.5);border-radius:7px;cursor:pointer;font-size:13px;color:var(--ink);display:flex;align-items:center;justify-content:center;}
+  .cbtn.on{background:#a8842f;color:#fff;border-color:#a8842f;}
+  .legend{position:fixed;left:28px;top:116px;z-index:11;display:none;background:var(--card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--hair);border-radius:10px;padding:10px 13px;box-shadow:0 6px 20px rgba(60,52,40,.1);font-family:var(--mono);font-size:10px;color:var(--ink);line-height:1.95;}
+  .legend .lg-t{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-bottom:5px;}
+  .legend .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:1px solid rgba(0,0,0,.08);}
+  .calib{display:flex;align-items:center;gap:8px;margin:9px 0 2px;font-family:var(--mono);font-size:.6rem;color:var(--soft);letter-spacing:.04em;}
+  .calib input{width:74px;font-family:var(--mono);font-size:.72rem;padding:3px 7px;border:1px solid var(--hair);border-radius:6px;background:rgba(255,255,255,.6);color:var(--ink);outline:none;}
+  .calib input:focus{border-color:#3a6b6e;}
+  /* panel refinement */
+  .read .scroll::-webkit-scrollbar{width:7px;}
+  .read .scroll::-webkit-scrollbar-thumb{background:rgba(120,108,90,.25);border-radius:4px;}
+  .read .scroll::-webkit-scrollbar-track{background:transparent;}
+  .read .kdr{letter-spacing:.22em;}
+  .read h2{font-size:1.38rem;letter-spacing:.01em;margin:2px 0 16px;}
+  .lens{padding:14px 0 14px 13px;border-radius:0 7px 7px 0;}
+  .lens:hover{background:rgba(179,74,38,.055);}
+  .lens.on{background:rgba(179,74,38,.085);}
+  .lens .lab{margin-bottom:6px;}
+  .lens p{line-height:1.78;color:#38302a;}
+  /* precision-honesty disclaimer */
+  .disclaimer{position:fixed;top:80px;left:28px;z-index:10;font-family:var(--mono);font-size:9.5px;letter-spacing:.03em;line-height:1.55;color:#9a7a4a;background:rgba(255,248,238,.74);border:1px solid rgba(180,140,70,.26);border-radius:6px;padding:4px 10px;max-width:312px;pointer-events:none;}
+  .disclaimer b{color:#7a5a24;}
+  /* mobile: panel becomes a bottom sheet, 3D stays visible on top */
+  @media(max-width:820px){
+    .title{background:rgba(239,233,223,.72);padding:5px 9px;border-radius:7px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+    .title h1{font-size:15px;} .title .sub{font-size:9px;}
+    .disclaimer{top:70px;font-size:8.5px;max-width:64vw;}
+    .read{top:auto;bottom:0;left:0;width:100%;height:46%;border-left:none;border-top:1px solid var(--hair);box-shadow:0 -10px 28px rgba(60,52,40,.12);}
+    .read .scroll{padding:14px 18px 86px;}
+    .modebar{bottom:auto;top:calc(54% - 48px);}
+    .modebar button{padding:6px 12px;font-size:.78rem;white-space:nowrap;}
+    .compass{bottom:auto;top:calc(54% - 92px);}
+    .legend{top:62px;left:12px;font-size:9px;}
+    .morph{bottom:auto;top:calc(54% - 132px);width:158px;}
+    .geowarn{max-width:64vw;}
+    .hint{display:none;}
+  }
+  .morph{position:fixed;left:28px;bottom:48px;z-index:10;width:230px;}
+  .morph .row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);}
+  .morph .row .v{color:var(--ink);}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;margin:11px 0 0;background:var(--hair);border-radius:2px;outline:none;cursor:pointer;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:#fbfaf6;border:1.5px solid var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.18);cursor:pointer;}
+  @media(max-width:820px){.read{width:300px;}}
+</style></head>
+<body>
+<div id="app"></div>
+<div class="title"><h1>户型解读 · Madori</h1><p class="sub">study model × gemma reading</p></div>
+<div class="disclaimer">⚠ 3D 为 <b>体量示意</b>，非源图精确还原 · 布局/采光为 AI 估算，<b>判断以右侧源图为准</b></div>
+
+<div class="morph">
+  <div class="row"><span>平面 ⟷ 立体</span><span class="v" id="morphLabel">立体 100%</span></div>
+  <input type="range" id="morph" min="0" max="100" value="100">
+</div>
+<div class="hint">拖拽旋转 · 滚轮缩放 · 点房间/镜头联动</div>
+<div class="geowarn" id="geowarn"><b>⚠ 几何为估算</b> · 这张图标注密集/有畸变，房间精确位置未能定位，仅显示外框体量。<b>房间识别与多维解读不受影响。</b></div>
+<div class="modebar"><button id="tabRead" class="on">📖 解读</button><button id="tabDay">☀ 采光</button><button id="tabCirc">🚶 动线</button><button id="tabA11y">♿ 无障碍</button></div>
+<div class="compass" id="compass"><span class="clbl">北朝</span><button class="cbtn on" data-dir="up">↑</button><button class="cbtn" data-dir="right">→</button><button class="cbtn" data-dir="down">↓</button><button class="cbtn" data-dir="left">←</button></div>
+<div class="legend" id="legend"></div>
+
+<div id="lightbox"><img id="lbImg" alt="floor plan large"></div>
+<div class="read"><div class="scroll">
+  <div class="plan" id="planCard"><img id="planImg" src="data:image/png;base64,__IMG_B64__" alt="floor plan"><div class="cap">floorplan · 源平面图（点击放大）· 读你自己的图：plan_read.py 你的图.png</div></div>
+  <div class="kdr">reading · 多维度解读</div>
+  <h2 id="headline">一张图，几位专家的眼睛</h2>
+  <div class="struct" id="struct"></div>
+  <div class="calib"><span>实用面积校准</span><input id="areaIn" type="number" placeholder="㎡" min="1" step="0.1"><span id="calibState"></span></div>
+  <div class="chips" id="chips"></div>
+  <div class="hintline">↑ 悬停房间 = 模型里点亮它 ·  点下方镜头 = 高亮它讲到的房间</div>
+  <div id="lenses"></div>
+  <div class="note">⚠ 全本地 Gemma 4 · extract→lock→5 镜头共用一套房间名(防漂移) · 图上没标的(朝向/门宽)说"未知"不编 · 设计通识级,非合规认证。</div>
+</div></div>
+
+<script src="vendor/three@0.128.0/three.min.js"></script>
+<script src="vendor/three@0.128.0/controls/OrbitControls.js"></script>
+<script>
+const M = __DATA_JSON__;
+const LC={"动线":"#b34a26","采光":"#a8842f","无障碍":"#3a6b6e","走读":"#7a5a8a","批评":"#6f7d4a"};
+const EN={"动线":"circulation","采光":"daylight","无障碍":"accessibility","走读":"walkthrough","批评":"critique"};
+
+// ---- normalize ----
+function norm(b){b=b||{};let W=9,H=7;if(Array.isArray(b.dims)&&b.dims.length>=2){W=+b.dims[0]||W;H=+b.dims[1]||H;}
+  let walls=Array.isArray(b.walls)?b.walls.filter(w=>Array.isArray(w)&&w.length>=4):[];
+  if(!walls.length)walls=[[0,0,W,0],[W,0,W,H],[W,H,0,H],[0,H,0,0]];
+  let rooms=Array.isArray(b.rooms)?b.rooms.filter(r=>r&&Array.isArray(r.rect)&&r.rect.length>=4):[];
+  return {dims:[W,H],walls,rooms,lenses:b.lenses||{},geom:b.geom||{level:'high',coverage:1},openings:Array.isArray(b.openings)?b.openings:[],balcony:(b.balcony&&isFinite(b.balcony.w))?b.balcony:null};}
+const D=norm(M),[W,H]=D.dims;
+const lowConf = D.geom && D.geom.level==='low';   // messy/unreliable parse → degrade massing
+
+// ---- lens -> which rooms it mentions (heuristic: room name + JP↔CN synonyms) ----
+// Gemma's lens prose often reverts to generic CN words (客厅/卧室) even though the
+// locked context uses JP names (居間/寝室). Map them so highlighting still links up.
+const SYN={"寝室":["卧室","主卧","睡房","寝","bedroom"],"台所":["厨房","灶","kitchen"],
+  "居間":["客厅","起居","居间","ldk","living","餐厅","客餐厅"],"玄関":["玄关","门口","入口","entrance"],
+  "浴室":["卫浴","浴","bath"],"洗面":["盥洗","洗手"],"便所":["厕所","卫生间","toilet"],
+  "和室":["榻榻米","和","tatami"],"洋室":["西式房","洋"],"納戸":["储物","收纳"]};
+function coreName(n){return String(n).replace(/[（(].*$/,'').trim();}
+function aliasesFor(name){const c=coreName(name),out=[c.toLowerCase()];Object.keys(SYN).forEach(k=>{if(c.includes(k))out.push(...SYN[k]);});
+  (String(name).match(/[A-Za-z]{2,}/g)||[]).forEach(t=>out.push(t.toLowerCase()));return [...new Set(out.filter(Boolean))];}
+function lensRooms(body){const t=String(body||"").toLowerCase();return D.rooms.filter(r=>{const al=aliasesFor(r.name);return t.includes(coreName(r.name))||al.some(a=>a.length>=1&&t.includes(a));}).map(r=>r.name);}
+Object.keys(D.lenses).forEach(k=>{D.lenses[k].rooms=lensRooms(D.lenses[k].body);});
+
+// ---- scene ----
+const WALL_H=3.0,WALL_T=0.2,SLAB_T=0.28;
+function bounds(){let a=0,b=W,c=0,d=H;D.walls.forEach(([x1,z1,x2,z2])=>{a=Math.min(a,x1,x2);b=Math.max(b,x1,x2);c=Math.min(c,z1,z2);d=Math.max(d,z1,z2);});return{a,b,c,d};}
+const B=bounds(),spanX=Math.max(B.b-B.a,1),spanZ=Math.max(B.d-B.c,1),cx=(B.a+B.b)/2,cz=(B.c+B.d)/2,frame=Math.max(spanX,spanZ,6);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;document.getElementById('app').appendChild(renderer.domElement);
+const scene=new THREE.Scene();const BG=new THREE.Color(0xefe9df);scene.background=BG;scene.fog=new THREE.Fog(BG,frame*2.6,frame*9);
+const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,0.1,5000);
+camera.position.set(cx+frame*1.1,frame*1.0+WALL_H,cz+frame*1.45);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=0.06;controls.minDistance=frame*0.5;controls.maxDistance=frame*6;controls.maxPolarAngle=Math.PI*0.495;controls.target.set(cx,WALL_H*0.4,cz);
+const READ_PANEL=392; // .read 右栏宽：桌面端把取景左移半个栏宽，模型不被右栏遮挡（移动端右栏在底部，不偏移）
+function applyViewOffset(){if(innerWidth>820){camera.setViewOffset(innerWidth,innerHeight,Math.round(READ_PANEL/2),0,innerWidth,innerHeight);}else{camera.clearViewOffset();}camera.updateProjectionMatrix();}
+applyViewOffset();
+scene.add(new THREE.HemisphereLight(0xfffaf0,0xd6cdba,0.5));
+const key=new THREE.DirectionalLight(0xfff2e2,1.22);key.position.set(frame*1.0,frame*1.7,frame*0.75);key.castShadow=true;key.shadow.mapSize.set(2048,2048);const sd=frame*1.8;key.shadow.camera.left=-sd;key.shadow.camera.right=sd;key.shadow.camera.top=sd;key.shadow.camera.bottom=-sd;key.shadow.camera.far=frame*8;key.shadow.bias=-0.0004;key.shadow.radius=6;scene.add(key);
+const fill=new THREE.DirectionalLight(0xe6eeff,0.22);fill.position.set(-frame*0.8,frame*0.6,-frame*0.6);scene.add(fill);
+scene.add(new THREE.AmbientLight(0xffffff,0.12));
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(spanX*14,spanZ*14),new THREE.MeshStandardMaterial({color:0xe7e0d4,roughness:0.97}));ground.rotation.x=-Math.PI/2;ground.position.set(cx,0,cz);ground.receiveShadow=true;scene.add(ground);
+const grid=new THREE.GridHelper(Math.max(spanX,spanZ)*10,Math.round(Math.max(spanX,spanZ)*10),0xcfc6b6,0xddd5c7);grid.position.set(cx,0.002,cz);grid.material.transparent=true;grid.material.opacity=0.16;scene.add(grid);
+(function contactShadow(){const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');const grd=g.createRadialGradient(128,128,16,128,128,128);grd.addColorStop(0,'rgba(55,46,32,0.34)');grd.addColorStop(0.7,'rgba(55,46,32,0.12)');grd.addColorStop(1,'rgba(55,46,32,0)');g.fillStyle=grd;g.fillRect(0,0,256,256);const tex=new THREE.CanvasTexture(c);const m=new THREE.Mesh(new THREE.PlaneGeometry(spanX*2.4,spanZ*2.4),new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(cx,0.014,cz);scene.add(m);})();
+
+const wallMat=new THREE.MeshStandardMaterial({color:0xf7f3ec,roughness:0.72});
+const edgeMat=new THREE.LineBasicMaterial({color:0xbcb09a,transparent:true,opacity:0.55});
+function windowTex(){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');
+  g.fillStyle='rgba(150,186,208,0.5)';g.fillRect(0,0,128,128);            // glass tint
+  g.strokeStyle='#f1f5f6';g.lineWidth=12;g.strokeRect(6,6,116,116);       // white frame
+  g.lineWidth=6;g.beginPath();g.moveTo(64,6);g.lineTo(64,122);g.moveTo(6,64);g.lineTo(122,64);g.stroke();  // mullion cross
+  const t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;}
+const winMat=new THREE.MeshStandardMaterial({map:windowTex(),color:0xffffff,roughness:0.18,transparent:true,opacity:0.92});
+const slabMat=new THREE.MeshStandardMaterial({color:0xe6dfd2,roughness:0.9});
+const building=new THREE.Group();scene.add(building);
+const slab=new THREE.Mesh(new THREE.BoxGeometry(spanX,SLAB_T,spanZ),slabMat);slab.position.set(cx,SLAB_T/2,cz);slab.castShadow=true;slab.receiveShadow=true;building.add(slab);
+// low confidence → draw only the outer frame (interior walls aren't trustworthy)
+const RW = lowConf ? [[0,0,W,0],[W,0,W,H],[W,H,0,H],[0,H,0,0]] : D.walls;
+const OPENINGS = lowConf ? [] : (D.openings||[]);
+// an opening's center sits ON a wall when its perpendicular distance is tiny + it's within the span
+function holesOn(x1,z1,x2,z2){const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz);if(len<1e-4)return[];const ux=dx/len,uz=dz/len,out=[];
+  OPENINGS.forEach(o=>{const ox=o.x-x1,oz=o.z-z1,t=ox*ux+oz*uz,perp=Math.abs(ox*uz-oz*ux);if(perp<0.35&&t>0.05&&t<len-0.05)out.push({t,w:o.w||0.9,type:o.type});});
+  return out.sort((a,b)=>a.t-b.t);}
+// render a wall as solid segments that go AROUND each opening: window = sill below + lintel above + glass in the gap; door = lintel only (open to the floor)
+function buildWall(x1,z1,x2,z2){const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz);if(len<1e-4)return;const ux=dx/len,uz=dz/len,rot=-Math.atan2(dz,dx);const holes=holesOn(x1,z1,x2,z2);const SILL=WALL_H*0.34,HEAD=WALL_H*0.74;
+  const piece=(midT,L,h,y,mat,edge)=>{if(L<0.01)return;const mx=x1+ux*midT,mz=z1+uz*midT;const geo=new THREE.BoxGeometry(L,h,WALL_T);const m=new THREE.Mesh(geo,mat);m.position.set(mx,y,mz);m.rotation.y=rot;m.castShadow=true;m.receiveShadow=true;building.add(m);if(edge){const ed=new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat);ed.position.copy(m.position);ed.rotation.copy(m.rotation);building.add(ed);}};
+  const wallSeg=(a,b)=>{let s=a,e=b;if(a<=0.001)s-=WALL_T/2;if(b>=len-0.001)e+=WALL_T/2;piece((s+e)/2,e-s,WALL_H,SLAB_T+WALL_H/2,wallMat,true);};   // full-height, corner-extended at wall ends
+  let cur=0;holes.forEach(h=>{const s=Math.max(0,h.t-h.w/2),e=Math.min(len,h.t+h.w/2);if(s>cur+0.01)wallSeg(cur,s);const mt=(s+e)/2,hw=e-s;
+    if(h.type==='window'){piece(mt,hw,SILL,SLAB_T+SILL/2,wallMat,true);piece(mt,hw,WALL_H-HEAD,SLAB_T+HEAD+(WALL_H-HEAD)/2,wallMat,true);piece(mt,hw*0.96,HEAD-SILL,SLAB_T+SILL+(HEAD-SILL)/2,winMat,false);}
+    else piece(mt,hw,WALL_H-HEAD,SLAB_T+HEAD+(WALL_H-HEAD)/2,wallMat,true);cur=e;});
+  if(cur<len-0.01)wallSeg(cur,len);}
+RW.forEach(w=>buildWall(w[0],w[1],w[2],w[3]));
+
+// ---- per-room highlight volumes (always raycastable, invisible until lit) ----
+const roomMeshes={},roomSprites={},allMeshes=[];   // roomMeshes keyed by name (last wins on dup) only for legacy length checks; per-room control goes through r._mesh / r._spr so duplicate-named rooms (两个卧室) each get their own mesh
+function labelSprite(text,strong){const fs=44,pad=20,ls='4px',c=document.createElement('canvas'),ctx=c.getContext('2d');ctx.font=`${fs}px Georgia,"Songti SC",serif`;ctx.letterSpacing=ls;const tw=ctx.measureText(text).width;c.width=Math.ceil(tw+pad*2);c.height=Math.ceil(fs+pad*2);ctx.font=`${fs}px Georgia,"Songti SC",serif`;ctx.letterSpacing=ls;ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillStyle=strong?'rgba(179,74,38,0.95)':'rgba(43,40,35,0.55)';ctx.fillText(text,c.width/2,c.height/2);const tex=new THREE.CanvasTexture(c);tex.anisotropy=4;const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false,depthTest:false}));const s=0.012;spr.scale.set(c.width*s,c.height*s,1);spr._tex=tex;return spr;}
+if(!lowConf){   // precise per-room volumes only when geometry is trustworthy
+D.rooms.forEach(r=>{const[rx,ry,rw,rh]=r.rect.map(Number);if(![rx,ry,rw,rh].every(isFinite)||rw<=0||rh<=0)return;
+  const box=new THREE.Mesh(new THREE.BoxGeometry(rw,WALL_H,rh),new THREE.MeshStandardMaterial({color:0xb34a26,transparent:true,opacity:0,roughness:0.7,emissive:0x000000}));
+  box.position.set(rx+rw/2,SLAB_T+WALL_H/2,ry+rh/2);box.userData.name=r.name;building.add(box);r._mesh=box;allMeshes.push(box);roomMeshes[r.name]=box;
+  const spr=labelSprite(r.name,false);spr.position.set(rx+rw/2,SLAB_T+WALL_H+0.65,ry+rh/2);spr.userData.minor=rw*rh<4;spr.visible=!spr.userData.minor;building.add(spr);r._spr=spr;roomSprites[r.name]=spr;  // 小房间(<4㎡)默认隐藏名,防 3D 斜视标签叠成一团;hover/点亮时显示
+  });   // windows are now real openings cut into the walls (buildWall), not glass slabs glued onto rooms
+}else{   // degraded: a clean outer massing + a floating "识别到 N 间" tag, no fake room placement
+  const tag=labelSprite('识别到 '+D.rooms.length+' 间 · 体量估算',false);tag.position.set(cx,SLAB_T+WALL_H+0.9,cz);building.add(tag);
+}
+// open balcony: a slab projecting off the south face + a waist-high glass balustrade on its 3 outer edges (inner edge open against the building wall)
+if(D.balcony&&!lowConf){const bx=D.balcony.x,bz=D.balcony.z,bw=D.balcony.w,bd=D.balcony.d,RAIL=1.0,RT=0.08;
+  const bslab=new THREE.Mesh(new THREE.BoxGeometry(bw,SLAB_T*0.7,bd),slabMat);bslab.position.set(bx+bw/2,SLAB_T*0.35,bz+bd/2);bslab.castShadow=true;bslab.receiveShadow=true;building.add(bslab);
+  const rail=(x1,z1,x2,z2)=>{const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz);if(len<0.01)return;const rot=-Math.atan2(dz,dx),mx=(x1+x2)/2,mz=(z1+z2)/2;
+    const base=new THREE.Mesh(new THREE.BoxGeometry(len,0.12,RT),wallMat);base.position.set(mx,SLAB_T*0.7+0.06,mz);base.rotation.y=rot;base.castShadow=true;building.add(base);
+    const glass=new THREE.Mesh(new THREE.BoxGeometry(len,RAIL-0.20,RT*0.5),winMat);glass.position.set(mx,SLAB_T*0.7+0.14+(RAIL-0.20)/2,mz);glass.rotation.y=rot;building.add(glass);
+    const cap=new THREE.Mesh(new THREE.BoxGeometry(len,0.05,RT*1.5),wallMat);cap.position.set(mx,SLAB_T*0.7+RAIL,mz);cap.rotation.y=rot;cap.castShadow=true;building.add(cap);};
+  rail(bx,bz+bd,bx+bw,bz+bd); rail(bx,bz,bx,bz+bd); rail(bx+bw,bz,bx+bw,bz+bd);
+  const bspr=labelSprite('阳台',false);bspr.position.set(bx+bw/2,SLAB_T+0.6,bz+bd/2);bspr.userData.minor=true;bspr.visible=false;building.add(bspr);roomSprites['阳台']=bspr;}
+
+// ---- highlight state ----
+let lockedLens=null,hoverRoom=null;
+function paint(){const lit=new Set(hoverRoom?[hoverRoom]:(lockedLens&&D.lenses[lockedLens]?D.lenses[lockedLens].rooms:[]));
+  D.rooms.forEach(r=>{const on=lit.has(r.name),m=r._mesh,s=r._spr;if(m){m.material.opacity=on?0.26:0;m.material.emissive.setHex(on?0x5a1e0c:0x000000);}
+    if(s){s.visible=on||!s.userData.minor;const fresh=labelSprite(r.name,on);s.material.map=fresh._tex;s.material.needsUpdate=true;}});}
+function setHover(n){hoverRoom=n;paint();syncChips();}
+function setLens(k){lockedLens=(lockedLens===k)?null:k;hoverRoom=null;paint();syncChips();syncLenses();}
+
+// ---- panel build ----
+const baseW=+W, baseH=+H, roomList=D.rooms.map(r=>r.name).join(' / ')||'—';
+function refreshStruct(dispW,dispH,calTxt){const cal=calTxt?` · <b style="color:#3a6b6e">✓ ${calTxt}</b>`:(D.geom&&D.geom.calibrated?` · <b style="color:#3a6b6e">✓ 已按${D.geom.calibrated}标定</b>`:'');
+  document.getElementById('struct').innerHTML=`结构 · <b>${dispW.toFixed(1)}×${dispH.toFixed(1)}m</b> · ${roomList}${cal}`;}
+refreshStruct(baseW,baseH,null);
+(function(){const ai=document.getElementById('areaIn'),cs=document.getElementById('calibState');if(!ai)return;
+  const totA=D.rooms.reduce((s,r)=>s+(Array.isArray(r.rect)?Math.max(0,+r.rect[2])*Math.max(0,+r.rect[3]):0),0)||1;
+  function chipAreas(area){const box=document.getElementById('chips');if(!box)return;       // distribute total area by room footprint share
+    [...box.children].forEach(c=>{const r=D.rooms.find(x=>x.name===c.dataset.name);
+      if(area&&r&&Array.isArray(r.rect)){const m2=Math.max(0,+r.rect[2])*Math.max(0,+r.rect[3])/totA*area;
+        c.textContent=`${c.dataset.name} ~${m2.toFixed(1)}㎡`;}else c.textContent=c.dataset.name;});}
+  ai.addEventListener('input',()=>{const a=parseFloat(ai.value);
+    if(!a||a<=0){refreshStruct(baseW,baseH,null);cs.textContent='';chipAreas(0);return;}
+    const s=Math.sqrt(a/(baseW*baseH));refreshStruct(baseW*s,baseH*s,`已按面积 ${a}㎡ · 每间为估算`);cs.textContent='✓';cs.style.color='#3a6b6e';chipAreas(a);});})();
+const chips=document.getElementById('chips');
+D.rooms.forEach(r=>{const el=document.createElement('span');el.className='chip';el.textContent=r.name;el.dataset.name=r.name;
+  if(!lowConf){el.onmouseenter=()=>setHover(r.name);el.onmouseleave=()=>setHover(null);
+    el.onclick=()=>{lockedLens=null;hoverRoom=(hoverRoom===r.name?null:r.name);paint();syncChips();syncLenses();};}
+  else{el.style.cursor='default';}chips.appendChild(el);});
+const lensWrap=document.getElementById('lenses');
+Object.keys(D.lenses).forEach(k=>{const v=D.lenses[k],c=LC[k]||'#b34a26';const el=document.createElement('div');el.className='lens';el.dataset.k=k;el.style.borderLeft='2px solid '+c;
+  const rt=v.rooms&&v.rooms.length?`◆ ${v.rooms.join(' · ')}`:'';
+  el.innerHTML=`<div class="lab"><span class="dot" style="background:${c}"></span><span style="color:${c}">${k} · ${EN[k]||''}</span><span class="ti">${v.title||''}</span><span class="rmtag">${rt}</span></div><p>${(v.body||'').replace(/</g,'&lt;')}</p>`;
+  el.onclick=()=>setLens(k);lensWrap.appendChild(el);});
+function syncChips(){[...chips.children].forEach(c=>{const lit=hoverRoom===c.dataset.name||(lockedLens&&D.lenses[lockedLens]&&D.lenses[lockedLens].rooms.includes(c.dataset.name));c.classList.toggle('on',!!lit);});}
+function syncLenses(){[...lensWrap.children].forEach(e=>e.classList.toggle('on',e.dataset.k===lockedLens));}
+
+// ---- raycast: click a room in 3D ----
+const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
+renderer.domElement.addEventListener('pointerdown',e=>{mouse.x=(e.clientX/innerWidth)*2-1;mouse.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(mouse,camera);
+  const hits=ray.intersectObjects(allMeshes);if(hits.length){const n=hits[0].object.userData.name;lockedLens=null;hoverRoom=(hoverRoom===n?null:n);paint();syncChips();syncLenses();}});
+
+// ---- low-confidence geometry banner ----
+if(lowConf){document.getElementById('geowarn').style.display='block';
+  const h=document.querySelector('.hint');if(h)h.textContent='拖拽旋转 · 滚轮缩放 · 几何估算模式';
+  const hl=document.querySelector('.hintline');if(hl)hl.textContent='↑ 这张图几何置信度低，3D 仅示外框；下方识别+解读照常';}
+
+// ---- floor plan card: hide if no image embedded, else click to zoom ----
+(function(){const card=document.getElementById('planCard'),img=document.getElementById('planImg'),lb=document.getElementById('lightbox'),lbi=document.getElementById('lbImg');
+  const has=img&&img.getAttribute('src')&&!/base64,$/.test(img.getAttribute('src'));
+  if(!has){card.style.display='none';return;}
+  card.onclick=()=>{lbi.src=img.src;lb.style.display='flex';};lb.onclick=()=>{lb.style.display='none';};
+  addEventListener('keydown',e=>{if(e.key==='Escape')lb.style.display='none';});})();
+
+// ===== 采光视图：把"建筑师看朝向判采光"降维成一眼可见的染色 =====
+// 做实(非示意)：用户给真实北朝向 → 每个房间贴哪面外墙、那墙朝哪方位 → 确定性采光评分。
+let viewMode='read', northDir='up', prevMorph=100, prevCam=null, prevTarget=null;
+const dayGroup=new THREE.Group(); scene.add(dayGroup);
+// smooth camera/flatten/wall transitions between views
+let tween=null;
+function easeInOut(t){return t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+function startTween(to,dur){tween={t:0,dur:dur||750,
+  p0:camera.position.clone(),p1:to.camPos,g0:controls.target.clone(),g1:to.camTarget,
+  m0:morphV,m1:to.morph,w0:wallMat.opacity,w1:to.wallOp};
+  wallMat.transparent=true;wallMat.needsUpdate=true;controls.enabled=false;}
+function stepTween(){if(!tween)return;tween.t+=16.7/tween.dur;const e=easeInOut(Math.min(tween.t,1));
+  camera.position.lerpVectors(tween.p0,tween.p1,e);controls.target.lerpVectors(tween.g0,tween.g1,e);
+  morphV=tween.m0+(tween.m1-tween.m0)*e;building.scale.y=Math.max(morphV/100,1e-4);
+  wallMat.opacity=tween.w0+(tween.w1-tween.w0)*e;wallMat.needsUpdate=true;
+  if(tween.t>=1){tween=null;controls.enabled=true;if(wallMat.opacity>=0.99){wallMat.transparent=false;wallMat.needsUpdate=true;}}}
+const DAYDIR={up:{up:'N',right:'E',down:'S',left:'W'},right:{up:'W',right:'N',down:'E',left:'S'},
+  down:{up:'S',right:'W',down:'N',left:'E'},left:{up:'E',right:'S',down:'W',left:'N'}};
+const DAYSCORE={S:3,E:2,W:2,N:1}, CM={N:'北',E:'东',S:'南',W:'西'};
+const DAYCOLOR={3:0xffb24d,2:0xf3d68a,1:0x96bdd8,0:0xd0c9bc}, DAYTXT={3:'☀ 采光好',2:'采光中',1:'采光弱',0:'无外窗'};
+function roomFacings(rect){const[x,y,w,h]=rect,e=0.5,f=[];if(y<=e)f.push('up');if(y+h>=H-e)f.push('down');if(x<=e)f.push('left');if(x+w>=W-e)f.push('right');return f;}
+// windows only count on EXTERIOR walls: keep Gemma's reported sides that are actually on the outer edge.
+// null = no window data (fall back to "touches outer wall"); [] = had data but none valid (= no exterior window).
+function validWins(r){return Array.isArray(r.win)?r.win.filter(d=>roomFacings(r.rect).includes(d)):null;}
+function dayScore(r){const vw=validWins(r),byWin=vw!==null;const dirs=byWin?vw:roomFacings(r.rect);
+  const fac=dirs.map(d=>DAYDIR[northDir][d]).filter(Boolean);if(!fac.length)return{score:0,best:null,byWin};
+  const best=fac.reduce((a,b)=>DAYSCORE[b]>DAYSCORE[a]?b:a);return{score:DAYSCORE[best],best,byWin};}
+function southPos(){const s={up:'down',right:'left',down:'up',left:'right'}[northDir],off=Math.max(W,H)*0.55;
+  return {up:[cx,-off],right:[W+off,cz],down:[cx,H+off],left:[-off,cz]}[s];}
+function clearDay(){while(dayGroup.children.length)dayGroup.remove(dayGroup.children[0]);
+  D.rooms.forEach(r=>{const m=r._mesh,s=r._spr;
+    if(m){m.material.opacity=0;m.material.color.setHex(0xb34a26);m.material.emissive.setHex(0x000000);}
+    if(s){s.visible=!s.userData.minor;const f=labelSprite(r.name,false);s.material.map=f._tex;s.material.needsUpdate=true;}});}
+function applyDay(){clearDay();
+  // south-edge sun marker (just outside the footprint, fixed height so it reads from top-down)
+  const seMap={up:[cx,H+0.7],down:[cx,-0.7],left:[-0.7,cz],right:[W+0.7,cz]};
+  const se=seMap[northDir]||seMap.up;
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(0.45,18,18),new THREE.MeshBasicMaterial({color:0xffb24d}));sun.position.set(se[0],1.4,se[1]);dayGroup.add(sun);
+  const sl=labelSprite('☀ 南',true);sl.position.set(se[0],2.1,se[1]);dayGroup.add(sl);
+  if(!allMeshes.length){const note=labelSprite('整屋朝向已示意 · 房间级采光需清晰图(high)',false);note.position.set(cx,1.6,cz);dayGroup.add(note);return;}
+  // per-room: floor color block + crisp border + label, all in world space (not flattened)
+  D.rooms.forEach(r=>{const d=dayScore(r);const[rx,ry,rw,rh]=r.rect.map(Number);
+    const fl=new THREE.Mesh(new THREE.PlaneGeometry(rw,rh),new THREE.MeshBasicMaterial({color:DAYCOLOR[d.score],transparent:true,opacity:d.score===0?0.6:0.92,side:THREE.DoubleSide,depthWrite:false}));
+    fl.rotation.x=-Math.PI/2;fl.position.set(rx+rw/2,SLAB_T+0.06,ry+rh/2);dayGroup.add(fl);
+    const ln=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(rw,rh)),new THREE.LineBasicMaterial({color:0x5e4f37}));ln.rotation.x=-Math.PI/2;ln.position.set(rx+rw/2,SLAB_T+0.09,ry+rh/2);dayGroup.add(ln);
+    (validWins(r)||[]).forEach(wd=>{let a,b;                // teal tick = an exterior-wall window
+      if(wd==='up'){a=[rx+rw*0.28,ry];b=[rx+rw*0.72,ry];}else if(wd==='down'){a=[rx+rw*0.28,ry+rh];b=[rx+rw*0.72,ry+rh];}
+      else if(wd==='left'){a=[rx,ry+rh*0.28];b=[rx,ry+rh*0.72];}else{a=[rx+rw,ry+rh*0.28];b=[rx+rw,ry+rh*0.72];}
+      const L=Math.hypot(b[0]-a[0],b[1]-a[1]);const wb=new THREE.Mesh(new THREE.BoxGeometry(L,0.06,0.2),new THREE.MeshBasicMaterial({color:0x2a6f8f}));
+      wb.position.set((a[0]+b[0])/2,SLAB_T+0.2,(a[1]+b[1])/2);wb.rotation.y=-Math.atan2(b[1]-a[1],b[0]-a[0]);dayGroup.add(wb);});
+    const minorR=rw*rh<5;   // 小房间只留房名(内间无窗,采光后缀冗余且会溢出邻居),大房间显示完整采光
+    const lab=minorR?r.name:`${r.name} ${DAYTXT[d.score]}${d.best?'·'+CM[d.best]+'向':''}`;const sprl=labelSprite(lab,d.score>=2);sprl.scale.multiplyScalar(minorR?0.4:0.5);sprl.position.set(rx+rw/2,1.5,ry+rh/2);dayGroup.add(sprl);});}
+// 动线视图：把"建筑师看进门怎么走"降维成图上一眼可见的路径（示意走向，非门精确连接）
+function applyCirc(){clearDay();
+  const _ent=D.rooms.find(r=>/玄関|玄关|入口|entr|porch|ポーチ/i.test(r.name));   // use the REAL 玄关 room
+  const ENTRY=_ent?[_ent.rect[0]+_ent.rect[2]/2,_ent.rect[1]+_ent.rect[3]/2]:[cx,H+0.3];
+  const em=new THREE.Mesh(new THREE.CircleGeometry(0.4,24),new THREE.MeshBasicMaterial({color:0xb34a26}));em.rotation.x=-Math.PI/2;em.position.set(ENTRY[0],SLAB_T+0.1,ENTRY[1]);dayGroup.add(em);
+  const el=labelSprite('玄关 入口',true);el.scale.multiplyScalar(0.6);el.position.set(ENTRY[0],1.4,ENTRY[1]);dayGroup.add(el);
+  if(!allMeshes.length){const n=labelSprite('动线需清晰图(high)',false);n.position.set(cx,1.5,cz);dayGroup.add(n);return;}
+  const pts=D.rooms.filter(r=>r!==_ent).map(r=>{const rc=r.rect.map(Number),[x,y,w,h]=rc;return{name:r.name,c:[x+w/2,y+h/2],rc};});
+  const order=[],used=new Set();let cur=ENTRY;                    // 最近邻顺序 = 可能的走法
+  while(order.length<pts.length){let bi=-1,bd=1e9;pts.forEach((p,i)=>{if(used.has(i))return;const dd=Math.hypot(p.c[0]-cur[0],p.c[1]-cur[1]);if(dd<bd){bd=dd;bi=i;}});if(bi<0)break;used.add(bi);order.push(pts[bi]);cur=pts[bi].c;}
+  const path=[new THREE.Vector3(ENTRY[0],SLAB_T+0.13,ENTRY[1])];order.forEach(p=>path.push(new THREE.Vector3(p.c[0],SLAB_T+0.13,p.c[1])));
+  dayGroup.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(path),100,0.11,8,false),new THREE.MeshBasicMaterial({color:0xb34a26})));
+  order.forEach((p,i)=>{const[rx,ry,rw,rh]=p.rc;
+    const fillp=new THREE.Mesh(new THREE.PlaneGeometry(rw,rh),new THREE.MeshBasicMaterial({color:0xece3d0,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));fillp.rotation.x=-Math.PI/2;fillp.position.set(p.c[0],SLAB_T+0.04,p.c[1]);dayGroup.add(fillp);
+    const rb=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(rw,rh)),new THREE.LineBasicMaterial({color:0x7a6b48}));rb.rotation.x=-Math.PI/2;rb.position.set(p.c[0],SLAB_T+0.05,p.c[1]);dayGroup.add(rb);
+    const ring=new THREE.Mesh(new THREE.CircleGeometry(0.46,20),new THREE.MeshBasicMaterial({color:0xfbf7ee}));ring.rotation.x=-Math.PI/2;ring.position.set(p.c[0],SLAB_T+0.15,p.c[1]);dayGroup.add(ring);
+    const rl=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CircleGeometry(0.46,20)),new THREE.LineBasicMaterial({color:0xb34a26}));rl.rotation.x=-Math.PI/2;rl.position.set(p.c[0],SLAB_T+0.16,p.c[1]);dayGroup.add(rl);
+    const num=labelSprite(String(i+1),true);num.scale.multiplyScalar(0.46);num.position.set(p.c[0],1.25,p.c[1]);dayGroup.add(num);
+    const nm=labelSprite(p.name,false);nm.scale.multiplyScalar(0.42);nm.position.set(p.c[0],0.72,p.c[1]);dayGroup.add(nm);});
+  const note=labelSprite('动线示意 · 按房间位置推的可能走向',false);note.scale.multiplyScalar(0.5);note.position.set(cx,0.6,-0.9);dayGroup.add(note);}
+
+// 无障碍视图：标关注点(湿区/玄关高差/窄通行)，非精确合规——门宽/台阶需现场确认
+function a11yClass(r){const n=coreName(r.name),[,,w,h]=r.rect.map(Number),md=Math.min(w,h);
+  if(/浴|トイレ|便所|洗面|卫|厕|风吕|ﾄｲﾚ|bath|toilet|wc|ﾕﾆ/i.test(n))return{lvl:1,txt:'⚠ 可达性关键·门宽待查',color:0xe09a4a};
+  if(/玄関|玄关|入口|ポーチ|porch|entr/i.test(n))return{lvl:1,txt:'⚠ 注意高差/上框',color:0xd98a6a};
+  if(/廊下|廊|ホール|hall|収納|納戸|押入|物入|クローゼット|closet|wic/i.test(n))return{lvl:0,txt:'交通/收纳空间',color:0xc2cdba};
+  if(md<1.4)return{lvl:1,txt:'通行偏窄·轮椅难',color:0xd9b84a};
+  return{lvl:0,txt:'通行空间充足',color:0x8fbf8a};}
+function applyA11y(){clearDay();
+  if(!allMeshes.length){const n=labelSprite('无障碍提示需清晰图(high)',false);n.position.set(cx,1.5,cz);dayGroup.add(n);return;}
+  D.rooms.forEach(r=>{const a=a11yClass(r);const[rx,ry,rw,rh]=r.rect.map(Number);
+    const fl=new THREE.Mesh(new THREE.PlaneGeometry(rw,rh),new THREE.MeshBasicMaterial({color:a.color,transparent:true,opacity:a.lvl?0.85:0.42,side:THREE.DoubleSide,depthWrite:false}));
+    fl.rotation.x=-Math.PI/2;fl.position.set(rx+rw/2,SLAB_T+0.06,ry+rh/2);dayGroup.add(fl);
+    const ln=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(rw,rh)),new THREE.LineBasicMaterial({color:0x5e4f37}));ln.rotation.x=-Math.PI/2;ln.position.set(rx+rw/2,SLAB_T+0.09,ry+rh/2);dayGroup.add(ln);
+    const sp=labelSprite(`${r.name} · ${a.txt}`,!!a.lvl);sp.scale.multiplyScalar(0.44);sp.position.set(rx+rw/2,1.5,ry+rh/2);dayGroup.add(sp);});
+  const note=labelSprite('♿ 提示关注点 · 非精确合规审计（门宽/台阶需现场确认）',false);note.scale.multiplyScalar(0.5);note.position.set(cx,0.6,-0.9);dayGroup.add(note);}
+
+let inOverlay=false;
+function setMode(mode){viewMode=mode;const wasOverlay=inOverlay;
+  document.getElementById('tabRead').classList.toggle('on',mode==='read');
+  document.getElementById('tabDay').classList.toggle('on',mode==='daylight');
+  document.getElementById('tabCirc').classList.toggle('on',mode==='circulation');
+  document.getElementById('tabA11y').classList.toggle('on',mode==='access');
+  document.getElementById('compass').style.display=mode==='daylight'?'flex':'none';
+  const lg=document.getElementById('legend');
+  if(mode==='daylight'){lg.style.display='block';lg.innerHTML='<div class="lg-t">采光图例 · 朝向</div>'+
+    '<div><span class="sw" style="background:#ffb24d"></span>南向 · 采光好</div>'+
+    '<div><span class="sw" style="background:#f3d68a"></span>东/西向 · 采光中</div>'+
+    '<div><span class="sw" style="background:#96bdd8"></span>北向 · 采光弱</div>'+
+    '<div><span class="sw" style="background:#d0c9bc"></span>内间 · 无外窗</div>'+
+    '<div><span class="sw" style="background:#2a6f8f"></span>▮ = 识别到的窗</div>'+
+    '<div style="color:var(--soft);margin-top:3px">按朝向估 · 未计窗大小</div>';}
+  else if(mode==='circulation'){lg.style.display='block';lg.innerHTML='<div class="lg-t">动线图例</div>'+
+    '<div><span class="sw" style="background:#b34a26;border-radius:50%"></span>玄关入口 → 路径</div>'+
+    '<div>① ② ③ 离玄关由近到远</div>'+
+    '<div style="color:var(--soft);margin-top:2px">示意（几何顺序，非实际动线）</div>';}
+  else if(mode==='access'){lg.style.display='block';lg.innerHTML='<div class="lg-t">无障碍图例</div>'+
+    '<div><span class="sw" style="background:#e09a4a"></span>湿区 · 门宽待查</div>'+
+    '<div><span class="sw" style="background:#d98a6a"></span>玄关 · 注意高差</div>'+
+    '<div><span class="sw" style="background:#d9b84a"></span>通行偏窄</div>'+
+    '<div><span class="sw" style="background:#8fbf8a"></span>空间充足</div>';}
+  else lg.style.display='none';
+  const overlay=(mode==='daylight'||mode==='circulation'||mode==='access');
+  if(overlay){lockedLens=null;hoverRoom=null;syncChips();syncLenses();
+    if(!wasOverlay){prevMorph=morphV;prevCam=camera.position.clone();prevTarget=controls.target.clone();ms.value=6;
+      startTween({camPos:new THREE.Vector3(cx,Math.max(W,H)*2.4,cz+0.001),camTarget:new THREE.Vector3(cx,0,cz),morph:6,wallOp:0.28},750);}
+    ml.textContent=mode==='daylight'?'采光平面':(mode==='circulation'?'动线平面':'无障碍平面');inOverlay=true;
+    if(mode==='daylight')applyDay();else if(mode==='circulation')applyCirc();else applyA11y();}
+  else{if(wasOverlay){ms.value=prevMorph;ml.textContent=prevMorph<=1?'平面':'立体 '+prevMorph+'%';
+      startTween({camPos:prevCam,camTarget:prevTarget,morph:prevMorph,wallOp:1},750);}
+    clearDay();paint();inOverlay=false;}}
+document.getElementById('tabRead').onclick=()=>setMode('read');
+document.getElementById('tabDay').onclick=()=>setMode('daylight');
+document.getElementById('tabCirc').onclick=()=>setMode('circulation');
+document.getElementById('tabA11y').onclick=()=>setMode('access');
+[...document.querySelectorAll('.cbtn')].forEach(b=>b.onclick=()=>{northDir=b.dataset.dir;
+  [...document.querySelectorAll('.cbtn')].forEach(x=>x.classList.toggle('on',x===b));if(viewMode==='daylight')applyDay();});
+
+// ---- morph ----
+let morphV=100;const ms=document.getElementById('morph'),ml=document.getElementById('morphLabel');
+function applyMorph(){building.scale.y=Math.max(morphV/100,0.0001);}
+ms.addEventListener('input',e=>{morphV=+e.target.value;applyMorph();ml.textContent=morphV<=1?'平面':'立体 '+morphV+'%';});
+
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;renderer.setSize(innerWidth,innerHeight);applyViewOffset();});
+// intro ease-in: camera glides from a wider/higher angle to the default framing
+const _ic=camera.position.clone(),_it=controls.target.clone();
+camera.position.set(cx+frame*1.5,frame*2.0+WALL_H,cz+frame*2.1);
+startTween({camPos:_ic,camTarget:_it,morph:morphV,wallOp:wallMat.opacity},1150);
+(function loop(){requestAnimationFrame(loop);stepTween();controls.update();renderer.render(scene,camera);})();
+</script></body></html>

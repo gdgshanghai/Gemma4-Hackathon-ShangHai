@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madori · 户型解读 — 把建筑师的读图能力，降维成一眼看懂</title>
+<meta name="description" content="一张户型图 → 3D 白模 + 四个专业视图（解读 / 采光 / 动线 / 无障碍）。用 Gemma 4 多模态视觉，把建筑师的读图能力交给每个人。">
+<style>
+/* 自托管字体（子集化，去 Google Fonts CDN 依赖 → 中国大陆也稳） */
+@font-face{font-family:"Noto Serif SC";src:url(fonts/noto-serif-sc.woff2) format("woff2");font-weight:400 900;font-display:swap;}
+@font-face{font-family:"Noto Sans SC";src:url(fonts/noto-sans-sc.woff2) format("woff2");font-weight:400 900;font-display:swap;}
+@font-face{font-family:"Space Mono";src:url(fonts/space-mono-400.woff2) format("woff2");font-weight:400;font-display:swap;}
+@font-face{font-family:"Space Mono";src:url(fonts/space-mono-700.woff2) format("woff2");font-weight:700;font-display:swap;}
+:root{
+  --bone:#ffffff; --bone2:#f4f3f0; --bone3:#faf9f6; --char:#1a1a18; --soft:#76726a; --faint:#a8a297;
+  --orange:#ff5a1f; --orange2:#e8480f; --line:#e7e4dd; --line2:#dedacf;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif; --mono:"Space Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bone);color:var(--char);font-family:var(--sans);line-height:1.7;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1360px;margin:0 auto;padding:0 clamp(20px,3.4vw,48px);}
+a{color:inherit;}
+/* nav */
+nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+nav .in{display:flex;justify-content:space-between;align-items:center;padding-top:20px;padding-bottom:20px;}
+nav .logo{font-family:var(--serif);font-weight:700;font-size:18px;letter-spacing:.02em;}
+nav .logo span{color:var(--soft);font-weight:500;}
+nav .links{display:flex;gap:28px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;align-items:center;}
+nav .links a{color:var(--soft);text-decoration:none;transition:color .15s;}
+nav .links a:hover{color:var(--char);}
+nav .links a.gh{color:var(--char);border:1px solid var(--char);padding:7px 13px;text-transform:none;}
+nav .links a.gh:hover{background:var(--char);color:#fff;}
+@media(max-width:720px){nav .links a.hide-m{display:none;}}
+/* hero */
+.hero{padding:76px 0 30px;}
+.label{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);display:flex;gap:18px;flex-wrap:wrap;margin-bottom:30px;}
+.label .o{color:var(--orange);}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(46px,8.4vw,118px);line-height:1.04;letter-spacing:.005em;margin-bottom:8px;}
+.hero h1 .zh{font-family:var(--serif);font-weight:700;font-size:.62em;letter-spacing:.05em;display:block;margin-bottom:12px;}
+.hero h1 .dot{color:var(--orange);}
+.hero .sub{display:flex;justify-content:space-between;align-items:flex-end;margin-top:40px;gap:40px;flex-wrap:wrap;}
+.hero .sub p{font-size:17px;color:#3a362f;max-width:500px;line-height:1.85;}
+.hero .sub p b{font-family:var(--serif);font-weight:700;}
+.cta{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;padding:14px 22px;transition:.16s;white-space:nowrap;}
+.btn-1{background:var(--orange);color:#fff;}
+.btn-1:hover{background:var(--char);}
+.btn-2{background:transparent;color:var(--char);border:1px solid var(--char);}
+.btn-2:hover{background:var(--char);color:#fff;}
+.btn.gh{text-transform:none;}   /* GitHub 是品牌专有名，保持驼峰不大写 */
+/* exhibit */
+.exhibit{margin:46px 0 0;background:var(--bone2);border:1px solid var(--line);position:relative;line-height:0;}
+.exhibit img{width:100%;display:block;}
+.exhibit .mlabel{position:absolute;left:16px;bottom:16px;background:rgba(255,255,255,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);padding:8px 13px;line-height:1.45;}
+.exhibit .mlabel .t{font-family:var(--serif);font-weight:700;font-size:13px;}
+.exhibit .mlabel .m{font-family:var(--mono);font-size:9px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em;}
+.exhibit .idx{position:absolute;right:22px;top:18px;font-family:var(--mono);font-size:11px;color:var(--soft);}
+.exhibit .idx b{color:var(--orange);}
+/* section */
+section{padding:80px 0;border-top:1px solid var(--line);}
+.shead{display:flex;align-items:baseline;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
+.shead .no{font-family:var(--mono);font-size:13px;color:var(--orange);}
+.shead h2{font-family:var(--serif);font-weight:700;font-size:clamp(26px,4vw,40px);letter-spacing:.01em;}
+.shead .en{font-family:var(--mono);font-size:11px;color:var(--faint);text-transform:uppercase;margin-left:auto;letter-spacing:.06em;}
+.sec-lede{font-size:16px;color:var(--soft);max-width:720px;line-height:1.85;margin-bottom:38px;}
+.sec-lede strong{font-family:var(--serif);color:var(--char);font-weight:700;}
+/* who */
+.who{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+.who .c{background:var(--bone);padding:28px 24px;}
+.who .c .n{font-family:var(--mono);font-size:11px;color:var(--orange);margin-bottom:14px;letter-spacing:.04em;}
+.who .c .t{font-family:var(--serif);font-weight:700;font-size:19px;margin-bottom:10px;letter-spacing:.01em;}
+.who .c .d{font-size:14px;color:var(--soft);line-height:1.8;}
+/* views 2x2 */
+.views{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.v{background:var(--bone2);border:1px solid var(--line);}
+.v .pic{line-height:0;border-bottom:1px solid var(--line);}.v .pic img{width:100%;display:block;}
+.v .b{padding:22px 24px;}
+.v .vt{font-family:var(--serif);font-weight:700;font-size:21px;letter-spacing:.01em;margin-bottom:9px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.v .tag{font-family:var(--mono);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;}
+.tag-real{background:rgba(255,90,31,.12);color:var(--orange2);}
+.tag-hint{background:var(--bone2);color:var(--soft);border:1px solid var(--line2);}
+.v .vd{font-size:14px;color:var(--soft);line-height:1.8;}
+.v .vd b{font-family:var(--serif);color:var(--char);font-weight:700;}
+/* pipeline */
+.pipe{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-bottom:34px;}
+.step{flex:1;min-width:210px;background:var(--bone3);border:1px solid var(--line);padding:24px 22px;}
+.step .n{font-family:var(--mono);font-size:11px;color:var(--orange);letter-spacing:.06em;}
+.step .st{font-family:var(--serif);font-weight:700;font-size:18px;margin:8px 0 9px;}
+.step .sd{font-size:13.5px;color:var(--soft);line-height:1.7;}
+.arrow{display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:20px;padding:0 8px;}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:8px;}
+.split .b{background:var(--bone);border:1px solid var(--line);padding:26px 24px;}
+.split .b .bt{font-family:var(--serif);font-weight:700;font-size:17px;color:var(--char);margin-bottom:10px;}
+.split .b p{font-size:14.5px;color:var(--soft);line-height:1.78;}
+.honest{margin-top:30px;border-left:3px solid var(--orange);background:var(--bone3);padding:22px 26px;font-size:15px;color:#3a362f;line-height:1.85;}
+.honest strong{font-family:var(--serif);color:var(--char);font-weight:700;}
+/* dual track */
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px;}
+.track{border:1px solid var(--line);padding:30px 28px;background:var(--bone3);}
+.track.cloud{border-color:rgba(255,90,31,.4);background:linear-gradient(180deg,rgba(255,90,31,.05),var(--bone));}
+.track .badge{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);}
+.track.cloud .badge{color:var(--orange2);}
+.track .model{font-family:var(--serif);font-weight:700;font-size:20px;margin:10px 0 4px;}
+.track .model code{font-family:var(--mono);font-size:15px;font-weight:400;background:var(--bone2);padding:2px 9px;}
+.track ul{list-style:none;margin-top:16px;}
+.track li{font-size:14.5px;color:var(--soft);padding:7px 0 7px 20px;position:relative;line-height:1.65;}
+.track li::before{content:"—";position:absolute;left:0;color:var(--orange);}
+.track .stat{font-family:var(--mono);font-size:11.5px;color:var(--char);margin-top:16px;padding-top:14px;border-top:1px solid var(--line);letter-spacing:.02em;}
+/* foot */
+.foot{text-align:center;padding:104px 0;border-top:1px solid var(--line);}
+.foot .label{justify-content:center;}
+.foot h2{font-family:var(--serif);font-weight:900;font-size:clamp(34px,5.6vw,66px);line-height:1.25;letter-spacing:.01em;margin:14px 0 32px;}
+.foot h2 .dot{color:var(--orange);}
+.foot .cta{justify-content:center;}
+footer{border-top:1px solid var(--line);padding:30px 0;font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--faint);}
+footer .in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+@media(max-width:820px){
+  /* CJK 换行：短词组优先整体（keep-all），过长无标点串才兜底断字（anywhere 才影响 min-content，防溢出） */
+  body{word-break:keep-all;overflow-wrap:anywhere;line-break:strict;}
+  .wrap{padding-left:24px;padding-right:24px;}
+  /* 字号阶梯压缩 + 标题行高放松 */
+  .hero{padding:46px 0 22px;}
+  .hero h1{font-size:34px;line-height:1.22;}
+  .hero .sub{flex-direction:column;align-items:stretch;margin-top:28px;gap:24px;}
+  .hero .sub p{font-size:16px;line-height:1.8;max-width:none;}
+  /* CTA：移动端按钮全宽，触控友好 + 对齐整齐 */
+  .hero .cta{flex-direction:column;}
+  .cta .btn{width:100%;text-align:center;}
+  .exhibit{margin-top:30px;}
+  section{padding:52px 0;}
+  .shead{margin-bottom:8px;gap:12px;}
+  .shead h2{font-size:23px;line-height:1.4;}
+  .shead .en{display:none;}
+  .sec-lede{font-size:15px;line-height:1.8;margin-bottom:26px;}
+  .who,.views,.split,.dual{grid-template-columns:1fr;}
+  .who .c{padding:22px;}
+  .who .c .t{font-size:18px;}
+  .v .b{padding:20px 22px;}
+  .v .vt{font-size:19px;}
+  .step{padding:22px;}
+  .split .b,.track{padding:24px 22px;}
+  .honest{padding:20px 22px;font-size:14.5px;}
+  .pipe{flex-direction:column;}
+  .arrow{transform:rotate(90deg);padding:6px 0;}
+  .foot{padding:64px 0;}
+  .foot h2{font-size:30px;line-height:1.38;}
+  /* foot 三按钮：主全宽 + 两次并排（1+2），主次分明不错位 */
+  .foot .cta{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .foot .cta .btn{padding-left:12px;padding-right:12px;}
+  .foot .cta .btn-1{grid-column:1 / -1;}
+  footer .in{flex-direction:column;gap:7px;}
+  footer span{overflow-wrap:normal;}            /* 覆盖移动端 anywhere：英文只在空格断，配 &nbsp; 不留孤字 */
+  .exhibit .mlabel{left:12px;bottom:12px;padding:6px 10px;}
+  .exhibit .mlabel .t{font-size:12px;}
+  .exhibit .mlabel .m{display:none;}            /* 移动端隐副标题，卡片更小、不压住白模 */
+  .exhibit .idx{font-size:10px;}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap in">
+  <div class="logo">户型解读<span> · Madori</span></div>
+  <div class="links">
+    <a href="#views" class="hide-m">四视图</a>
+    <a href="#tech" class="hide-m">技术</a>
+    <a href="#dual" class="hide-m">双轨引擎</a>
+    <a href="https://github.com/Jada-Q/madori" class="gh">GitHub ↗</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="label"><span>Gemma 4 · 多模态视觉</span><span>GDG Hackathon · 赛道 B</span><span class="o">● 本地隐私 + 云端精度</span></div>
+  <h1><span class="zh">户型解读</span>MADORI<span class="dot">.</span></h1>
+  <div class="sub">
+    <p>普通人看户型图，只读得懂「几室几厅」。<br>Madori 用 Gemma 4 的眼睛，把<b>建筑师的读图能力</b>，降维成一眼就能看到的画面。</p>
+    <div class="cta"><a href="madori.html" class="btn btn-1">在线试用白模 →</a><a href="demo/madori-demo.mp4" class="btn btn-2">90 秒 Demo</a></div>
+  </div>
+  <div class="exhibit">
+    <span class="idx">№ <b>001</b> / STUDY MODEL</span>
+    <a href="madori.html"><img src="assets/hero-read.png" alt="Madori 四视图 · 户型解读白模"></a>
+    <div class="mlabel"><div class="t">户型解读白模 · 2LDK</div><div class="m">Three.js · 8 rooms · four lenses</div></div>
+  </div>
+</div></header>
+
+<section id="problem"><div class="wrap">
+  <div class="shead"><span class="no">01</span><h2>一个真实、普遍、且不公平的信息差</h2><span class="en">The Problem</span></div>
+  <p class="sec-lede">人们对着几张看不懂的户型图，做出了人生中最大的居住决定——租房、买房。在房东和中介面前，不会读图的人天然处在信息劣势。<strong>Madori 想把一位建筑师的读图能力，免费、私密地交到每个人手里。</strong></p>
+  <div class="who">
+    <div class="c"><div class="n">FOR / 超高龄社会</div><div class="t">看房前就判断安全</div><div class="d">门够不够宽、有没有台阶、厕所进得去吗——实地看房前，就从图纸判断一个家对老人 / 残障家属是否友好。</div></div>
+    <div class="c"><div class="n">FOR / 远程决策</div><div class="t">隔着屏幕读透</div><div class="d">因调动、留学、身在海外而没法到现场看房，只能靠图纸下判断——Madori 帮他们把图读透。</div></div>
+    <div class="c"><div class="n">FOR / 请不起顾问</div><div class="t">私密 + 免费</div><div class="d">本地版全程离线 = 私密 + 免费。读图能力不该是付得起咨询费的人才有的特权。</div></div>
+  </div>
+</div></section>
+
+<section id="views"><div class="wrap">
+  <div class="shead"><span class="no">02</span><h2>切一个视图，建筑师的一种眼睛就交给你</h2><span class="en">Four Lenses</span></div>
+  <p class="sec-lede">不是给你一段段文字让你读，而是把专业分析直接画在户型的 3D 平面上——切一下视图，分析就浮现在图上。</p>
+  <div class="views">
+    <div class="v"><div class="pic"><img src="assets/hero-read.png" alt="解读视图"></div><div class="b"><div class="vt">📖 解读</div><div class="vd"><b>房间识别 + 五位专家镜头</b>（动线 / 采光 / 无障碍 / 走读 / 批评）的大白话解读。点一个房间或一个镜头，3D 模型里对应位置实时点亮。</div></div></div>
+    <div class="v"><div class="pic"><img src="assets/hero-day.png" alt="采光视图"></div><div class="b"><div class="vt">☀ 采光 <span class="tag tag-real">确定性计算</span></div><div class="vd">选一下北朝向，每间房按它贴哪面外墙、朝哪个方位，<b>算出</b>采光等级：南向暖橙、东西黄、北向蓝、内间灰。转动朝向会实时重算——是算出来的事实，不是瞎猜。</div></div></div>
+    <div class="v"><div class="pic"><img src="assets/hero-circ.png" alt="动线视图"></div><div class="b"><div class="vt">🚶 动线 <span class="tag tag-hint">示意</span></div><div class="vd">从玄关出发，一条路径线穿过各房间 + 到达顺序编号，一眼看清「进门后怎么走」。按房间位置推的可能走向。</div></div></div>
+    <div class="v"><div class="pic"><img src="assets/hero-a11y.png" alt="无障碍视图"></div><div class="b"><div class="vt">♿ 无障碍 <span class="tag tag-hint">提示</span></div><div class="vd">标出对老人 / 轮椅的关注点：湿区（门宽待查）、玄关（高差）、过窄的房间。一眼看到这个家哪里可能不友好。门宽 / 台阶需现场确认。</div></div></div>
+  </div>
+</div></section>
+
+<section id="tech"><div class="wrap">
+  <div class="shead"><span class="no">03</span><h2>把多模态当主角，不当点缀</h2><span class="en">How Gemma 4 Is Used</span></div>
+  <p class="sec-lede">「能看图」不等于「读得准、读得稳」。一次性把整张图丢给模型让它讲六个镜头，它很容易<strong>漂移</strong>——同一个房间，讲动线时叫「主卧」，讲采光时又叫「卧室 A」，整份解读就不可信了。所以做了一个刻意的工程编排：</p>
+  <div class="pipe">
+    <div class="step"><div class="n">01 · EXTRACT</div><div class="st">抽取一次</div><div class="sd">先只让 Gemma 4 做一件事——从图里把结构抽出来：有哪些房间、各自尺寸。</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="n">02 · LOCK</div><div class="st">锁定上下文</div><div class="sd">把这份抽取结果锁定成固定上下文（房间清单 + 尺寸），后续不再变。</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="n">03 · MULTI-LENS</div><div class="st">多镜头解读</div><div class="sd">每个镜头都带着同一份锁定上下文去跑，于是所有镜头用同一套房间名，不再各讲各的。</div></div>
+  </div>
+  <div class="split">
+    <div class="b"><div class="bt">理解归 LLM</div><p>Gemma 4 负责它最强的事——看懂图、识别房间、给出多维度的专业理解。它是整个产品的编排核心（orchestrator）。</p></div>
+    <div class="b"><div class="bt">计算归代码</div><p>采光等级、动线路径、面积换算这些确定性的事，交给代码精确算。模型不擅长的算术不让它硬扛，于是结果稳、可复现。</p></div>
+  </div>
+  <div class="honest"><strong>诚实分级</strong>是这个项目的底线：采光是确定性几何计算（做实）；动线 / 无障碍是示意 / 提示（标注清楚，不冒充精确）。读不准的脏图会自动降级成外框 + 提示，绝不画一个骗你的精细模型。</div>
+</div></section>
+
+<section id="dual"><div class="wrap">
+  <div class="shead"><span class="no">04</span><h2>两套引擎，一个产品 — 隐私与精度由你选</h2><span class="en">Dual Engine</span></div>
+  <p class="sec-lede">同一套 <span style="font-family:var(--mono);font-size:.92em;">extract → lock → multi-lens</span> 编排，跑在两个 Gemma 4 上。这正是边缘小模型与云端大模型分工的现实写照。几何始终由代码按抽取结构锁定校验，不靠模型臆测尺寸。</p>
+  <div class="dual">
+    <div class="track local">
+      <div class="badge">本地 · 隐私版</div>
+      <div class="model"><code>gemma4:e4b</code></div>
+      <ul>
+        <li>全程本机运行（Ollama），不上传任何云端</li>
+        <li>你的家不会离开你的电脑——私密、免费、离线</li>
+        <li>适配本地显存的边缘多模态模型</li>
+      </ul>
+      <div class="stat">定位 · 体量示意 + 多维解读</div>
+    </div>
+    <div class="track cloud">
+      <div class="badge">云端 · 精度版</div>
+      <div class="model"><code>gemma-4-31b</code></div>
+      <ul>
+        <li>仍是 Gemma 4，只是更大——房间抽取更全、命名更稳</li>
+        <li>几何由代码按抽取结构锁定校验，不靠模型臆测尺寸</li>
+        <li>需要更准布局时用；白模逐房对应源图</li>
+      </ul>
+      <div class="stat">精度 · 抽取更全 · 几何代码锁定</div>
+    </div>
+  </div>
+</div></section>
+
+<section class="foot"><div class="wrap">
+  <div class="label"><span>现在就试 / Try it now</span></div>
+  <h2>给它一张户型图，<br>像建筑师一样读懂它<span class="dot">。</span></h2>
+  <div class="cta">
+    <a href="madori.html" class="btn btn-1">在线试用白模 →</a>
+    <a href="demo/madori-demo.mp4" class="btn btn-2">看 90 秒 Demo</a>
+    <a href="https://github.com/Jada-Q/madori" class="btn btn-2 gh">GitHub 源码</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap in">
+  <span>Madori · 户型解读 — Read any floor plan with Gemma&nbsp;4</span>
+  <span>GDG Shanghai Gemma4 Hackathon · 赛道&nbsp;B&nbsp;·&nbsp;Multimodal</span>
+</div></footer>
+
+</body>
+</html>
