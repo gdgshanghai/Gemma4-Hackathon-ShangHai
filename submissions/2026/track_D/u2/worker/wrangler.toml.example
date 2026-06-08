@@ -1,0 +1,6 @@
+name = "u2-public-news"
+main = "src/index.ts"
+compatibility_date = "2026-06-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://your-u2-app.example"
