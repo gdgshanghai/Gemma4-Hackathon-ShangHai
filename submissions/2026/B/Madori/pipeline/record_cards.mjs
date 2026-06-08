@@ -29,7 +29,7 @@ await new Promise(r => server.listen(8879, r));
 
 async function rec(file, ms) {
   const browser = await chromium.launch({ channel: 'chrome' });
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, recordVideo: { dir: OUT, size: { width: 2880, height: 1800 } } });
+  const ctx = await browser.newContext({ viewport: { width: 1920, height: 1200 }, recordVideo: { dir: OUT, size: { width: 1920, height: 1200 } } });
   const page = await ctx.newPage();
   const vp = page.video();
   await page.goto(`http://localhost:8879/demo/${file}`, { waitUntil: 'networkidle' });

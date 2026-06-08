@@ -32,9 +32,8 @@ await new Promise(r => server.listen(8877, r));
 
 const browser = await chromium.launch({ channel: 'chrome' });
 const ctx = await browser.newContext({
-  viewport: { width: 1440, height: 900 },
-  deviceScaleFactor: 2,                                 // Retina 2x 渲染 → 文字/线条锐利
-  recordVideo: { dir: OUT, size: { width: 2880, height: 1800 } },
+  viewport: { width: 1920, height: 1200 },             // 原生 1920×1200 录制（比 1440 更清晰，且 size=viewport 不裁切）
+  recordVideo: { dir: OUT, size: { width: 1920, height: 1200 } },
 });
 const page = await ctx.newPage();
 const SLOW = 1.9;                                   // slower pacing → room for voiceover per shot
