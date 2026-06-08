@@ -33,7 +33,8 @@ await new Promise(r => server.listen(8877, r));
 const browser = await chromium.launch({ channel: 'chrome' });
 const ctx = await browser.newContext({
   viewport: { width: 1440, height: 900 },
-  recordVideo: { dir: OUT, size: { width: 1440, height: 900 } },
+  deviceScaleFactor: 2,                                 // Retina 2x 渲染 → 文字/线条锐利
+  recordVideo: { dir: OUT, size: { width: 2880, height: 1800 } },
 });
 const page = await ctx.newPage();
 const SLOW = 1.9;                                   // slower pacing → room for voiceover per shot
@@ -114,7 +115,7 @@ const mp4 = path.join(OUT, 'demo-core.mp4');   // pure functional demo; record_c
 try {
   // -movflags +faststart: moov atom to the front, else web <video>/Finder-preview/streaming
   // show a BLANK screen until the whole file downloads. -profile:v main for max player compat.
-  execSync(`ffmpeg -y -i "${webm}" -vf "scale=1440:900" -c:v libx264 -profile:v main -pix_fmt yuv420p -crf 22 -movflags +faststart "${mp4}"`, { stdio: 'ignore' });
+  execSync(`ffmpeg -y -i "${webm}" -vf "scale=1920:1200:flags=lanczos" -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 18 -movflags +faststart "${mp4}"`, { stdio: 'ignore' });
   console.log(`✓ ${path.relative(ROOT, mp4)}`);
 } catch (e) {
   console.log(`✓ webm: ${path.relative(ROOT, webm)}（ffmpeg 转码失败，webm 可用）`);

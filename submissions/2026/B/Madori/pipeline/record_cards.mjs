@@ -29,7 +29,7 @@ await new Promise(r => server.listen(8879, r));
 
 async function rec(file, ms) {
   const browser = await chromium.launch({ channel: 'chrome' });
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, recordVideo: { dir: OUT, size: { width: 1440, height: 900 } } });
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, recordVideo: { dir: OUT, size: { width: 2880, height: 1800 } } });
   const page = await ctx.newPage();
   const vp = page.video();
   await page.goto(`http://localhost:8879/demo/${file}`, { waitUntil: 'networkidle' });
@@ -47,7 +47,7 @@ const final = path.join(OUT, 'madori-demo.mp4');
 console.log('▸ 拼接 intro + demo + outro…');
 // re-encode all three to a common 1440×900/25fps/h264 then concat; faststart for web preview
 execSync(`ffmpeg -y -i "${introW}" -i "${core}" -i "${outroW}" -filter_complex ` +
-  `"[0:v]scale=1440:900,fps=25,setsar=1[a];[1:v]scale=1440:900,fps=25,setsar=1[b];[2:v]scale=1440:900,fps=25,setsar=1[c];[a][b][c]concat=n=3:v=1[out]" ` +
-  `-map "[out]" -c:v libx264 -profile:v main -pix_fmt yuv420p -crf 22 -movflags +faststart "${final}"`, { stdio: 'ignore' });
+  `"[0:v]scale=1920:1200:flags=lanczos,fps=30,setsar=1[a];[1:v]scale=1920:1200:flags=lanczos,fps=30,setsar=1[b];[2:v]scale=1920:1200:flags=lanczos,fps=30,setsar=1[c];[a][b][c]concat=n=3:v=1[out]" ` +
+  `-map "[out]" -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 18 -movflags +faststart "${final}"`, { stdio: 'ignore' });
 fs.rmSync(introW, { force: true }); fs.rmSync(outroW, { force: true });
 console.log('✓ ' + path.relative(ROOT, final));
