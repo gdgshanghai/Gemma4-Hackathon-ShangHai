@@ -1,0 +1,1373 @@
+/* ─────────────────────────────────────────────────────────────
+   散步才是正经事  ·  app styles
+   ────────────────────────────────────────────────────────── */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: #2A241C;
+  font-family: "Noto Serif SC", "Songti SC", "Source Han Serif SC", serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Stage behind the device — soft warm felt */
+.stage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  background:
+    radial-gradient(900px 700px at 20% 10%, rgba(255,235,200,.06), transparent 60%),
+    radial-gradient(900px 700px at 90% 90%, rgba(0,0,0,.20), transparent 60%),
+    #1F1B16;
+}
+
+/* ── App shell ─────────────────────────────────────────────── */
+.app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: var(--ink);
+  background: var(--paper);
+  transition: background-color .5s ease, color .5s ease;
+}
+
+/* paper noise overlay */
+.app::before {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(800px 600px at 50% 0%, rgba(255,255,255,.35), transparent 60%),
+    radial-gradient(700px 600px at 80% 100%, rgba(0,0,0,.10), transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.05' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-blend-mode: normal, multiply, multiply;
+  background-size: auto, auto, 320px 320px;
+  opacity: var(--noise-opacity, 1);
+  mix-blend-mode: multiply;
+}
+
+.app.night::before {
+  mix-blend-mode: screen;
+  opacity: .35;
+}
+
+/* ── Scroll surface ────────────────────────────────────────── */
+.scroll {
+  position: absolute;
+  inset: 0;
+  padding-top: 54px;  /* below status bar */
+  padding-bottom: 110px; /* above bottom nav */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll::-webkit-scrollbar { width: 0; }
+
+/* ── Screen layer + transitions ───────────────────────────── */
+.screens {
+  position: absolute;
+  inset: 0;
+}
+.screen {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  animation: screen-in .32s cubic-bezier(.2,.7,.2,1);
+  display: flex;
+  flex-direction: column;
+}
+.screen.backward { animation: screen-in-back .32s cubic-bezier(.2,.7,.2,1); }
+@keyframes screen-in {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes screen-in-back {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Top bar (back / title) ───────────────────────────────── */
+.topbar {
+  position: relative;
+  height: 54px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  margin-top: 54px;   /* below status bar */
+  z-index: 3;
+}
+.topbar .back, .topbar .icn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  padding: 8px;
+  cursor: pointer;
+  font-family: "EB Garamond", serif;
+  font-size: 18px;
+  line-height: 1;
+}
+.topbar .back svg, .topbar .icn svg {
+  width: 18px; height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.4;
+}
+.topbar .title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Noto Serif SC", serif;
+  font-size: 13px;
+  letter-spacing: .32em;
+  color: var(--ink);
+}
+.topbar .title em {
+  font-style: normal;
+  font-family: "EB Garamond", serif;
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--ink-mute);
+  display: block;
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* The feed screen has its masthead inline, no topbar */
+.screen.feed .scroll { padding-top: 54px; }
+/* Non-feed screens: topbar takes the top, scroll flows below it */
+.screen:not(.feed) .scroll {
+  position: relative;
+  inset: auto;
+  flex: 1;
+  min-height: 0;
+  padding-top: 0;
+}
+
+/* ── Masthead ──────────────────────────────────────────────── */
+.masthead {
+  padding: 14px 26px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: "EB Garamond", "Noto Serif SC", serif;
+  font-size: 10.5px;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.masthead .mark { letter-spacing: .34em; white-space: nowrap; }
+.masthead .num  { font-variant-numeric: tabular-nums; letter-spacing: .18em; white-space: nowrap; }
+
+.title-row {
+  padding: 18px 26px 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.title-row h1 {
+  margin: 0;
+  font-family: "Noto Serif SC", serif;
+  font-weight: 500;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: .04em;
+  color: var(--ink);
+}
+.title-row .sub {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-mute);
+  letter-spacing: .04em;
+  padding-bottom: 4px;
+  text-align: right;
+}
+.title-row .sub b {
+  display: block;
+  font-style: normal;
+  font-family: "Noto Serif SC", serif;
+  font-weight: 400;
+  letter-spacing: .25em;
+  color: var(--ink-soft);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* Day-line: date range + weather */
+.dayline {
+  margin: 14px 26px 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: .16em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+}
+
+/* ── Dimension tabs ────────────────────────────────────────── */
+.tabs {
+  margin: 18px 26px 8px;
+  display: flex;
+  gap: 22px;
+  padding-bottom: 6px;
+}
+.tabs button {
+  appearance: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 4px 0 8px;
+  color: var(--ink-mute);
+  font-family: "Noto Serif SC", serif;
+  font-size: 13px;
+  letter-spacing: .26em;
+  position: relative;
+  transition: color .2s ease;
+}
+.tabs button .en {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 10px;
+  letter-spacing: .14em;
+  display: block;
+  margin-top: 2px;
+  opacity: .6;
+}
+.tabs button.active {
+  color: var(--ink);
+}
+.tabs button.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 22px;
+  height: 1px;
+  background: var(--accent);
+  transform: translateX(-50%);
+}
+
+/* ── Specimen card ─────────────────────────────────────────── */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap, 36px);
+  padding: 12px 22px 40px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 2px;
+  box-shadow:
+    0 0 0 1px rgba(31,27,22,.05),
+    0 24px 40px -32px rgba(0,0,0,.30),
+    0 6px 14px -10px rgba(0,0,0,.18);
+  position: relative;
+  transition: background-color .4s ease, transform .25s ease;
+  cursor: pointer;
+}
+.card:active { transform: scale(.99); }
+.app.night .card {
+  box-shadow:
+    0 0 0 1px rgba(255,238,210,.06),
+    0 26px 50px -28px rgba(0,0,0,.65),
+    0 6px 14px -10px rgba(0,0,0,.4);
+}
+
+/* Plate */
+.plate {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+.plate svg { display: block; width: 100%; height: 100%; }
+.plate .corner {
+  position: absolute;
+  top: 12px; left: 14px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: .2em;
+  color: rgba(255,253,247,.78);
+  text-transform: uppercase;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.plate .corner.r { left: auto; right: 14px; text-align: right; }
+.plate .stamp {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(255,253,247,.55);
+  color: rgba(255,253,247,.78);
+  font-family: "Noto Serif SC", serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  letter-spacing: 0;
+  transform: rotate(-6deg);
+  mix-blend-mode: screen;
+}
+
+/* Swatches */
+.swatches { padding: 18px 22px 4px; }
+.bars {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  height: 44px;
+  overflow: hidden;
+}
+.bars span { display: block; }
+.legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  margin-top: 8px;
+}
+.legend > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  padding-right: 6px;
+}
+.legend .hex {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  letter-spacing: .12em;
+  color: var(--ink-soft);
+}
+.legend .zh {
+  font-family: "Noto Serif SC", serif;
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  color: var(--ink-mute);
+  font-weight: 400;
+}
+
+/* Meta */
+.meta {
+  padding: 20px 22px 4px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 10px;
+}
+.meta .ts {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  letter-spacing: .04em;
+}
+.meta .geo {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  color: var(--ink-mute);
+  letter-spacing: .14em;
+  margin-top: 4px;
+}
+.tag {
+  font-family: "Caveat", "Noto Serif SC", cursive;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--accent);
+  transform: rotate(-4deg);
+  transform-origin: bottom right;
+  padding-bottom: 2px;
+  white-space: nowrap;
+}
+
+/* Poem */
+.poem { padding: 18px 22px 24px; }
+.poem hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 0 0 14px;
+  width: 24px;
+}
+.poem p {
+  margin: 0;
+  font-family: "Noto Serif SC", serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: .12em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.poem .dot { color: var(--ink-mute); margin: 0 .1em; }
+
+/* Footer */
+.feed-foot {
+  margin: 8px 26px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "EB Garamond", serif;
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+}
+.feed-foot .dotline {
+  flex: 1;
+  height: 1px;
+  margin: 0 14px;
+  background-image: linear-gradient(90deg, currentColor 1px, transparent 1px);
+  background-size: 6px 1px;
+  opacity: .35;
+}
+
+.collect-cta {
+  margin: 6px 26px 26px;
+  display: flex;
+  justify-content: center;
+}
+.collect-cta button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: "Noto Serif SC", serif;
+  font-size: 12px;
+  letter-spacing: .42em;
+  padding: 12px 6px 6px;
+  position: relative;
+  transition: color .25s ease, letter-spacing .25s ease;
+}
+.collect-cta button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: var(--ink);
+  opacity: .85;
+  transition: width .3s ease, background-color .25s ease;
+}
+.collect-cta button:hover { color: var(--accent); letter-spacing: .5em; }
+.collect-cta button:hover::after { background: var(--accent); width: 78%; }
+
+/* ── Bottom nav (3 slots: 图鉴 / 采 / 地图) ──────────────── */
+.bottom-nav {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  background: color-mix(in srgb, var(--card) 97%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 1px var(--rule),
+    0 18px 30px -18px rgba(0,0,0,.35),
+    0 4px 10px -6px rgba(0,0,0,.18);
+  z-index: 10;
+}
+.bottom-nav .tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-family: "Noto Serif SC", serif;
+  font-size: 12.5px;
+  letter-spacing: .26em;
+  color: var(--ink-mute);
+  transition: color .2s ease, background-color .2s ease;
+}
+.bottom-nav .tab .en {
+  display: block;
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 9px;
+  letter-spacing: .14em;
+  margin-top: 1px;
+  opacity: .7;
+}
+.bottom-nav .tab.active { color: var(--ink); }
+.bottom-nav .capture {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Noto Serif SC", serif;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 2px;
+  transition: transform .25s ease, background .3s ease;
+  position: relative;
+}
+.bottom-nav .capture:hover { transform: scale(1.06); }
+.bottom-nav .capture::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  opacity: .22;
+}
+
+/* ── Detail screen ────────────────────────────────────────── */
+.detail .scroll {
+  padding-bottom: 130px;
+}
+.detail .hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+.detail .hero svg { width: 100%; height: 100%; display: block; }
+.detail .hero .corner {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: .22em;
+  color: rgba(255,253,247,.85);
+  text-transform: uppercase;
+  mix-blend-mode: screen;
+}
+.detail .hero .corner.r {
+  left: auto; right: 22px;
+  text-align: right;
+}
+.detail .hero .stamp {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  width: 50px; height: 50px;
+  border: 1px solid rgba(255,253,247,.65);
+  color: rgba(255,253,247,.85);
+  font-family: "Noto Serif SC", serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  transform: rotate(-6deg);
+  mix-blend-mode: screen;
+}
+
+.detail .head {
+  padding: 26px 28px 6px;
+}
+.detail .head h1 {
+  margin: 0;
+  font-family: "Noto Serif SC", serif;
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.3;
+  letter-spacing: .04em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.detail .head .meta-row {
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+.detail .head .meta-row .geo {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--ink-mute);
+}
+.detail .head .tag-row {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.detail .head .tag-row .dim {
+  font-family: "Caveat", cursive;
+  font-size: 23px;
+  color: var(--accent);
+  transform: rotate(-3deg);
+  white-space: nowrap;
+}
+
+.detail .section-label {
+  margin: 30px 28px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: "EB Garamond", serif;
+  font-size: 11px;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.detail .section-label::before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+  margin-right: 14px;
+}
+.detail .section-label .zh {
+  font-family: "Noto Serif SC", serif;
+  letter-spacing: .26em;
+  color: var(--ink-soft);
+  margin-right: 6px;
+}
+
+.detail .swatch-list {
+  margin: 0 22px;
+  display: flex;
+  flex-direction: column;
+}
+.detail .swatch-row {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: stretch;
+  gap: 16px;
+  padding: 14px 6px;
+  border-bottom: 1px solid var(--rule);
+}
+.detail .swatch-row:last-child { border-bottom: 0; }
+.detail .swatch-row .chip {
+  height: 56px;
+  border-radius: 1px;
+  position: relative;
+}
+.detail .swatch-row .chip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(0,0,0,.07);
+  pointer-events: none;
+}
+.detail .swatch-row .info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+.detail .swatch-row .info .zh {
+  font-family: "Noto Serif SC", serif;
+  font-size: 14px;
+  letter-spacing: .24em;
+  color: var(--ink);
+}
+.detail .swatch-row .info .codes {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: .12em;
+  color: var(--ink-mute);
+}
+.detail .swatch-row .pct {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-soft);
+  align-self: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.detail .notes {
+  margin: 0 28px;
+  padding: 22px 0 8px;
+}
+.detail .notes p {
+  margin: 0;
+  font-family: "Noto Serif SC", serif;
+  font-size: 14.5px;
+  line-height: 1.85;
+  letter-spacing: .1em;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+.detail .notes p + p { margin-top: 10px; }
+.detail .notes .sig {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  font-family: "Caveat", cursive;
+  font-size: 22px;
+  color: var(--accent);
+  transform: rotate(-3deg);
+}
+
+.detail .nearby {
+  margin: 8px 22px 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.detail .nearby .mini {
+  aspect-ratio: 1 / 1;
+  background: var(--card);
+  position: relative;
+  overflow: hidden;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px var(--rule);
+}
+.detail .nearby .mini .label {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: rgba(255,253,247,.85);
+  mix-blend-mode: screen;
+}
+
+.detail .actions {
+  display: flex;
+  gap: 10px;
+  margin: 8px 22px 0;
+}
+.detail .actions button {
+  flex: 1;
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  cursor: pointer;
+  padding: 14px 10px;
+  font-family: "Noto Serif SC", serif;
+  font-size: 12px;
+  letter-spacing: .32em;
+  color: var(--ink);
+  border-radius: 1px;
+  transition: background .2s ease, color .2s ease;
+}
+.detail .actions button.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.detail .actions button:hover { color: var(--accent); }
+.detail .actions button.primary:hover { color: var(--paper); background: var(--accent); border-color: var(--accent); }
+
+/* ── Map screen ──────────────────────────────────────────── */
+.map-screen { background: var(--paper); }
+.map-screen .topbar { margin-top: 54px; }
+.map-screen .map-wrap {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+.map-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.map-svg .street {
+  stroke: var(--rule);
+  stroke-width: 8;
+  fill: none;
+  stroke-linecap: round;
+}
+.map-svg .street-major {
+  stroke: color-mix(in srgb, var(--ink-mute) 35%, transparent);
+  stroke-width: 14;
+}
+.map-svg .street-minor {
+  stroke: color-mix(in srgb, var(--ink-mute) 18%, transparent);
+  stroke-width: 6;
+}
+.map-svg .label {
+  font-family: "Noto Serif SC", serif;
+  font-size: 9px;
+  letter-spacing: .25em;
+  fill: var(--ink-mute);
+}
+.map-svg .label-en {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 7px;
+  letter-spacing: .12em;
+  fill: var(--ink-mute);
+  opacity: .7;
+}
+.map-svg .compass {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 9px;
+  letter-spacing: .2em;
+  fill: var(--ink-mute);
+}
+.map-svg .park-blob {
+  fill: color-mix(in srgb, var(--ink-mute) 14%, transparent);
+}
+
+.map-pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+}
+.map-pin .dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--paper);
+  box-shadow: 0 2px 6px rgba(0,0,0,.35);
+  transition: transform .25s ease;
+}
+.map-pin:hover .dot { transform: scale(1.25); }
+.map-pin.active .dot { transform: scale(1.4); }
+.map-pin .pin-no {
+  margin-top: 4px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+  letter-spacing: .16em;
+  color: var(--ink-soft);
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  padding: 1px 4px;
+  border-radius: 1px;
+}
+
+.map-callout {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: "EB Garamond", serif;
+  font-size: 10px;
+  letter-spacing: .18em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  padding: 6px 10px;
+  border: 1px solid var(--rule);
+}
+
+.map-sheet {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 100px;
+  background: var(--card);
+  box-shadow: 0 0 0 1px var(--rule), 0 18px 30px -18px rgba(0,0,0,.4);
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  cursor: pointer;
+  animation: sheet-in .26s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.map-sheet .thumb {
+  width: 64px; height: 64px;
+  overflow: hidden;
+  position: relative;
+}
+.map-sheet .thumb svg { width: 100%; height: 100%; display: block; }
+.map-sheet .info .title {
+  font-family: "Noto Serif SC", serif;
+  font-size: 13.5px;
+  letter-spacing: .12em;
+  color: var(--ink);
+}
+.map-sheet .info .sub {
+  margin-top: 4px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  letter-spacing: .14em;
+  color: var(--ink-mute);
+}
+.map-sheet .arrow {
+  font-family: "EB Garamond", serif;
+  font-size: 18px;
+  color: var(--ink-mute);
+  padding-right: 4px;
+}
+.map-sheet .swatch-line {
+  margin-top: 6px;
+  display: flex;
+  height: 6px;
+  width: 90%;
+}
+.map-sheet .swatch-line span { flex: 1; }
+
+.map-screen .map-head {
+  position: absolute;
+  left: 22px;
+  top: 110px;
+  z-index: 4;
+  pointer-events: none;
+}
+.map-head h2 {
+  margin: 0;
+  font-family: "Noto Serif SC", serif;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: .12em;
+  color: var(--ink);
+}
+.map-head .sub {
+  margin-top: 6px;
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: var(--ink-mute);
+}
+
+/* ── Capture screen ───────────────────────────────────────── */
+.capture {
+  background: var(--paper);
+}
+.capture .scroll {
+  padding-top: 0;
+  padding-bottom: 130px;
+}
+.capture .steps {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 6px 0 20px;
+}
+.capture .steps .step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 10px;
+  letter-spacing: .18em;
+  color: var(--ink-mute);
+}
+.capture .steps .step .num {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-style: normal;
+  width: 22px; height: 22px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.capture .steps .step.active .num {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.capture .steps .step.done .num {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.cap-stage {
+  margin: 0 22px 24px;
+}
+.cap-stage h2 {
+  margin: 0 0 6px;
+  font-family: "Noto Serif SC", serif;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: .12em;
+}
+.cap-stage .lead {
+  margin: 0 0 22px;
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-mute);
+}
+
+/* Step 1: viewfinder */
+.viewfinder {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #2a2218;
+  overflow: hidden;
+  border-radius: 1px;
+}
+.viewfinder svg { width: 100%; height: 100%; display: block; }
+.viewfinder .crosshair {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.viewfinder .crosshair .corner {
+  position: absolute;
+  width: 22px; height: 22px;
+  border: 1px solid rgba(255,253,247,.65);
+}
+.viewfinder .crosshair .tl { top: 14px; left: 14px; border-right: 0; border-bottom: 0; }
+.viewfinder .crosshair .tr { top: 14px; right: 14px; border-left: 0; border-bottom: 0; }
+.viewfinder .crosshair .bl { bottom: 14px; left: 14px; border-right: 0; border-top: 0; }
+.viewfinder .crosshair .br { bottom: 14px; right: 14px; border-left: 0; border-top: 0; }
+.viewfinder .vlabel {
+  position: absolute;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: .22em;
+  color: rgba(255,253,247,.75);
+}
+.viewfinder .reticle {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; height: 80px;
+  border: 1px solid rgba(255,253,247,.6);
+  border-radius: 50%;
+}
+.viewfinder .reticle::before {
+  content: ""; position: absolute; inset: 50% 0 0 0;
+  border-top: 1px solid rgba(255,253,247,.4);
+}
+.viewfinder .reticle::after {
+  content: ""; position: absolute; inset: 0 50% 0 0;
+  border-right: 1px solid rgba(255,253,247,.4);
+}
+
+.viewfinder-pick { /* kind selector under camera */
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.viewfinder-pick button {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 8px 12px;
+  font-family: "Noto Serif SC", serif;
+  font-size: 11px;
+  letter-spacing: .22em;
+  color: var(--ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s ease;
+}
+.viewfinder-pick button.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.snap {
+  margin: 22px auto 0;
+  display: block;
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 0;
+  cursor: pointer;
+  position: relative;
+  transition: transform .2s ease;
+}
+.snap::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+}
+.snap:hover { transform: scale(1.06); }
+
+/* Step 2: extracted swatches */
+.extract-photo {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 1px;
+}
+.extract-photo svg { width: 100%; height: 100%; display: block; }
+.extract-photo .picker {
+  position: absolute;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.4);
+  transform: translate(-50%, -50%);
+}
+.extract-photo .picker .leg {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  width: 1px; height: 18px;
+  background: #fff;
+}
+.extract-photo .picker .leg::after {
+  content: ""; position: absolute;
+  left: -3px; bottom: -3px;
+  width: 6px; height: 6px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.extract-list {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.extract-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--rule);
+}
+.extract-row:last-child { border-bottom: 0; }
+.extract-row .chip {
+  width: 44px; height: 44px;
+  position: relative;
+}
+.extract-row .chip::after {
+  content: "";
+  position: absolute; inset: 0;
+  border: 1px solid rgba(0,0,0,.07);
+}
+.extract-row .info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.extract-row input.name {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dashed var(--rule);
+  padding: 4px 0;
+  font-family: "Noto Serif SC", serif;
+  font-size: 14px;
+  letter-spacing: .24em;
+  color: var(--ink);
+  width: 100%;
+  outline: none;
+}
+.extract-row input.name:focus { border-bottom-color: var(--accent); }
+.extract-row .hex {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--ink-mute);
+}
+.extract-row .pct {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+
+/* Step 3: title + poem */
+.compose-field {
+  margin-bottom: 18px;
+}
+.compose-field label {
+  display: block;
+  font-family: "EB Garamond", serif;
+  font-size: 10px;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+}
+.compose-field label .zh {
+  font-family: "Noto Serif SC", serif;
+  letter-spacing: .22em;
+  margin-right: 6px;
+  color: var(--ink-soft);
+}
+.compose-field input,
+.compose-field textarea,
+.compose-field select {
+  width: 100%;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  padding: 8px 0;
+  font-family: "Noto Serif SC", serif;
+  font-size: 16px;
+  letter-spacing: .12em;
+  color: var(--ink);
+  outline: none;
+  border-radius: 0;
+  resize: none;
+}
+.compose-field textarea { font-size: 15px; line-height: 1.7; min-height: 56px; }
+.compose-field input:focus,
+.compose-field textarea:focus,
+.compose-field select:focus { border-bottom-color: var(--accent); }
+.compose-field .dim-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.compose-field .dim-grid button {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 10px 4px;
+  cursor: pointer;
+  font-family: "Noto Serif SC", serif;
+  font-size: 11px;
+  letter-spacing: .18em;
+  color: var(--ink-soft);
+}
+.compose-field .dim-grid button.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.cap-actions {
+  display: flex;
+  gap: 10px;
+  margin: 8px 22px 0;
+}
+.cap-actions button {
+  flex: 1;
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  cursor: pointer;
+  padding: 14px 8px;
+  font-family: "Noto Serif SC", serif;
+  font-size: 12px;
+  letter-spacing: .32em;
+  color: var(--ink);
+}
+.cap-actions button.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.cap-actions button.primary:hover { background: var(--accent); border-color: var(--accent); }
+.cap-actions button:disabled { opacity: .35; cursor: not-allowed; }
+
+/* Step 4: confirmation */
+.cap-done {
+  margin: 40px 22px 0;
+  text-align: center;
+}
+.cap-done .seal {
+  width: 100px; height: 100px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  margin: 0 auto 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Noto Serif SC", serif;
+  font-size: 38px;
+  color: var(--accent);
+  transform: rotate(-8deg);
+  animation: seal-in .5s cubic-bezier(.4,1.6,.6,1);
+}
+@keyframes seal-in {
+  from { opacity: 0; transform: rotate(-30deg) scale(.5); }
+  to   { opacity: 1; transform: rotate(-8deg) scale(1); }
+}
+.cap-done h2 {
+  margin: 0;
+  font-family: "Noto Serif SC", serif;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: .22em;
+}
+.cap-done .lead {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin-top: 8px;
+  letter-spacing: .04em;
+}
+.cap-done .nice {
+  margin: 26px auto 0;
+  font-family: "Caveat", cursive;
+  font-size: 24px;
+  color: var(--accent);
+  transform: rotate(-3deg);
+}
+
+/* ── Density variants ───────────────────────────────────── */
+.app[data-density="compact"] { --gap: 22px; }
+.app[data-density="compact"] .swatches { padding-top: 14px; }
+.app[data-density="compact"] .meta { padding-top: 14px; }
+.app[data-density="compact"] .poem { padding-top: 12px; padding-bottom: 18px; }
+.app[data-density="compact"] .poem p { font-size: 14px; }
+.app[data-density="compact"] .bars { height: 36px; }
+
+.app[data-density="relaxed"] { --gap: 56px; }
+.app[data-density="relaxed"] .swatches { padding-top: 24px; }
+.app[data-density="relaxed"] .meta { padding-top: 26px; }
+.app[data-density="relaxed"] .poem { padding-top: 24px; padding-bottom: 32px; }
+.app[data-density="relaxed"] .poem p { font-size: 16.5px; }
+.app[data-density="relaxed"] .bars { height: 52px; }
+
+/* ── Paper modes ───────────────────────────────────────── */
+.app.day {
+  --paper:      #F1ECE2;
+  --card:       #F6F2E9;
+  --ink:        #1F1B16;
+  --ink-soft:   #3A332B;
+  --ink-mute:   #8A8175;
+  --rule:       rgba(31,27,22,.18);
+  --noise-opacity: 1;
+}
+.app.dusk {
+  --paper:      #E8D2B0;
+  --card:       #EEDDB9;
+  --ink:        #3A2418;
+  --ink-soft:   #5A3A26;
+  --ink-mute:   #9A7A5C;
+  --rule:       rgba(58,36,24,.22);
+  --noise-opacity: .9;
+}
+.app.night {
+  --paper:      #14110E;
+  --card:       #1E1812;
+  --ink:        #E8DECB;
+  --ink-soft:   #BCB09A;
+  --ink-mute:   #6E6353;
+  --rule:       rgba(232,222,203,.16);
+  --noise-opacity: .4;
+}

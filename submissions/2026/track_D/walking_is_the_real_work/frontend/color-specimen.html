@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>色彩标本 · 散步才是正经事</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper:       #F1ECE2;          /* recycled paper */
+    --paper-deep:  #E8E1D3;          /* page edge */
+    --ink:         #1F1B16;          /* near-black warm */
+    --ink-soft:    #3A332B;
+    --ink-mute:    #8A8175;
+    --rule:        rgba(31,27,22,.18);
+
+    /* Specimen swatches */
+    --c1: #8C2D19;   /* 砖红 */
+    --c2: #A39E93;   /* 暮灰 */
+    --c3: #D9C5A0;   /* 米黄 */
+    --c4: #3E2E22;   /* 深褐 */
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Serif SC", "Songti SC", "Source Han Serif SC", serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Paper grain ------------------------------------------------------ */
+  body {
+    min-height: 100vh;
+    background-image:
+      radial-gradient(1200px 800px at 50% 35%, rgba(255,255,255,.55), transparent 60%),
+      radial-gradient(900px 700px at 80% 100%, rgba(0,0,0,.05), transparent 60%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.05' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-blend-mode: normal, normal, multiply;
+    background-size: auto, auto, 320px 320px;
+  }
+
+  /* Top thin masthead ------------------------------------------------ */
+  .masthead {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 36px 32px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: "EB Garamond", "Noto Serif SC", serif;
+    font-size: 12px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .masthead .mark {
+    font-family: "Noto Serif SC", serif;
+    letter-spacing: .35em;
+    font-weight: 400;
+  }
+  .masthead .num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Stage ------------------------------------------------------------ */
+  .stage {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 24px 80px;
+  }
+
+  /* Card ------------------------------------------------------------- */
+  .card {
+    width: min(440px, 100%);
+    background: #F6F2E9;
+    /* paper card has only the faintest darkening at edges */
+    box-shadow:
+      0 0 0 1px rgba(31,27,22,.04),
+      0 30px 60px -40px rgba(31,27,22,.18),
+      0 8px 16px -12px rgba(31,27,22,.10);
+    border-radius: 2px;
+  }
+
+  /* Image — 1:1 specimen plate -------------------------------------- */
+  .plate {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #C7A38E;
+  }
+  .plate svg { display: block; width: 100%; height: 100%; }
+
+  .plate .corner {
+    position: absolute;
+    top: 14px; left: 14px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .18em;
+    color: rgba(255,253,247,.78);
+    text-transform: uppercase;
+    mix-blend-mode: screen;
+  }
+  .plate .corner.r {
+    left: auto; right: 14px; text-align: right;
+  }
+
+  /* Swatch bar block ------------------------------------------------- */
+  .swatches {
+    padding: 22px 28px 4px;
+  }
+  .bars {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    height: 56px;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .bars > span { display: block; }
+
+  .legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin-top: 10px;
+    font-family: "EB Garamond", "Noto Serif SC", serif;
+  }
+  .legend > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+    padding-right: 8px;
+  }
+  .legend .hex {
+    font-size: 10.5px;
+    letter-spacing: .14em;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .legend .zh {
+    font-family: "Noto Serif SC", serif;
+    font-size: 12px;
+    letter-spacing: .22em;
+    color: var(--ink-mute);
+    font-weight: 400;
+  }
+
+  /* Meta block ------------------------------------------------------- */
+  .meta {
+    padding: 26px 28px 6px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 12px;
+  }
+  .meta .lines {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .meta .ts {
+    font-family: "EB Garamond", serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-soft);
+    letter-spacing: .04em;
+  }
+  .meta .geo {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: .14em;
+    font-variant-numeric: tabular-nums;
+  }
+  .tag {
+    font-family: "Caveat", "Noto Serif SC", cursive;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--c1);
+    transform: rotate(-4deg);
+    transform-origin: bottom right;
+    padding-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  /* Poetic line ----------------------------------------------------- */
+  .poem {
+    padding: 22px 28px 30px;
+  }
+  .poem hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 0 0 18px;
+    width: 28px;
+  }
+  .poem p {
+    margin: 0;
+    font-family: "Noto Serif SC", serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.65;
+    letter-spacing: .14em;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  .poem .dot {
+    color: var(--ink-mute);
+    margin: 0 .1em;
+  }
+
+  /* Export button --------------------------------------------------- */
+  .actions {
+    margin-top: 36px;
+    display: flex;
+    justify-content: center;
+  }
+  .btn {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: var(--ink);
+    font-family: "Noto Serif SC", serif;
+    font-size: 13px;
+    letter-spacing: .42em;
+    padding: 12px 4px 6px;
+    position: relative;
+    transition: color .25s ease, letter-spacing .25s ease;
+  }
+  .btn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: var(--ink);
+    opacity: .85;
+    transition: width .3s ease, opacity .25s ease;
+  }
+  .btn:hover {
+    color: var(--c1);
+    letter-spacing: .5em;
+  }
+  .btn:hover::after {
+    width: 80%;
+    background: var(--c1);
+    opacity: 1;
+  }
+
+  /* Footer ---------------------------------------------------------- */
+  .footer {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 32px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "EB Garamond", serif;
+    font-size: 11px;
+    letter-spacing: .22em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+  .footer .dotline {
+    flex: 1;
+    height: 1px;
+    margin: 0 18px;
+    background-image: linear-gradient(90deg, currentColor 1px, transparent 1px);
+    background-size: 6px 1px;
+    opacity: .35;
+  }
+
+  @media (max-width: 520px) {
+    .masthead { padding: 24px 20px 0; font-size: 10.5px; }
+    .stage { padding: 36px 16px 60px; }
+    .swatches { padding: 18px 22px 4px; }
+    .meta, .poem { padding-left: 22px; padding-right: 22px; }
+    .poem p { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Top masthead -->
+  <header class="masthead">
+    <div class="mark">散 步 才 是 正 经 事</div>
+    <div class="num">No. 0237 &nbsp;·&nbsp; Specimen Plate</div>
+  </header>
+
+  <main class="stage">
+
+    <!-- Specimen Card -->
+    <article class="card" aria-label="色彩标本卡片">
+
+      <!-- 1:1 Plate (placeholder: 斑驳红砖墙) -->
+      <div class="plate" role="img" aria-label="斑驳红砖墙局部 · 占位图">
+        <!-- Subtle striped placeholder, MUJI-style, no faux illustration -->
+        <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="brick" width="120" height="42" patternUnits="userSpaceOnUse">
+              <rect width="120" height="42" fill="#9B4126"/>
+              <rect x="0" y="0" width="120" height="42" fill="url(#noise)"/>
+              <rect x="0" y="0" width="120" height="2" fill="#5C2A18" opacity=".55"/>
+              <rect x="0" y="40" width="120" height="2" fill="#5C2A18" opacity=".55"/>
+              <rect x="58" y="0" width="2" height="42" fill="#5C2A18" opacity=".55"/>
+            </pattern>
+            <pattern id="brick2" width="120" height="42" patternUnits="userSpaceOnUse" patternTransform="translate(60,42)">
+              <rect width="120" height="42" fill="#8C2D19"/>
+              <rect x="0" y="0" width="120" height="2" fill="#5C2A18" opacity=".55"/>
+              <rect x="0" y="40" width="120" height="2" fill="#5C2A18" opacity=".55"/>
+              <rect x="58" y="0" width="2" height="42" fill="#5C2A18" opacity=".55"/>
+            </pattern>
+            <filter id="noise">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+              <feColorMatrix values="0 0 0 0 0.15  0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0.45 0"/>
+            </filter>
+            <filter id="grain">
+              <feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="2" stitchTiles="stitch"/>
+              <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.18 0"/>
+            </filter>
+            <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#000" stop-opacity=".05"/>
+              <stop offset=".55" stop-color="#000" stop-opacity="0"/>
+              <stop offset="1" stop-color="#000" stop-opacity=".35"/>
+            </linearGradient>
+          </defs>
+
+          <rect width="600" height="600" fill="url(#brick)"/>
+          <g transform="translate(0,42)"><rect width="600" height="600" fill="url(#brick2)"/></g>
+
+          <!-- weathering blotches -->
+          <ellipse cx="120" cy="180" rx="180" ry="120" fill="#A39E93" opacity=".22"/>
+          <ellipse cx="480" cy="430" rx="220" ry="160" fill="#3E2E22" opacity=".25"/>
+          <ellipse cx="320" cy="520" rx="260" ry="80" fill="#D9C5A0" opacity=".18"/>
+
+          <rect width="600" height="600" filter="url(#grain)"/>
+          <rect width="600" height="600" fill="url(#vignette)"/>
+        </svg>
+
+        <span class="corner">PLATE / 02</span>
+        <span class="corner r">[ brick wall · placeholder ]</span>
+      </div>
+
+      <!-- 4 Swatch bars -->
+      <section class="swatches" aria-label="提取色">
+        <div class="bars" role="list">
+          <span role="listitem" style="background: var(--c1)"></span>
+          <span role="listitem" style="background: var(--c2)"></span>
+          <span role="listitem" style="background: var(--c3)"></span>
+          <span role="listitem" style="background: var(--c4)"></span>
+        </div>
+        <div class="legend">
+          <div><span class="hex">#8C2D19</span><span class="zh">砖&nbsp;红</span></div>
+          <div><span class="hex">#A39E93</span><span class="zh">暮&nbsp;灰</span></div>
+          <div><span class="hex">#D9C5A0</span><span class="zh">米&nbsp;黄</span></div>
+          <div><span class="hex">#3E2E22</span><span class="zh">深&nbsp;褐</span></div>
+        </div>
+      </section>
+
+      <!-- Meta -->
+      <section class="meta">
+        <div class="lines">
+          <div class="ts">Friday, 17 May 2026 &nbsp;·&nbsp; 16:42</div>
+          <div class="geo">31.2168° N &nbsp; 121.4571° E &nbsp; · &nbsp; SHANGHAI</div>
+        </div>
+        <div class="tag" aria-label="02 视觉维度">02 视觉维度</div>
+      </section>
+
+      <!-- Poem -->
+      <section class="poem">
+        <hr />
+        <p>巨鹿路<span class="dot">·</span>落叶与单车砖红</p>
+      </section>
+
+    </article>
+
+    <!-- Single minimal action -->
+    <div class="actions">
+      <button class="btn" type="button">导 &nbsp; 出 &nbsp; 分 &nbsp; 享</button>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <span>A Walking Field Note</span>
+    <span class="dotline" aria-hidden="true"></span>
+    <span>MMXXVI</span>
+  </footer>
+
+</body>
+</html>

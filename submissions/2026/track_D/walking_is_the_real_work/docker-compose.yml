@@ -1,0 +1,18 @@
+services:
+  walking_is_the_real_work:
+    build: .
+    image: walking_is_the_real_work:latest
+    ports:
+      - "8000:8000"
+    environment:
+      # Switch to "0" once the host has Gemma 4 4B weights cached.
+      GEMMA_STUB: "${GEMMA_STUB:-1}"
+      GEMMA_MODEL_ID: "${GEMMA_MODEL_ID:-google/gemma-4-4b-it-multimodal}"
+      GEMMA_DEVICE: "${GEMMA_DEVICE:-auto}"
+    volumes:
+      - hf-cache:/models
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+
+volumes:
+  hf-cache: {}

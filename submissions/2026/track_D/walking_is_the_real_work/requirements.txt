@@ -1,0 +1,9 @@
+fastapi==0.115.4
+uvicorn[standard]==0.32.0
+python-multipart==0.0.12
+pydantic==2.9.2
+pillow==11.0.0
+transformers>=4.50.0
+accelerate>=1.0.0
+torch>=2.4.0
+sentencepiece>=0.2.0
