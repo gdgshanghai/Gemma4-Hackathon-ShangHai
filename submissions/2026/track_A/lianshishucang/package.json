@@ -1,0 +1,29 @@
+{
+  "name": "lianshishucang",
+  "version": "1.0.0",
+  "description": "链识数藏 - NFT Marketplace Smart Contracts",
+  "type": "module",
+  "main": "hardhat.config.cjs",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy.js",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "test": "hardhat test",
+    "dev:frontend": "npm --prefix ./frontend run dev",
+    "build:frontend": "npm --prefix ./frontend run build",
+    "preview:frontend": "npm --prefix ./frontend run preview"
+  },
+  "keywords": [
+    "nft",
+    "ethereum",
+    "solidity",
+    "web3"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
+    "@openzeppelin/contracts": "^4.9.5",
+    "hardhat": "^2.28.6"
+  }
+}
