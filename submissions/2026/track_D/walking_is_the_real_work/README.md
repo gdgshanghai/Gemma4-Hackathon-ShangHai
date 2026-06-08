@@ -111,7 +111,9 @@ walking_is_the_real_work/
 │   └── tools.py                lookup_district_archive / save_specimen
 ├── docs/
 │   ├── TECHNICAL_REPORT.md     模型选型 / 架构 / 隐私
-│   └── PRIVACY.md              D 赛道合规说明
+│   ├── PRIVACY.md              D 赛道合规说明
+│   ├── demo.mp4                63 秒项目演示视频
+│   └── presentation/           项目介绍图
 ├── sample_data/                合规样本说明(不附原图)
 ├── requirements.txt
 ├── Dockerfile
@@ -129,7 +131,16 @@ walking_is_the_real_work/
 | README + 一键启动 | 本文件 + `Dockerfile` |
 | 技术报告 | `docs/TECHNICAL_REPORT.md` |
 | 数据合规(D 赛道关键) | `docs/PRIVACY.md` + `sample_data/README.md` |
-| 演示视频 | 随现场赛材料表单单独提交 |
+| 演示视频 | [`docs/demo.mp4`](docs/demo.mp4) |
+| 项目介绍图 | [`docs/presentation/`](docs/presentation/) |
+
+## 项目介绍图
+
+<p>
+  <a href="docs/presentation/plate-02-pain-point.jpg"><img src="docs/presentation/plate-02-pain-point.jpg" width="32%" alt="项目痛点" /></a>
+  <a href="docs/presentation/plate-07-privacy.jpg"><img src="docs/presentation/plate-07-privacy.jpg" width="32%" alt="数据合规与隐私" /></a>
+  <a href="docs/presentation/plate-08-closing.jpg"><img src="docs/presentation/plate-08-closing.jpg" width="32%" alt="项目总结" /></a>
+</p>
 
 ## 写在最后
 
