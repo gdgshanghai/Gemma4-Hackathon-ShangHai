@@ -1,0 +1,5 @@
+# Emoti-Gotchi is a Bun/TypeScript web application.
+# Python packages are not required.
+#
+# Install application dependencies with:
+#   bun install

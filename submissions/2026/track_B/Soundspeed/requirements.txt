@@ -1,0 +1,42 @@
+# Soundspeed 后端运行依赖（Python >= 3.12）
+# 与 pyproject.toml 的 [project].dependencies 同源、同 pin。
+#
+# 安装：
+#   python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+#   pip install -r requirements.txt
+#
+# 平台加速说明：
+#   - macOS (Apple Silicon)：llama-cpp-python / pywhispercpp 的 PyPI wheel 自带 Metal，
+#     torch 自动取 CPU/MPS wheel —— 直接 pip install 即可，无需额外步骤。
+#   - Windows / Linux + NVIDIA：默认 pip 装的是 CPU 版 torch 与 CPU 版 llama-cpp/whisper。
+#     需 CUDA 加速请在装完本文件后运行：python scripts/install_accel.py
+#     （或参见 docs/2026-06-02-windows-llama-cpp-runbook.md）。
+#   - 纯 CPU：直接可用，仅推理较慢。
+
+# —— Web 服务 / 通用 ——
+numpy==2.4.4
+sounddevice==0.5.5
+soundfile==0.13.1
+soxr==1.1.0
+fastapi==0.136.3
+uvicorn==0.48.0
+websockets==16.0
+huggingface_hub==1.17.0
+python-multipart>=0.0.9
+
+# —— 剧本文件提取（上传 docx / pdf → 文本）——
+python-docx==1.1.2
+pypdf==5.1.0
+
+# —— ML 框架（torch 写 ==2.11.0，勿带 +cu128 本地版本号；CUDA 变体见上方说明）——
+torch==2.11.0
+torchaudio==2.11.0
+torchcodec==0.14.0            # pyannote 4.0 硬依赖，与 torch 同步钉
+pyannote.audio==4.0.4
+silero-vad==6.2.1
+onnxruntime==1.26.0
+
+# —— 本地推理后端（mac: PyPI wheel 带 Metal；win CUDA: 见 install_accel.py）——
+llama-cpp-python>=0.3,<0.4    # Gemma 4 GGUF 推理
+pywhispercpp==1.5.0           # Whisper 转写
+OpenCC==1.3.1                 # 繁→简确定性转换

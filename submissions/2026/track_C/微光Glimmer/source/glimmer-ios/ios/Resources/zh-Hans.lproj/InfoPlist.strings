@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "微光 Glimmer";
+"NSPhotoLibraryUsageDescription" = "选择行为视频，在本地进行筛查分析（数据不离开设备）";
+"NSCameraUsageDescription" = "录制行为视频用于本地筛查分析（数据不离开设备）";
+"NSMicrophoneUsageDescription" = "录制视频时一并采集声音（数据不离开设备）";

@@ -1,0 +1,170 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@page { size: A4; margin: 18mm 16mm; }
+body { font-family: "DejaVu Sans", "Noto Sans CJK SC", sans-serif; line-height: 1.55; color: #111; }
+h1 { font-size: 26px; margin: 0 0 16px; border-bottom: 2px solid #222; padding-bottom: 8px; }
+h2 { font-size: 18px; margin-top: 24px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+h3 { font-size: 14px; margin-top: 16px; }
+p, li { font-size: 10.5px; }
+code { font-family: "DejaVu Sans Mono", monospace; background: #f4f4f4; padding: 1px 3px; border-radius: 3px; }
+pre { background: #f7f7f7; padding: 10px; border: 1px solid #ddd; overflow-wrap: break-word; white-space: pre-wrap; font-size: 9px; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 9px; }
+th, td { border: 1px solid #ddd; padding: 6px; vertical-align: top; }
+th { background: #f1f1f1; }
+blockquote { border-left: 3px solid #999; padding-left: 10px; color: #444; }
+</style></head><body><h1 id="gemma-4">Gemma 4 多模态服务端技术报告</h1>
+<h2 id="1">1. 项目目标</h2>
+<p>本服务端用于将原先基于 Qwen 的直播多模态分析能力迁移到本地部署的 Gemma 4 开源模型体系上。服务端提供两类接口：</p>
+<ol>
+<li>业务 API：<code>/api/v1/text/summarize</code>、<code>/api/v1/audio/summarize</code>、<code>/api/v1/image/analyze</code>。</li>
+<li>OpenAI 兼容 API：<code>/v1/chat/completions</code>，用于承接客户端原有 Qwen OpenAI 风格请求，包括文本、图片、<code>input_audio</code>、流式 SSE、鉴权与模型名映射。</li>
+</ol>
+<p>面向的客户端是部署在个人 PC 上的直播监控程序。客户端需要与 OBS、本地音频设备、直播弹幕和本地 UI 低延迟交互，因此保留在个人 PC；Gemma 4 服务端部署在具备 H800 GPU 的远程服务器上，承担大模型推理、ASR、联网搜索和多模态联合分析。</p>
+<h2 id="2">2. 模型选型理由</h2>
+<h3 id="21-gemma-4-31b">2.1 Gemma 4 31B 多模态模型</h3>
+<p>服务端主模型为 <code>gemma4-31b-mm</code>。选择 31B 规格的主要原因是：</p>
+<ul>
+<li>推理质量：31B 规模更适合直播复杂语境、多模态归因、弹幕统计与画面内容联合判断。</li>
+<li>视觉能力：31B-mm 与 mmproj 支持图片输入，适合作为视觉场景识别和最终联合推理模型。</li>
+<li>兼容性：通过 Ollama 的 OpenAI 兼容接口暴露 <code>/v1/chat/completions</code>，可以承接客户端原 Qwen 请求结构。</li>
+<li>可控部署：GGUF/Ollama 部署方式便于在单张 H800 上常驻显存，并通过 <code>OLLAMA_NUM_PARALLEL=4</code> 提高并发吞吐。</li>
+</ul>
+<p>当前运行环境中，<code>gemma4-31b-mm:latest</code> 已常驻 Ollama，显存占用约 21~25GB。服务端启动脚本开启了 <code>OLLAMA_KEEP_ALIVE=-1</code>、Flash Attention、KV cache q8_0 和并发槽位 4，以降低冷启动和分轨请求排队时间。</p>
+<h3 id="22-gemma-4-e4b">2.2 Gemma 4 E4B 多模态音频模型</h3>
+<p>服务端保留 <code>gemma4-e4b-mm</code> 作为音频模型配置。E4B 的定位是原生音频/轻量多模态理解模型，适合较轻量、低成本的音频场景。但实际测试中，31B 原生音频支持不足，而 E4B 的 ASR 转写稳定性不满足直播状态分析要求，因此最终架构采用：</p>
+<ul>
+<li>31B 负责最终文本、视觉、联合推理。</li>
+<li>faster-whisper 作为外部 ASR 工具，先转写音频，再把 ASR 结果注入 31B 上下文。</li>
+<li>E4B 保留为兼容旧接口和后续原生音频能力扩展的候选模型。</li>
+</ul>
+<h3 id="23-asr">2.3 外部 ASR 工具的必要性</h3>
+<p>直播音频分析要求不仅要判断是否有人声，还要区分主播语音、桌面音频、BGM、游戏声和静音。Gemma 4 31B-mm 没有稳定的原生音频编码能力，因此服务端引入 faster-whisper：</p>
+<ul>
+<li>使用本地 <code>/root/Gemma/whisper-base</code> 模型，避免在线下载不稳定。</li>
+<li>使用 CUDA/float16 运行在 H800 上。</li>
+<li>ASR 前保存客户端原始音频，使用 ffprobe/ffmpeg 进行时长、采样率、峰值、RMS、静音判断。</li>
+<li>若 VAD 过滤后无结果，会关闭 VAD 重试，降低漏检低音量人声的概率。</li>
+</ul>
+<h2 id="3">3. 架构设计</h2>
+<h3 id="31">3.1 客户端与服务端分离部署</h3>
+<p>客户端部署在个人 PC，服务端部署在 H800 服务器。这样设计是因为：</p>
+<ul>
+<li>客户端必须低延迟接入 OBS，读取当前画面、麦克风轨、桌面音频轨和弹幕流。</li>
+<li>OBS、音频设备、窗口截图和直播 UI 都位于个人 PC，本地采集可以减少端到端延迟和复杂的远程设备访问问题。</li>
+<li>服务端需要大显存 GPU，适合部署在 AutoDL/服务器环境，专注模型推理和工具执行。</li>
+<li>二者通过 HTTP/OpenAI 兼容协议通信，可通过 AutoDL 自定义服务 URL 或 SSH 隧道连接；实际压测表明，<code>:8443</code> 网关上传带宽可能成为瓶颈，推荐 SSH 隧道直连 6006。</li>
+</ul>
+<h3 id="32">3.2 服务端进程与组件</h3>
+<p>核心进程如下：</p>
+<ul>
+<li>FastAPI/Uvicorn：监听 <code>0.0.0.0:6006</code>，提供业务 API 与 OpenAI 兼容 API。</li>
+<li>Ollama：监听 <code>127.0.0.1:11434</code>，加载 <code>gemma4-31b-mm</code> 和可选 <code>gemma4-e4b-mm</code>。</li>
+<li>faster-whisper：作为 Python 进程内缓存模型，用于 ASR 工具。</li>
+<li>Playwright/browser-use：用于 web_search 后的深度网页阅读。</li>
+<li>百度千帆 AI Search：用于中文互联网事实检索。</li>
+</ul>
+<h3 id="33">3.3 多模态请求包含的信息</h3>
+<p>直播联合请求通常包含：</p>
+<ul>
+<li>文本任务指令：要求输出严格 JSON，包含心理分析、语音报告、画面场景报告。</li>
+<li>弹幕/统计 JSON：弹幕数量、速率、样例消息、礼物、压力词、直播环境提示等。</li>
+<li>图片：OBS 实时截图，压缩为 JPEG 后以 <code>image_url.url=data:image/jpeg;base64,...</code> 传入。</li>
+<li>音频 1：麦克风轨，<code>input_audio</code>。</li>
+<li>音频 2：桌面音频轨，<code>input_audio</code>。</li>
+<li>服务端派生上下文：ASR 转写、音频诊断、静音判断、文件路径、请求 ID。</li>
+</ul>
+<p>服务端限制单次联合请求最多 2 段音频、2 张图片、单段音频默认不超过 8 秒。输出 token 上限和主推理短超时已取消，由客户端/评测端决定等待策略。</p>
+<h2 id="4">4. 多模态处理流程</h2>
+<h3 id="41-openai">4.1 OpenAI 兼容入口</h3>
+<p><code>gemma_api/routers/openai_compat.py</code> 是最关键的兼容层。它完成：</p>
+<ol>
+<li>Bearer API Key 鉴权。</li>
+<li>Qwen/Gemma 模型名映射。</li>
+<li>保存客户端原始请求体到 <code>received_requests/</code>，便于复现。</li>
+<li>解析 <code>input_audio</code> 和 <code>image_url</code>。</li>
+<li>保存音频到 <code>received_audio/</code>。</li>
+<li>执行音频诊断和 ASR。</li>
+<li>将 <code>input_audio</code> 替换为文本提示，并注入 <code>[服务端音频分析上下文]</code>。</li>
+<li>将图片、文本、弹幕统计、ASR 结果统一交给 <code>gemma4-31b-mm</code> 做单次联合推理。</li>
+<li>返回 OpenAI 兼容 SSE 或非流式 JSON。</li>
+</ol>
+<h3 id="42">4.2 音频处理</h3>
+<p>音频处理分为三层：</p>
+<ul>
+<li>原始文件保存：保留客户端传入的真实音频用于审计和复现。</li>
+<li>诊断：ffprobe 读取格式/时长，ffmpeg 解码为 16kHz PCM 后计算 peak、RMS、dBFS 和 likely_silent。</li>
+<li>ASR：faster-whisper 转写中文，先用 VAD，再在空结果时关闭 VAD 重试。</li>
+</ul>
+<p>ffmpeg/ffprobe 是阻塞进程，因此在 async handler 中用 <code>asyncio.to_thread</code> 执行，避免阻塞 Uvicorn 事件循环。</p>
+<h3 id="43">4.3 图片处理</h3>
+<p>OpenAI 兼容入口透传 <code>image_url</code> 到 Ollama/Gemma 31B-mm。客户端应把 OBS 截图压缩为 JPEG、最长边约 1280px，以减少上传时间。服务端保存完整原始请求体，但不单独落盘图片；必要时可从 <code>received_requests/*.json</code> 中提取。</p>
+<h3 id="44-sse-reasoningcontent">4.4 SSE 与 reasoning/content 兼容</h3>
+<p>Ollama/Gemma 在部分情况下会把模型思考过程放到 <code>delta.reasoning</code>，而 <code>delta.content</code> 为空。该 reasoning 可能是英文，不应作为业务报告展示。服务端已经：</p>
+<ul>
+<li>强化 system prompt，要求最终输出简体中文 JSON。</li>
+<li>不再把 reasoning 原样暴露为 content。</li>
+<li>若模型只有 reasoning 没有最终 content，返回中文降级 JSON。</li>
+</ul>
+<p>前端应只展示 <code>delta.content</code>，<code>delta.reasoning</code> 只允许进入 debug 日志。</p>
+<h2 id="5-gemma-4-31b-tools">5. Gemma 4 31B 使用的 Tools</h2>
+<h3 id="51-web_search">5.1 web_search</h3>
+<p>用途：当内部知识不足、问题涉及热点、网络梗、最新事实或高风险事实核验时联网检索。</p>
+<p>实现：<code>gemma_api/services/search.py</code>。当前搜索后端优先为百度千帆 AI Search（<code>baidu_ai</code>），也保留 Sogou、DuckDuckGo、HTTP 抓取与 browser-use 深读能力。</p>
+<p>关键策略：</p>
+<ul>
+<li>搜索 query 不自动扩展，避免改变用户问题。</li>
+<li>高风险事实问题必须结合当前时间与检索证据。</li>
+<li>无搜索结果时明确返回“未找到相关搜索结果”。</li>
+<li>深读 TopN 页面并输出进度。</li>
+</ul>
+<h3 id="52-get_current_time">5.2 get_current_time</h3>
+<p>用途：为“现在/最新/是否去世/是否在世”等时效性问题提供服务器真实时间锚点。</p>
+<p>实现：<code>gemma_api/services/agent.py</code> 中工具声明与 <code>_current_time_payload()</code>。</p>
+<h3 id="53-asr_transcribe">5.3 asr_transcribe</h3>
+<p>用途：对上传音频执行高精度 ASR，弥补 31B-mm 原生音频能力不足。</p>
+<p>实现：<code>gemma_api/services/stt.py</code> 与 OpenAI 兼容层的强制 ASR。联合推理模式下不再等待模型自主决定调用工具，而是服务端预先执行 ASR 并将结果注入上下文。</p>
+<h3 id="54-browser-use-playwright">5.4 browser-use / Playwright 深读</h3>
+<p>用途：对 web_search 的 TopN 网页进行正文阅读，补充搜索摘要不足的问题。</p>
+<p>实现：<code>gemma_api/services/deep_read.py</code> 与 <code>search.py</code> 中 browser-use 集成。当前启动脚本把 <code>BROWSER_USE_MAX_STEPS</code> 控制在 12，并降低 action wait/idle wait 以减少延迟。</p>
+<h3 id="55-echo_size">5.5 echo_size 调试工具</h3>
+<p>用途：只读取请求体并返回字节数与服务端读取耗时，用于区分“上传慢”和“推理慢”。</p>
+<p>实现：<code>POST /v1/echo_size</code>。该工具不参与模型推理，但对部署诊断非常重要。</p>
+<h2 id="6">6. 性能与稳定性设计</h2>
+<ul>
+<li>预热：FastAPI startup 时预热 Ollama 主模型和 Whisper，降低首请求冷启动。</li>
+<li>并发：<code>OLLAMA_NUM_PARALLEL=4</code> 支持分轨音频、视觉和联合请求并发。</li>
+<li>显存：H800 80GB，31B-mm 常驻约 22GB，Whisper 约 0.7GB。</li>
+<li>ASR 并发控制：<code>ASR_MAX_CONCURRENCY=1</code>，避免 CTranslate2/Whisper 多路争抢 GPU 导致超时。</li>
+<li>请求落盘：保存原始请求与音频，支持 replay 和故障复现。</li>
+<li>SSE 心跳：流式响应先发送 <code>: connected</code>，等待模型首 token 期间每 10 秒发送 <code>: keepalive</code>。</li>
+<li>上传诊断：<code>echo_size</code> 用于确认 AutoDL 网关或 SSH 隧道上传性能。</li>
+</ul>
+<h2 id="7">7. 代码目录说明</h2>
+<ul>
+<li><code>gemma_api/main.py</code>：FastAPI 应用入口、CORS、路由注册、模型预热、健康检查。</li>
+<li><code>gemma_api/config.py</code>：模型名、端口、API Key、搜索、Whisper、browser-use、路径配置。</li>
+<li><code>gemma_api/routers/openai_compat.py</code>：OpenAI 兼容层、多模态联合推理、ASR 强制执行、请求保存、SSE 兼容、echo_size。</li>
+<li><code>gemma_api/routers/text.py</code>：文本总结业务 API。</li>
+<li><code>gemma_api/routers/audio.py</code>：音频总结业务 API，支持 E4B 原生音频与 Whisper fallback。</li>
+<li><code>gemma_api/routers/image.py</code>：图片分析业务 API。</li>
+<li><code>gemma_api/services/agent.py</code>：Gemma Agent、工具声明、搜索/时间工具调用、事实核验规则。</li>
+<li><code>gemma_api/services/search.py</code>：百度千帆 AI Search、传统搜索、browser-use 深读。</li>
+<li><code>gemma_api/services/stt.py</code>：faster-whisper ASR 与音频诊断。</li>
+<li><code>gemma_api/services/ollama_client.py</code>：Ollama API 封装。</li>
+<li><code>start_gemma_api.sh</code>：一键后台启动脚本。</li>
+<li><code>scripts/setup_gemma311_cn.sh</code>：国内镜像安装 Python 3.11、依赖与 Playwright。</li>
+<li><code>replay_request.py</code> / <code>stress_replay.py</code> / <code>profile_latency.py</code>：调试、回放、压测工具。</li>
+</ul>
+<h2 id="8">8. 当前测试硬件环境</h2>
+<ul>
+<li>GPU：NVIDIA H800 PCIe，显存 81,559 MiB。</li>
+<li>Driver：580.82.07。</li>
+<li>CUDA：13.0。</li>
+<li>操作系统：Linux 5.15.0-161-generic。</li>
+<li>Python 运行环境：Conda <code>gemma311</code>，Python 3.11。</li>
+<li>推理引擎：Ollama 0.30.4。</li>
+<li>常驻模型：<code>gemma4-31b-mm:latest</code>，OpenAI 兼容服务端映射名 <code>gemma4-31b-mm</code>。</li>
+<li>服务端端口：6006。</li>
+<li>Ollama 端口：11434。</li>
+</ul>
+<h2 id="9">9. 结论</h2>
+<p>本服务端采用“远程 H800 大模型服务 + 本地 PC OBS 客户端”的分布式架构，在不改动客户端 OpenAI 请求主体的前提下，完成 Qwen 多模态能力向 Gemma 4 的迁移。31B-mm 作为高质量视觉/文本/联合推理主模型，E4B 作为音频模型兼容项，faster-whisper 作为可靠 ASR 工具，百度 AI Search/browser-use 作为联网事实增强工具。该架构兼顾了直播端低延迟采集、服务端高算力推理、OpenAI 兼容性、可复现调试和工程可部署性。</p></body></html>

@@ -1,0 +1,9 @@
+flowchart TD
+    A["Input<br/>Video + audio clips"]
+    B["Training<br/>Gemma 4 E4B LoRA / QLoRA"]
+    C["Packaging<br/>GGUF Q4_K_M + BF16 projector"]
+    D["On-device runtime<br/>llama.cpp + mtmd + Metal"]
+    E["Constrained output<br/>GBNF 9-bit behavior code"]
+    F["App layer<br/>B01-B10 report + local explanation chat"]
+
+    A --> B --> C --> D --> E --> F

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Activity, Database, FlaskConical, Loader2, Send, Server, Workflow } from 'lucide-react'
-import { api, type ConversationDecision, type ModelPlan, type PlannedStep, type ProviderView, type ReviewAgentRun, type TaskRecord, type TimelineEvent, type WorkflowView } from './api'
+import { api, type ConversationDecision, type ConversationRouteContext, type ModelPlan, type PlannedStep, type ProviderView, type ReviewAgentRun, type TaskRecord, type TimelineEvent, type WorkflowView } from './api'
 
 const defaultPrompt =
   'Plan bulk RNA-seq treatment vs control analysis with QC, counting, differential summary, and report.'
@@ -51,6 +51,31 @@ function formatDirection(direction: string) {
   if (direction === 'up') return 'Up'
   if (direction === 'down') return 'Down'
   return 'Stable'
+}
+
+function previousConversationContext(messages: ChatMessage[]): Pick<ConversationRouteContext, 'previousAction' | 'previousWorkflowKey' | 'previousAnalysisPrompt' | 'previousMessage'> {
+  let previousIndex = -1
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    if (messages[index].role === 'assistant' && messages[index].decision?.workflowKey) {
+      previousIndex = index
+      break
+    }
+  }
+  const previous = previousIndex >= 0 ? messages[previousIndex] : undefined
+  if (!previous?.decision) return {}
+  let previousUser: ChatMessage | undefined
+  for (let index = previousIndex - 1; index >= 0; index -= 1) {
+    if (messages[index].role === 'user') {
+      previousUser = messages[index]
+      break
+    }
+  }
+  return {
+    previousAction: previous.decision.action,
+    previousWorkflowKey: previous.decision.workflowKey,
+    previousAnalysisPrompt: previous.decision.analysisPrompt || previousUser?.content,
+    previousMessage: previous.content,
+  }
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -211,9 +236,9 @@ function AgentEvidencePanel({ agentRun }: { agentRun?: ReviewAgentRun }) {
   }
 
   const modeLabel = agentRun.mode === 'native_guided_tool_calling'
-    ? 'Native guided tool calling'
+    ? 'Native controlled planner loop'
     : agentRun.mode === 'guided_tool_calling'
-      ? 'Guided tool calling'
+      ? 'Guided planner loop'
     : agentRun.mode === 'native_tool_calling'
       ? 'Native auto tool calling'
       : 'JSON fallback'
@@ -310,7 +335,7 @@ function ReferencedFilesPanel({ workflow }: { workflow?: WorkflowView }) {
           <strong>Referenced files</strong>
           <span>Pending selection</span>
         </div>
-        <p>Select a preset to preview its public toy data, or send a natural-language request for Gemma 4 to choose the workflow.</p>
+        <p>Select a preset to preview its public toy data, or send a natural-language request for Gemma 4 to draft the public tool-level plan.</p>
       </div>
     )
   }
@@ -393,7 +418,8 @@ export default function App() {
   const visibleAgentRun = selectedTask?.agentRun || selectedTask?.result?.agentRun || visibleModelPlan?.agentRun
   const visibleWorkflowKey = visibleModelPlan?.workflowKey || selectedTask?.result?.workflowKey || selectedWorkflowKey
   const selectedWorkflow = workflows.find((workflow) => workflow.key === visibleWorkflowKey)
-  const analyzing = busy || task?.status === 'running'
+  const taskRunning = task?.status === 'running'
+  const analyzing = busy || taskRunning
 
   useEffect(() => {
     void api.getProvider().then((config) => {
@@ -482,7 +508,7 @@ export default function App() {
 
   async function sendConversationMessage() {
     const message = prompt.trim()
-    if (!message || analyzing) return
+    if (!message || busy) return
 
     const userMessage: ChatMessage = {
       id: `user-${Date.now()}`,
@@ -496,8 +522,9 @@ export default function App() {
 
     try {
       const decision = await api.routeConversation(message, {
-        hasActiveTask: task?.status === 'running',
+        hasActiveTask: taskRunning,
         latestTaskStatus: task?.status,
+        ...previousConversationContext(chatMessages),
       })
       setChatMessages((current) => [
         ...current,
@@ -586,7 +613,7 @@ export default function App() {
               className="chat-composer"
               onSubmit={(event) => {
                 event.preventDefault()
-                if (!analyzing && prompt.trim()) {
+                if (!busy && prompt.trim()) {
                   void sendConversationMessage()
                 }
               }}
@@ -597,16 +624,16 @@ export default function App() {
                 onKeyDown={(event) => {
                   if (event.key !== 'Enter' || event.ctrlKey) return
                   event.preventDefault()
-                  if (!analyzing && prompt.trim()) {
+                  if (!busy && prompt.trim()) {
                     void sendConversationMessage()
                   }
                 }}
                 placeholder="Ask Gemma 4 to plan an analysis..."
                 rows={7}
               />
-              <button type="submit" disabled={analyzing || !prompt.trim()} aria-label="Send analysis request">
-                {analyzing ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                {analyzing ? 'Sending...' : 'Send'}
+              <button type="submit" disabled={busy || !prompt.trim()} aria-label="Send analysis request">
+                {busy ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
+                {busy ? 'Processing...' : 'Send'}
               </button>
             </form>
             {runError && <p className="error">{runError}</p>}

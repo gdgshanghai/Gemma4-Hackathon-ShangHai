@@ -1,0 +1,33 @@
+# CogniFind 比赛项目 — Gemma 4 E2B 集成依赖
+# 推荐 Python 3.10+
+
+# ── Gemma 4 推理引擎（三选一）──
+# 推荐：llama-cpp-python（纯 CPU 端侧推理，Gemma 4 E2B 首选）
+llama-cpp-python>=0.3.0
+
+# ── OpenAI 兼容 API 客户端 ──
+# CogniFind 的 external_llm.rs 模块通过 OpenAI Chat Completions API 调用 Gemma 4
+openai>=1.40.0
+
+# ── 多模态处理 ──
+# CogniFind 的 Vision API 调用（external_llm.rs: stream_vision_api / describe_image_sync）
+pillow>=10.0.0
+
+# HTTP 请求（等价于 Rust 的 reqwest）
+requests>=2.32.0
+
+# ── 音频处理 ──
+# CogniFind 的音频转写（audio.rs: transcribe_audio_external）
+# 通过 OpenAI 兼容 Whisper API 与 Gemma 4 联动
+soundfile>=0.12.0
+scipy>=1.13.0
+
+# 视频帧提取（多模态视频理解）
+av>=13.0.0
+
+# ── 工具与辅助 ──
+python-dotenv>=1.0.0
+pydantic>=2.7.0
+
+# 开发调试
+ipython>=8.25.0

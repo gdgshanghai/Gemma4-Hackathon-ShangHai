@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "id": "model",
+      "filename": "model-Q4_K_M.gguf",
+      "url": "https://huggingface.co/chenghuzi/glimmer-e4b-asd9-gguf/resolve/main/model-Q4_K_M.gguf",
+      "chinaURL": "https://glimmer-1309191943.cos.ap-guangzhou.myqcloud.com/model-Q4_K_M.gguf",
+      "byteSize": 5302272992,
+      "sha256": "950ef480dd35ab2b48257f9caddfebe4da20ea950e286dd24add559ce284f5ad"
+    },
+    {
+      "id": "mmproj",
+      "filename": "mmproj-bf16.gguf",
+      "url": "https://huggingface.co/chenghuzi/glimmer-e4b-asd9-gguf/resolve/main/mmproj-bf16.gguf",
+      "chinaURL": "https://glimmer-1309191943.cos.ap-guangzhou.myqcloud.com/mmproj-bf16.gguf",
+      "byteSize": 991552096,
+      "sha256": "a06cbbb4b6ec363b5068ce23ef37f9ed62ed57288a33860505f7d6153cd4b57e"
+    }
+  ]
+}

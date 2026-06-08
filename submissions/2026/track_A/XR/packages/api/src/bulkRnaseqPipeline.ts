@@ -167,7 +167,7 @@ function createReport(
     '## Agent Tool Calling',
     modelPlan.agentRun?.toolCalls.length
       ? modelPlan.agentRun.toolCalls.map((toolCall, index) => `${index + 1}. ${toolCall.name} - ${toolCall.origin} - ${toolCall.status}`).join('\n')
-      : 'No tool calls were recorded; JSON fallback may have been used.',
+      : 'No planner tool calls were recorded; inspect the planning trace for fallback details.',
     '',
     '## Execution',
     'Executed with real Docker tool containers: FastQC, Trimmomatic, kallisto, PyDESeq2, and MultiQC.',

@@ -78,6 +78,15 @@ export type ReviewAgentRun = {
 
 export type ConversationAction = 'answer' | 'clarify' | 'status' | 'run_analysis'
 
+export type ConversationRouteContext = {
+  hasActiveTask?: boolean
+  latestTaskStatus?: 'queued' | 'running' | 'completed' | 'failed'
+  previousAction?: ConversationAction
+  previousWorkflowKey?: string
+  previousAnalysisPrompt?: string
+  previousMessage?: string
+}
+
 export type ConversationDecision = {
   action: ConversationAction
   message: string

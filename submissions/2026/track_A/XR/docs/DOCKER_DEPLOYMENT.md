@@ -134,8 +134,8 @@ curl -sS -X POST http://127.0.0.1:3101/api/plan \
 
 成功时应能看到：
 - `modelPlan.source` 为 `model`
-- `modelPlan.agentRun.mode` 为 `native_guided_tool_calling`，或在 endpoint 不支持 tools 时显示 `json_fallback`
-- `toolCalls` 包含 `select_workflow`
+- `modelPlan.agentRun.mode` 为 `native_guided_tool_calling`，或在 endpoint 不返回原生 `tool_calls` 但 schema JSON 成功时显示 `guided_tool_calling`
+- `toolCalls` 包含 Gemma 4 在受控 planner loop 中选择的公开工具，例如 `inspect_available_bio_tools` / `inspect_available_workflows`、`select_workflow`、`inspect_workflow_contract`、`inspect_sample_data`、`draft_tool_level_plan`
 
 ### 9. 运行 Demo
 1. 打开 `http://127.0.0.1:5178`。
@@ -190,7 +190,7 @@ pnpm check
 | Web 页面打不开 | 检查 `.review-data/logs/web.log` 和 `lsof -i :5178`。 |
 | API 无响应 | 检查 `.review-data/logs/api.log` 和 `curl http://127.0.0.1:3101/api/provider`。 |
 | LLM engine 无响应 | 检查 Python venv 是否安装依赖，查看 `.review-data/logs/llm-engine.log`。 |
-| `/api/plan` 进入 JSON fallback | 检查 Gemma endpoint 是否支持 OpenAI-compatible `tools`；fallback 是预期兜底，不影响可执行 demo。 |
+| `/api/plan` 进入 JSON fallback | 先检查 LLM engine 日志中的 native tool call、schema JSON 重试和 `system_grounding` 受控恢复记录；正常兼容路径应显示 `guided_tool_calling`，Tool Calls 可能包含 `model_schema` 或 contract-bounded `system_grounding`，只有公开恢复也不可行时才进入 fallback。 |
 | 出现 404 `/v1/chat/completions` | 检查 `GEMMA_BASE_URL` 是否正确，Ollama OpenAI-compatible URL 应为 `http://127.0.0.1:11434/v1`。 |
 | 模型不存在 | 运行 `ollama list`，将 `.env` 中 `GEMMA_MODEL` 改为实际存在的 Gemma 4 tag。 |
 | Docker 镜像拉取失败 | 检查网络和 Docker 登录状态；查看 `.review-data/logs/prepare-tool-images.log`，重新运行 `bash scripts/prepare-tool-images.sh` 或 `bash scripts/start-dev.sh`。如果 Docker Desktop credential helper 返回异常，脚本会用 `.review-data/docker-config` 中的临时干净配置重试公开镜像拉取。 |
@@ -332,8 +332,8 @@ curl -sS -X POST http://127.0.0.1:3101/api/plan \
 
 Expected:
 - `modelPlan.source` is `model`
-- `modelPlan.agentRun.mode` is `native_guided_tool_calling`, or `json_fallback` if the endpoint does not support tools
-- `toolCalls` includes `select_workflow`
+- `modelPlan.agentRun.mode` is `native_guided_tool_calling`, or `guided_tool_calling` when native `tool_calls` are unavailable but schema JSON succeeds
+- `toolCalls` includes public tools chosen by Gemma 4 inside the controlled planner loop, such as `inspect_available_bio_tools` / `inspect_available_workflows`, `select_workflow`, `inspect_workflow_contract`, `inspect_sample_data`, and `draft_tool_level_plan`
 
 ### 9. Run The Demo
 1. Open `http://127.0.0.1:5178`.
@@ -388,7 +388,7 @@ This command builds, tests, prepares a submission package, and scans it to ensur
 | Web page is unavailable | Check `.review-data/logs/web.log` and `lsof -i :5178`. |
 | API is unavailable | Check `.review-data/logs/api.log` and `curl http://127.0.0.1:3101/api/provider`. |
 | LLM engine is unavailable | Confirm Python venv dependencies and inspect `.review-data/logs/llm-engine.log`. |
-| `/api/plan` enters JSON fallback | Confirm the Gemma endpoint supports OpenAI-compatible `tools`; fallback is an expected backup and does not block executable demo. |
+| `/api/plan` enters JSON fallback | Inspect the LLM engine log for native tool-call, schema JSON retry, and `system_grounding` controlled-recovery records; the normal compatibility path should show `guided_tool_calling`, and Tool Calls may include `model_schema` or contract-bounded `system_grounding`. Fallback is used only when public recovery is also unavailable. |
 | 404 on `/v1/chat/completions` | Check `GEMMA_BASE_URL`; Ollama OpenAI-compatible URL should be `http://127.0.0.1:11434/v1`. |
 | Model tag does not exist | Run `ollama list` and set `GEMMA_MODEL` in `.env` to an existing Gemma 4 tag. |
 | Docker image pull fails | Check network and Docker login status; inspect `.review-data/logs/prepare-tool-images.log`, then rerun `bash scripts/prepare-tool-images.sh` or `bash scripts/start-dev.sh`. If Docker Desktop's credential helper returns an error, the script retries public image pulls with a temporary clean config under `.review-data/docker-config`. |

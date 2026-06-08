@@ -1,0 +1,47 @@
+# macOS
+.DS_Store
+
+# Python / MLX
+.venv/
+__pycache__/
+*.pyc
+
+# 模型与权重（体积大，不入库）
+*.safetensors
+finetune/adapters/
+ml/models/
+
+# 训练/推理日志
+*.log
+
+# 样例图（按需保留，默认忽略大图）
+data/sample/images/*.jpg
+
+# iOS / Xcode
+ios/.env
+ios/GemmaScreen.xcodeproj/
+ios/build/
+ios/build-device/
+ios/DerivedData/
+ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/*.xcodeproj/xcuserdata/
+*.xcuserstate
+.swiftpm/
+
+# 打包进 app 的大模型(本地存在即可，不入库)
+ios/Model/
+
+# Internal handoff notes and local sample data
+HANDOFF.md
+MODEL_ISSUE.md
+docs/
+data/ft/
+data/sample/
+
+# 测试产物
+ios/Resources/testclip.mp4
+ios/Resources/test_clip.mov
+ios/Resources/sample_pos.jpg
+ios/Resources/sample_neg.jpg
+ios/*.png
+*.litertlm

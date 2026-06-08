@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>客户端技术架构报告</title>
+  <style>
+    @page { size: A4; margin: 18mm 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      color: #1f2937;
+      line-height: 1.55;
+      font-size: 12px;
+      background: #fff;
+    }
+    h1 { font-size: 26px; margin: 0 0 8px; }
+    h2 { font-size: 18px; margin: 24px 0 10px; border-bottom: 1px solid #d1d5db; padding-bottom: 4px; }
+    h3 { font-size: 14px; margin: 14px 0 6px; }
+    p { margin: 6px 0; }
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      padding: 1px 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 14px;
+      page-break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 6px 8px;
+      vertical-align: top;
+      text-align: left;
+    }
+    th { background: #f3f4f6; font-weight: 700; }
+    ul { margin: 6px 0 10px 20px; padding: 0; }
+    li { margin: 3px 0; }
+    .subtitle { color: #4b5563; margin-bottom: 16px; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+    }
+    .stat, .card, .flow-node {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      page-break-inside: avoid;
+    }
+    .stat-label { color: #6b7280; font-size: 11px; }
+    .stat-value { font-size: 17px; font-weight: 700; margin-top: 3px; }
+    .stat-caption { color: #6b7280; font-size: 11px; margin-top: 2px; }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 28px 1fr 28px 1fr;
+      gap: 8px;
+      align-items: stretch;
+      margin: 12px 0 18px;
+    }
+    .arrow {
+      text-align: center;
+      padding-top: 28px;
+      color: #6b7280;
+      font-size: 18px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .card-title { font-weight: 700; margin-bottom: 6px; }
+    .muted { color: #6b7280; }
+    .page-break { page-break-before: always; }
+  </style>
+</head>
+<body>
+  <h1>客户端技术架构报告</h1>
+  <p class="subtitle">范围：当前仓库的客户端、后端协作、Agent、OBS 插件、跨软件通信和工具栈。依据实际文件包括 <code>main.py</code>、<code>api/qwen_multimodal.py</code>、<code>services/obs_bridge.py</code>、<code>frontend/src/views/Room.vue</code>、<code>obs-blivechat-bridge/src/obs-blivechat-bridge.cpp</code>。</p>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">前端框架</div><div class="stat-value">Vue 2</div><div class="stat-caption">Element UI + WebSocket</div></div>
+    <div class="stat"><div class="stat-label">后端框架</div><div class="stat-value">Tornado</div><div class="stat-caption">HTTP + WebSocket</div></div>
+    <div class="stat"><div class="stat-label">主模型</div><div class="stat-value">Gemma 4 31B MM</div><div class="stat-caption">联合多模态分析</div></div>
+    <div class="stat"><div class="stat-label">OBS 通道</div><div class="stat-value">3 路</div><div class="stat-caption">event / frame / audio</div></div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-node"><b>OBS / B站 / 浏览器</b><p class="muted">采集直播事件、弹幕、截图和音频</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-node"><b>Tornado 服务层</b><p class="muted">路由、状态、插件、归档、AI 编排</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-node"><b>Gemma 4 多模态</b><p class="muted">SSE 返回 content，reasoning 仅调试</p></div>
+  </div>
+
+  <h2>一、模型选型理由</h2>
+  <table>
+    <thead><tr><th>模型/策略</th><th>使用位置</th><th>选择理由</th></tr></thead>
+    <tbody>
+      <tr><td><code>gemma4-31b-mm</code></td><td>联合心理/语音/画面分析与视觉场景</td><td>31B 规模给足复杂推理和多模态融合能力，适合把截图、双路音频和弹幕统计合并成一个结构化 JSON。</td></tr>
+      <tr><td><code>gemma4-e4b-mm</code></td><td>ASR/轻量语音观察</td><td>E4B 规格更轻，用于单独语音转写和声音分类，降低延迟和资源占用。</td></tr>
+      <tr><td>规则分析 fallback</td><td>无模型或非结构化返回时</td><td>保障 UI 不空白；当模型返回英文 reasoning 或非 JSON 时，只展示本地中文兜底结果。</td></tr>
+    </tbody>
+  </table>
+  <p>选择 <code>gemma4-31b-mm</code> 的核心理由是联合分析任务不是单纯 OCR 或 ASR，而是需要同时理解截图、弹幕统计、麦克风音频、桌面音频和直播语境。31B 规模提供更强的跨模态归纳和结构化输出能力。对单独 ASR/语音观察，<code>gemma4-e4b-mm</code> 更轻，适合降低成本与延迟。</p>
+  <p>当前客户端策略是：业务 UI 只展示 <code>delta.content</code> 或可解析 JSON；<code>delta.reasoning</code> 只写后端 debug 日志，避免英文推理过程污染用户界面。</p>
+
+  <h2>二、系统分层</h2>
+  <table>
+    <thead><tr><th>层级</th><th>关键文件</th><th>职责</th></tr></thead>
+    <tbody>
+      <tr><td>Vue 客户端</td><td><code>frontend/src/views/Home/index.vue</code>, <code>frontend/src/views/Room.vue</code></td><td>负责房间入口、弹幕渲染、右侧四模块分析面板、OBS 状态订阅和联合分析触发。</td></tr>
+      <tr><td>Tornado 后端</td><td><code>main.py</code>, <code>api/*.py</code>, <code>services/*.py</code></td><td>集中注册 HTTP/WebSocket 路由，管理直播间连接、插件进程、OBS bridge 状态、AI 分析和直播归档。</td></tr>
+      <tr><td>OBS Bridge 插件</td><td><code>obs-blivechat-bridge/src/obs-blivechat-bridge.cpp</code></td><td>采集 OBS 推流事件、截图、麦克风/桌面音频，压成 JSON/WAV base64 后 POST 到本地后端。</td></tr>
+      <tr><td>AI/Agent 层</td><td><code>api/qwen_multimodal.py</code>, <code>services/psych_agent.py</code>, <code>agent_pipeline.py</code></td><td>把弹幕统计、画面帧和音频片段组装为多模态请求，调用 Gemma 4 系列模型输出结构化报告。</td></tr>
+      <tr><td>插件生态</td><td><code>services/plugin.py</code>, <code>api/plugin.py</code>, <code>plugins/*</code></td><td>通过子进程和 WebSocket 连接 text-to-speech、msg-logging、login、native-ui 等插件。</td></tr>
+      <tr><td>直播归档/复盘</td><td><code>services/live_archive.py</code>, <code>api/live_archive.py</code>, <code>frontend/src/views/LiveReviewDetail.vue</code></td><td>将心理、语音、画面、礼物与直播元信息写入分文件归档，并生成封面、时间线和自动切片建议。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>三、Agent 设计</h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">实时 Room Agent</div>
+      <ul>
+        <li><code>Room.vue</code> 每个窗口聚合弹幕、礼物、SC、OBS 状态，调用 <code>/api/qwen/joint-report</code>，再分发到心理、语音、礼物、画面四个模块。</li>
+        <li><code>services/psych_agent.py</code> 是后端常驻心理状态服务，可从弹幕事件生成窗口 metrics，并调用 Qwen 或规则 fallback。</li>
+        <li><code>agent_pipeline.py</code> 是命令行离线/实验 Agent，连接 <code>/api/chat</code> 聚合窗口，调用 <code>/api/qwen/chat</code> 验证提示词和指标体系。</li>
+        <li>Agent 输出协议包含 stress、valence、fatigue、engagement、confidence、danmakuDistill、liveEnvironment、voiceReport、sceneReport。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">输出分发</div>
+      <ul>
+        <li>心理模块：压力、积极度、疲劳、参与度、弹幕蒸馏。</li>
+        <li>语音模块：转写、声音类型、活动、外显状态。</li>
+        <li>礼物模块：礼物、舰长、SC、累计价值。</li>
+        <li>画面模块：游戏中、唱歌中、观看视频中及证据。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>四、OBS 插件设计</h2>
+  <div class="card">
+    <div class="card-title">obs-blivechat-bridge</div>
+    <ul>
+      <li>OBS 插件固定上报到 <code>http://127.0.0.1:12450</code>，避免跨机网络和认证复杂度。</li>
+      <li>事件通道上报 <code>streaming_started</code> / <code>streaming_stopped</code>、录制路径、推流时长。</li>
+      <li>画面通道上报最新截图或截图路径；后端再压缩为 JPEG data URL。</li>
+      <li>音频通道采样 16kHz 单声道 WAV base64，支持 mixed、mic、desktop 三种 <code>trackRole</code>。</li>
+      <li>后端 <code>obs_bridge</code> 保存最新状态，并通过 <code>/api/obs-agent</code> WebSocket 广播给前端。</li>
+    </ul>
+    <p class="muted">设计取舍：OBS 插件只负责采集和上传，不做 AI 推理；后端统一保存最新状态并决定何时调用模型。这样可以把 OBS 端复杂度控制在 C++ 插件可维护范围内，同时让 Python/Vue 侧更容易迭代分析策略。</p>
+  </div>
+
+  <h2>五、软件之间的通信</h2>
+  <table>
+    <thead><tr><th>发送方/接收方</th><th>协议/接口</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>浏览器 Room</td><td>WebSocket <code>/api/chat</code></td><td>接收弹幕、礼物、SC、心跳和错误事件。</td></tr>
+      <tr><td>Room ↔ 后端</td><td>HTTP <code>/api/qwen/joint-report</code></td><td>发送窗口 metrics，换取心理/语音/画面联合报告。</td></tr>
+      <tr><td>OBS 插件 → 后端</td><td>HTTP POST <code>/api/obs/event|frame|audio</code></td><td>推送推流事件、截图、音频片段和分轨配置。</td></tr>
+      <tr><td>后端 → Room</td><td>WebSocket <code>/api/obs-agent</code></td><td>广播 OBS state/event/frame/audio/config。</td></tr>
+      <tr><td>Home → Room iframe</td><td><code>postMessage roomSetPsychTabConfig</code></td><td>同步四模块启用状态和分析间隔。</td></tr>
+      <tr><td>Room → Home</td><td><code>postMessage roomPsychAgentUpdate</code></td><td>回传最新四模块结果给父页面。</td></tr>
+      <tr><td>后端 ↔ 插件</td><td>WebSocket <code>/api/plugin/ws</code> + Bearer token</td><td>插件心跳、命令广播、消息日志和 TTS。</td></tr>
+      <tr><td>后端 → Gemma 服务</td><td>HTTP SSE <code>/v1/chat/completions</code></td><td>流式读取 <code>delta.content</code>，reasoning 只写 debug 日志。</td></tr>
+      <tr><td>Room → live archive</td><td>HTTP <code>/api/live/archive/*</code></td><td>追加 mental/voice/picture/gift/live_info 记录，供复盘页读取。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>六、直播归档与复盘链路</h2>
+  <div class="grid-2">
+    <div class="card"><div class="card-title">写入侧</div><ul><li><code>Room.vue</code> 在四模块结果生成后调用 <code>/api/live/archive/append</code>。</li><li>分类文件包括 <code>mental.txt</code>、<code>voice.txt</code>、<code>picture.txt</code>、<code>gift.txt</code>、<code>live_info.txt</code>。</li><li>推流开始时通过 <code>/api/live/archive/init</code> 创建直播 session。</li></ul></div>
+    <div class="card"><div class="card-title">读取侧</div><ul><li><code>LiveReviewDetail.vue</code> 读取 session、clip timeline、scene timeline。</li><li><code>services/live_archive.py</code> 解析归档文本，生成场景时间轴和高光切片建议。</li><li>可用 <code>ffmpeg</code>/<code>ffprobe</code> 抽帧生成封面、读取录播时长。</li></ul></div>
+  </div>
+
+  <h2>七、客户端使用的 Tools 与库</h2>
+  <table>
+    <thead><tr><th>工具/库</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>Vue 2 + Element UI</td><td>客户端 UI、房间配置、卡片/开关/表单。</td></tr>
+      <tr><td>vue-router / vue-i18n</td><td>页面路由和中日英文案。</td></tr>
+      <tr><td>axios + fetch + WebSocket</td><td>HTTP API、SSE 间接消费、弹幕/OBS 实时通信。</td></tr>
+      <tr><td>Tornado</td><td>Python HTTP/WebSocket 服务器。</td></tr>
+      <tr><td>aiohttp / httpx / openai SDK</td><td>外部 API、Qwen/Gemma 调用和带宽诊断。</td></tr>
+      <tr><td>blivedm</td><td>B 站直播弹幕连接与消息模型。</td></tr>
+      <tr><td>OBS C++ API + libcurl</td><td>OBS 插件、截图/音频采集、HTTP 上传。</td></tr>
+      <tr><td>Pillow</td><td>截图压缩为 JPEG，降低 <code>:8443</code> 上传压力。</td></tr>
+      <tr><td>SQLAlchemy</td><td>数据持久化基础设施。</td></tr>
+      <tr><td>downloadjs / echarts / crypto-js / pako / lodash</td><td>前端下载、图表、哈希、压缩和工具函数。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>八、当前架构的关键质量措施</h2>
+  <div class="grid-3">
+    <div class="card"><div class="card-title">上传链路诊断</div><p><code>api/qwen_multimodal.py</code> 记录 body 大小、首 SSE 字节、首文本 token、content/reasoning chunk 数量，并在上传错误中计算近似上传网速。</p></div>
+    <div class="card"><div class="card-title">非 JSON 容错</div><p><code>Room.vue</code> 会尝试从响应文本中提取 JSON；解析失败时只显示中文规则兜底，不展示 reasoning 原文。</p></div>
+    <div class="card"><div class="card-title">插件隔离</div><p>插件由子进程启动，并通过 Bearer token + WebSocket 接入；插件异常不会直接拖垮主 Tornado 服务。</p></div>
+  </div>
+
+  <h2>九、建议</h2>
+  <ol>
+    <li>把 <code>/api/qwen/joint-report</code> 的输出 schema 固化为版本化协议，例如 <code>jointReport.v1</code>，并在前后端共享字段约束。</li>
+    <li>将 OBS 上传链路从 AutoDL <code>:8443</code> 网关逐步迁移到更稳定的本地隧道或对象存储中转，减少 0.5MB 级请求的抖动。</li>
+    <li>将 <code>Room.vue</code> 中 Agent 编排逻辑拆到独立 composable/service，降低单文件复杂度。</li>
+    <li>为 content/reasoning、非 JSON、空响应、413、ReadError 等路径补充自动化回归测试。</li>
+  </ol>
+</body>
+</html>

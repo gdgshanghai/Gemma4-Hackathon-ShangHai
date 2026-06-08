@@ -1,0 +1,5 @@
+﻿built_at=2026-06-03T04:29:36.6291590+08:00
+source=obs-blivechat-bridge/src/obs-blivechat-bridge.cpp
+source_sha256=7E192C0876531DEBDE912316FE07039E0C86762BC9BF820EA1BFAFAA9453F826
+cmake_preset=windows-x64
+configuration=RelWithDebInfo

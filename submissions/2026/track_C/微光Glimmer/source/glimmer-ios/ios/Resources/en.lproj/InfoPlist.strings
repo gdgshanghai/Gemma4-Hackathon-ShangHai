@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "Glimmer";
+"NSPhotoLibraryUsageDescription" = "Choose a behavior video for local screening analysis. Data stays on this device.";
+"NSCameraUsageDescription" = "Record a behavior video for local screening analysis. Data stays on this device.";
+"NSMicrophoneUsageDescription" = "Record audio together with video. Data stays on this device.";

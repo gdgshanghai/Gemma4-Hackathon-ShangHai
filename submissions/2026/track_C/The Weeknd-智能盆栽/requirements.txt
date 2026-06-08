@@ -1,0 +1,6 @@
+# This submission does not use a Python runtime as the primary execution path.
+# The project contains:
+# - `APP/`: Flutter Android application
+# - `firmware/`: ESP32-S3 PlatformIO firmware
+#
+# Please follow the environment setup in `README.md` and `BUILD_APK.md`.

@@ -1,0 +1,108 @@
+# Soundspeed — git ignore
+
+# 系统 / 编辑器
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# AI 助手本地配置（Reasonix / Claude Code / Kimi CLI 等，不入库）
+CLAUDE.md
+AGENTS.md
+KIMI_SETUP.md
+.claude/
+.kimi/
+.reasonix/
+.playwright-mcp/
+.superpowers/
+reasonix.toml
+.codegraph/
+.pnpm-store/
+
+# 密钥 / 环境变量
+.env
+.env.*
+!.env.example
+
+# 本机 HTTPS 证书 + 渲染出的 Caddyfile（每台机不同，由 scripts/setup-https.sh 生成，不入库）
+# 模板 Caddyfile.template 是源码，正常进 git
+certs/
+*.pem
+/Caddyfile
+
+# Python (backend)
+__pycache__/
+*.py[cod]
+.venv/
+.venv-*/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+
+# Node (frontend，待落地)
+node_modules/
+dist/
+.vite/
+.next/
+
+# 模型权重 —— 不进 git，靠 models/ 下的下载脚本获取
+*.gguf
+*.safetensors
+*.onnx
+*.pt
+*.ckpt
+models/*
+!models/.gitkeep
+!models/*.md
+!models/*.sh
+!models/whisper/
+!models/huggingface/
+models/whisper/*
+!models/whisper/.gitkeep
+models/huggingface/*
+!models/huggingface/.gitkeep
+
+# backend 下运行时下载的模型镜像（ASR runner 默认路径相对 cwd，从 backend/ 跑测试时落这里）
+backend/models/
+
+# 数据 / 录音 —— 全部忽略（现场录音、隐私）
+# 测试夹具放 backend/tests/fixtures/，不受此影响
+data/*
+!data/.gitkeep
+
+# SQLite 运行库（schema / 迁移脚本是源码，正常进 git）
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+*.db-journal
+
+# 导出产物 / 实验产物 / 日志 / 临时
+exports/
+experiments/*
+!experiments/.gitkeep
+logs/
+tmp/
+*.log
+admin-*.png
+
+# AI 会话导出包（Kimi CLI 等）
+session-*.zip
+
+# 设备探测结果 —— 每台机不同，是本机环境快照，不入库（scripts/detect_device.py 生成）
+device-detected.json
+Demo_Soundspeed.mp4
+
+# 内部开发过程文档 —— 本地保留，不进公开仓库（git rm --cached 收拢，详见 README 项目结构）
+docs/specs/
+docs/plans/
+docs/reviews/
+docs/superpowers/
+docs/frontend-admin-ui-handoff.md
+docs/orchestrator-handoff.md
+docs/development-process.md

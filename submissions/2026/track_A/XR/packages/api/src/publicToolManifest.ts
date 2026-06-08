@@ -1,9 +1,12 @@
 import { workflowCatalog } from './workflowCatalog.js'
 
 export type PublicToolName =
+  | 'inspect_available_bio_tools'
   | 'inspect_available_workflows'
+  | 'inspect_workflow_contract'
   | 'inspect_sample_data'
   | 'select_workflow'
+  | 'draft_tool_level_plan'
   | 'draft_execution_plan'
   | 'summarize_results'
 
@@ -26,6 +29,17 @@ function objectSchema(properties: Record<string, unknown>, required: string[] = 
 }
 
 const workflowEnum = workflowCatalog.map((workflow) => workflow.key)
+const stepIdEnum = workflowCatalog.flatMap((workflow) => workflow.steps.map((step) => step.id))
+const toolNameEnum = Array.from(new Set(workflowCatalog.flatMap((workflow) => workflow.steps.map((step) => step.toolName || 'not specified'))))
+const toolImageEnum = Array.from(new Set(workflowCatalog.flatMap((workflow) => workflow.steps.map((step) => step.toolImage || 'not specified'))))
+
+function stringArraySchema(description: string) {
+  return {
+    type: 'array',
+    items: { type: 'string' },
+    description,
+  }
+}
 
 // 中文：这些是暴露给 Gemma 4 的公开函数调用契约，评审可从这里确认 Agent 只能选择公开 workflow、样例数据和工具容器。
 // EN: These are the public function-calling contracts exposed to Gemma 4, so reviewers can verify the agent is limited to public workflows, sample data, and tool containers.
@@ -33,9 +47,31 @@ export const publicToolDefinitions: PublicToolDefinition[] = [
   {
     type: 'function',
     function: {
+      name: 'inspect_available_bio_tools',
+      description: 'List concrete public bioinformatics tools available for Gemma 4 tool-level planning.',
+      parameters: objectSchema({}),
+    },
+  },
+  {
+    type: 'function',
+    function: {
       name: 'inspect_available_workflows',
       description: 'List public review workflows and public tool containers available in this demo.',
       parameters: objectSchema({}),
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'inspect_workflow_contract',
+      description: 'Inspect the fixed public workflow contract for one selected workflow before drafting a tool-level plan.',
+      parameters: objectSchema({
+        workflowKey: {
+          type: 'string',
+          enum: workflowEnum,
+          description: 'Public workflow key to inspect.',
+        },
+      }, ['workflowKey']),
     },
   },
   {
@@ -71,6 +107,55 @@ export const publicToolDefinitions: PublicToolDefinition[] = [
           description: 'Comparison extracted from the request, such as treatment vs control.',
         },
       }, ['workflowKey', 'reason', 'comparison']),
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'draft_tool_level_plan',
+      description: 'Draft a concrete bioinformatics tool-level plan that follows the selected public workflow contract exactly.',
+      parameters: objectSchema({
+        workflowKey: {
+          type: 'string',
+          enum: workflowEnum,
+        },
+        intent: {
+          type: 'string',
+          description: 'Short public analysis intent extracted from the request.',
+        },
+        comparison: {
+          type: 'string',
+          description: 'Condition comparison for the public toy workflow.',
+        },
+        steps: {
+          type: 'array',
+          description: 'Tool-level steps in the exact public workflow contract order.',
+          items: objectSchema({
+            stepId: {
+              type: 'string',
+              enum: stepIdEnum,
+              description: 'Step id from the selected public workflow contract.',
+            },
+            toolName: {
+              type: 'string',
+              enum: toolNameEnum,
+              description: 'Public tool name from the selected workflow contract.',
+            },
+            toolImage: {
+              type: 'string',
+              enum: toolImageEnum,
+              description: 'Pinned public container image from the selected workflow contract.',
+            },
+            purpose: {
+              type: 'string',
+              description: 'Why this public tool step is needed for the user request.',
+            },
+            inputs: stringArraySchema('Public toy data or previous-step artifacts consumed by this step.'),
+            outputs: stringArraySchema('Public review artifacts expected from this step.'),
+            dependsOn: stringArraySchema('Earlier public step ids this step depends on.'),
+          }, ['stepId', 'toolName', 'toolImage', 'purpose']),
+        },
+      }, ['workflowKey', 'intent', 'comparison', 'steps']),
     },
   },
   {

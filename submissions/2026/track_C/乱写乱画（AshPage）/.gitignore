@@ -1,0 +1,11 @@
+.gradle/
+build/
+local.properties
+
+app/build/
+
+*.apk
+*.ap_
+*.aab
+*.aar
+乱涂乱画演示视频.mp4

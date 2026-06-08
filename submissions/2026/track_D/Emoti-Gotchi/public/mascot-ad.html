@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emoti-Gotchi Product Film</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Zen+Maru+Gothic:wght@500;700&display=swap");
+
+      * { box-sizing: border-box; }
+      html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #f5eee4; }
+      body { font-family: "Zen Maru Gothic", sans-serif; color: #3f3028; }
+
+      .film { position: relative; width: 100vw; height: 100vh; overflow: hidden; isolation: isolate; }
+      .grain {
+        position: absolute; inset: 0; z-index: 20; opacity: .11; pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      }
+      .brand {
+        position: absolute; z-index: 30; top: 38px; left: 48px; display: flex; gap: 14px; align-items: center;
+        font-weight: 700; font-size: 20px; letter-spacing: .08em; color: #4d3a2f;
+      }
+      .brand-mark { width: 18px; height: 18px; border-radius: 50%; background: #ff9a59; box-shadow: 0 0 0 7px #fff5e9; }
+      .privacy {
+        position: absolute; z-index: 30; right: 48px; top: 38px; padding: 10px 18px; border-radius: 999px;
+        border: 1px solid rgba(72,56,45,.18); background: rgba(255,250,243,.78); color: #5e4e42; font-size: 14px;
+      }
+      .scene { position: absolute; inset: 0; opacity: 0; animation: scene 36s linear infinite; }
+      .scene:nth-of-type(1) { animation-delay: 0s; }
+      .scene:nth-of-type(2) { animation-delay: 6s; }
+      .scene:nth-of-type(3) { animation-delay: 12s; }
+      .scene:nth-of-type(4) { animation-delay: 18s; }
+      .scene:nth-of-type(5) { animation-delay: 24s; }
+      .scene:nth-of-type(6) { animation-delay: 30s; }
+      @keyframes scene {
+        0% { opacity: 0; }
+        3% { opacity: 1; }
+        14% { opacity: 1; }
+        17%, 100% { opacity: 0; }
+      }
+
+      .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: drift 6s ease-out infinite; }
+      @keyframes drift { from { transform: scale(1.03); } to { transform: scale(1.1) translateX(-1.5%); } }
+      .shade { position: absolute; top: 0; bottom: 0; width: 57%; background: rgba(246,237,226,.88); }
+      .shade-left { left: 0; }
+      .shade-right { right: 0; }
+      .copy {
+        position: absolute; z-index: 4; top: 50%; transform: translateY(-50%); width: min(590px, 43vw);
+        left: 7vw; animation: copyIn 6s ease-out infinite;
+      }
+      .copy.right { left: auto; right: 7vw; }
+      @keyframes copyIn {
+        0%, 3% { transform: translateY(-42%); opacity: 0; }
+        8%, 80% { transform: translateY(-50%); opacity: 1; }
+        100% { transform: translateY(-54%); opacity: 0; }
+      }
+      .eyebrow { text-transform: uppercase; letter-spacing: .18em; font-weight: 700; font-size: 13px; color: #a76a43; margin-bottom: 18px; }
+      h1, h2 { font-family: "Noto Serif SC", serif; margin: 0; line-height: 1.18; }
+      h1 { font-size: clamp(54px, 6.2vw, 100px); letter-spacing: .01em; }
+      h2 { font-size: clamp(38px, 4.3vw, 70px); }
+      p { margin: 22px 0 0; font-size: clamp(18px, 1.7vw, 28px); line-height: 1.6; color: #715e50; }
+      .accent { color: #e67842; }
+
+      .interface { background: #e7f2ed; }
+      .climate-grid { position: absolute; inset: 18% 7% 12%; display: grid; grid-template-columns: 1.25fr .75fr; gap: 32px; }
+      .weather-card, .safety-card {
+        border: 1px solid rgba(47,75,63,.13); background: rgba(255,253,248,.88); border-radius: 28px; padding: 44px;
+        box-shadow: 0 24px 70px rgba(45,70,59,.12);
+      }
+      .weather-symbol { font-size: 88px; line-height: 1; color: #5b9e85; margin-bottom: 20px; }
+      .weather-card h2 { font-size: 54px; }
+      .bars { display: flex; height: 130px; align-items: end; gap: 15px; margin-top: 34px; }
+      .bars i { flex: 1; background: #92cdb7; border-radius: 12px 12px 4px 4px; animation: rise 1.2s ease both; }
+      .bars i:nth-child(1) { height: 38%; } .bars i:nth-child(2) { height: 58%; }
+      .bars i:nth-child(3) { height: 46%; } .bars i:nth-child(4) { height: 82%; background: #e9a16d; }
+      .bars i:nth-child(5) { height: 62%; } .bars i:nth-child(6) { height: 44%; } .bars i:nth-child(7) { height: 34%; }
+      @keyframes rise { from { height: 0; } }
+      .weather-card small { color: #6e8277; font-size: 16px; }
+      .action { margin-top: 30px; padding: 20px 24px; border-left: 5px solid #64b694; background: #eef7f2; font-size: 19px; line-height: 1.5; }
+
+      .safety { background: #f6eee8; }
+      .safety-layout { position: absolute; inset: 16% 7% 10%; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+      .safety-card { position: relative; border-color: rgba(180,85,69,.16); }
+      .pulse { width: 58px; height: 58px; border-radius: 50%; background: #ec6b5e; box-shadow: 0 0 0 0 rgba(236,107,94,.35); animation: pulse 1.6s infinite; }
+      @keyframes pulse { 60% { box-shadow: 0 0 0 24px rgba(236,107,94,0); } }
+      .steps { margin-top: 28px; display: grid; gap: 16px; }
+      .steps div { padding: 17px 20px; background: #fff9f4; border: 1px solid rgba(93,61,51,.12); border-radius: 14px; font-size: 18px; }
+      .steps b { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #f0b38d; margin-right: 12px; }
+
+      .closing { background: #fff5e9; }
+      .closing .photo { inset: auto 5vw -12vh auto; width: 55vw; height: 100vh; object-fit: contain; }
+      .closing .copy { width: 54vw; }
+      .tagline { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+      .tagline span { padding: 10px 16px; border: 1px solid #dccbbb; border-radius: 999px; background: #fffaf4; color: #6a5547; font-size: 15px; }
+      .footer { position: absolute; z-index: 30; bottom: 28px; left: 48px; color: #8e7b6d; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <main class="film">
+      <div class="brand"><span class="brand-mark"></span> EMOTI-GOTCHI</div>
+      <div class="privacy">Privacy-first · On-device support</div>
+      <div class="grain"></div>
+
+      <section class="scene">
+        <img class="photo" src="/src/assets/emoti-gotchi-happy.png" alt="" />
+        <div class="shade shade-left"></div>
+        <div class="copy">
+          <div class="eyebrow">A gentle emotional companion</div>
+          <h1>让情绪，<br /><span class="accent">被温柔看见。</span></h1>
+          <p>Emoti-Gotchi 是面向低年级家庭的隐私优先端侧情绪支持系统。</p>
+        </div>
+      </section>
+
+      <section class="scene">
+        <img class="photo" src="/src/assets/emoti-gotchi-sad.png" alt="" />
+        <div class="shade shade-right"></div>
+        <div class="copy right">
+          <div class="eyebrow">Beyond the words</div>
+          <h2>当孩子说<br />“我没事”</h2>
+          <p>语言可能平静，声音与状态却在表达另一种需要。</p>
+        </div>
+      </section>
+
+      <section class="scene">
+        <img class="photo" src="/src/assets/emoti-gotchi-calm.png" alt="" />
+        <div class="shade shade-left"></div>
+        <div class="copy">
+          <div class="eyebrow">Realtime support · On device</div>
+          <h2>先陪伴。<br />不逼问，不诊断。</h2>
+          <p>端侧多通道推理快速选择低刺激互动策略，断网仍可运行。</p>
+        </div>
+      </section>
+
+      <section class="scene interface">
+        <div class="climate-grid">
+          <div class="weather-card">
+            <div class="weather-symbol">☁</div>
+            <small>7-DAY FAMILY CLIMATE</small>
+            <h2>傍晚气压略有波动</h2>
+            <div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="weather-card">
+            <div class="eyebrow">One gentle action</div>
+            <h2 style="font-size:40px">今晚，给空间多一点安静。</h2>
+            <div class="action">建议：在睡前降低光线变化与环境刺激。</div>
+            <p style="font-size:17px">云端只分析脱敏结构化事件，不上传原始音频与完整对话。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="scene safety">
+        <div class="safety-layout">
+          <div class="copy" style="position:relative;inset:auto;transform:none;width:auto;animation:copyIn 6s ease-out infinite">
+            <div class="eyebrow">Safety boundary</div>
+            <h2>极端情况，<br />生命安全优先。</h2>
+            <p>高风险由端侧确定性安全规则触发，不被云端模型覆盖。</p>
+          </div>
+          <div class="safety-card">
+            <div class="pulse"></div>
+            <h2 style="font-size:36px;margin-top:28px">Guardian safety handoff</h2>
+            <div class="steps">
+              <div><b>1</b>温和提醒家长关注</div>
+              <div><b>2</b>家长明确授权</div>
+              <div><b>3</b>连接专业心理支持资源</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="scene closing">
+        <img class="photo" src="/src/assets/emoti-gotchi-happy.png" alt="" />
+        <div class="copy">
+          <div class="eyebrow">Emoti-Gotchi</div>
+          <h1>不是监控孩子。<br /><span class="accent">是帮助家庭靠近。</span></h1>
+          <p>从孩子仍愿意表达的年龄，建立可持续的亲子情感通道。</p>
+          <div class="tagline"><span>On-device</span><span>Privacy-first</span><span>Non-diagnostic</span><span>Gemma-powered insight</span></div>
+        </div>
+      </section>
+
+      <div class="footer">AI for Social Good · Product concept film</div>
+    </main>
+  </body>
+</html>

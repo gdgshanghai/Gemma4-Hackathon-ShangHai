@@ -8,10 +8,10 @@ import { runBulkRnaseqDemo } from './bulkRnaseqPipeline.js'
 import { runSingleCellDemo } from './singleCellPipeline.js'
 import { runProteomicsDemo } from './proteomicsPipeline.js'
 import { requestModelPlan, requestModelSummary, testModelConnection } from './llmClient.js'
-import { persistReviewAgentArtifacts, requestReviewAgentPlan } from './reviewAgentRuntime.js'
+import { appendReviewAgentResultSummary, persistReviewAgentArtifacts, requestReviewAgentPlan } from './reviewAgentRuntime.js'
 import { routeConversation } from './conversationRouter.js'
 import { workflowCatalog, type WorkflowKey } from './workflowCatalog.js'
-import type { ModelPlan, PlannedStep, TaskRecord, TimelineEventInput } from './types.js'
+import type { ConversationRouteContext, ModelPlan, PlannedStep, TaskRecord, TimelineEventInput } from './types.js'
 
 dotenv.config()
 
@@ -205,11 +205,15 @@ app.post('/api/conversation/route', async (req, res, next) => {
     }
     const latestTask = Array.from(tasks.values()).sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0]
     const context = req.body.context && typeof req.body.context === 'object'
-      ? req.body.context as { hasActiveTask?: boolean; latestTaskStatus?: TaskRecord['status'] }
+      ? req.body.context as ConversationRouteContext
       : {}
     const decision = await routeConversation(await loadProviderConfig(), message, {
       hasActiveTask: Boolean(context.hasActiveTask ?? latestTask?.status === 'running'),
       latestTaskStatus: context.latestTaskStatus || latestTask?.status,
+      previousAction: context.previousAction,
+      previousWorkflowKey: context.previousWorkflowKey,
+      previousAnalysisPrompt: context.previousAnalysisPrompt,
+      previousMessage: context.previousMessage,
     })
     res.json(decision)
   } catch (error) {
@@ -279,7 +283,13 @@ app.post('/api/tasks', async (req, res) => {
       const result = await runSelectedWorkflow(id, prompt, provider, { ...modelPlan, steps: plan }, (event) => {
         appendTimeline(id, event)
       })
-      const persistedAgentRun = await persistReviewAgentArtifacts(id, result.agentRun || result.modelPlan.agentRun)
+      const reflectedAgentRun = await appendReviewAgentResultSummary(
+        provider,
+        result.agentRun || result.modelPlan.agentRun,
+        result.workflowKey,
+        result.summary,
+      )
+      const persistedAgentRun = await persistReviewAgentArtifacts(id, reflectedAgentRun || result.agentRun || result.modelPlan.agentRun)
       const resultWithAgent = {
         ...result,
         agentRun: persistedAgentRun,

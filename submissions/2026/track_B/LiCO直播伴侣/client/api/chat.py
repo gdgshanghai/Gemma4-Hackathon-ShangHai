@@ -1,0 +1,597 @@
+# -*- coding: utf-8 -*-
+import asyncio
+import enum
+import json
+import logging
+import random
+import time
+import uuid
+from typing import *
+
+import aiohttp
+import tornado.websocket
+import yarl
+
+import api.base
+import blivedm.blivedm.clients.web as dm_web_cli
+import config
+import services.avatar
+import services.chat
+import services.psych_agent
+import services.translate
+import utils.async_io
+import utils.request
+
+logger = logging.getLogger(__name__)
+
+# 全局变量：存储最近活跃的房间配置（供Unity客户端使用）
+_latest_room_config = {
+    'roomId': 1695,  # 默认房间号
+    'autoTranslate': False
+}
+
+
+class Command(enum.IntEnum):
+    HEARTBEAT = 0
+    JOIN_ROOM = 1
+    ADD_TEXT = 2
+    ADD_GIFT = 3
+    ADD_MEMBER = 4
+    ADD_SUPER_CHAT = 5
+    DEL_SUPER_CHAT = 6
+    UPDATE_TRANSLATION = 7
+    FATAL_ERROR = 8
+    SEND_ROOM_CONFIG = 9  # 服务端向Unity发送房间配置
+
+
+class ContentType(enum.IntEnum):
+    TEXT = 0
+    EMOTICON = 1
+
+
+class FatalErrorType(enum.IntEnum):
+    AUTH_CODE_ERROR = 1
+    TOO_MANY_RETRIES = 2
+    TOO_MANY_CONNECTIONS = 3
+
+
+def make_message_body(cmd, data):
+    return json.dumps(
+        {
+            'cmd': cmd,
+            'data': data
+        }
+    ).encode('utf-8')
+
+
+def make_text_message_data(
+    avatar_url: str = services.avatar.DEFAULT_AVATAR_URL,
+    timestamp: int = None,
+    author_name: str = '',
+    author_type: int = 0,
+    content: str = '',
+    privilege_type: int = 0,
+    is_gift_danmaku: bool = False,
+    author_level: int = 1,
+    is_newbie: bool = False,
+    is_mobile_verified: bool = True,
+    medal_level: int = 0,
+    id_: str = None,
+    translation: str = '',
+    content_type: int = ContentType.TEXT,
+    content_type_params: list = None,
+    uid: str = '',
+    medal_name: str = '',
+    is_mirror: bool = False,
+):
+    # 为了节省带宽用list而不是dict
+    return [
+        # 0: avatarUrl
+        avatar_url,
+        # 1: timestamp
+        timestamp if timestamp is not None else int(time.time()),
+        # 2: authorName
+        author_name,
+        # 3: authorType
+        author_type,
+        # 4: content
+        content,
+        # 5: privilegeType
+        privilege_type,
+        # 6: isGiftDanmaku
+        1 if is_gift_danmaku else 0,
+        # 7: authorLevel
+        author_level,
+        # 8: isNewbie
+        1 if is_newbie else 0,
+        # 9: isMobileVerified
+        1 if is_mobile_verified else 0,
+        # 10: medalLevel
+        medal_level,
+        # 11: id
+        id_ if id_ is not None else uuid.uuid4().hex,
+        # 12: translation
+        translation,
+        # 13: contentType
+        content_type,
+        # 14: contentTypeParams
+        content_type_params if content_type_params is not None else [],
+        # 15: textEmoticons
+        [],  # 已废弃，保留
+        # 16: uid
+        uid,
+        # 17: medalName
+        medal_name,
+        # 18: isMirror
+        1 if is_mirror else 0,
+    ]
+
+
+def make_emoticon_params(url):
+    return [
+        # 0: url
+        url,
+    ]
+
+
+def make_translation_message_data(msg_id, translation):
+    return [
+        # 0: id
+        msg_id,
+        # 1: translation
+        translation,
+    ]
+
+
+class ChatHandler(tornado.websocket.WebSocketHandler):
+    HEARTBEAT_INTERVAL = 10
+    RECEIVE_TIMEOUT = HEARTBEAT_INTERVAL + 5
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._heartbeat_timer_handle = None
+        self._receive_timeout_timer_handle = None
+
+        self.room_key: Optional[services.chat.RoomKey] = None
+        self.auto_translate = False
+
+    def open(self):
+        logger.info('client=%s connected', self.request.remote_ip)
+        self._heartbeat_timer_handle = asyncio.get_running_loop().call_later(
+            self.HEARTBEAT_INTERVAL, self._on_send_heartbeat
+        )
+        self._refresh_receive_timeout_timer()
+
+    def _on_send_heartbeat(self):
+        self.send_cmd_data(Command.HEARTBEAT, {})
+        self._heartbeat_timer_handle = asyncio.get_running_loop().call_later(
+            self.HEARTBEAT_INTERVAL, self._on_send_heartbeat
+        )
+
+    def _refresh_receive_timeout_timer(self):
+        if self._receive_timeout_timer_handle is not None:
+            self._receive_timeout_timer_handle.cancel()
+        self._receive_timeout_timer_handle = asyncio.get_running_loop().call_later(
+            self.RECEIVE_TIMEOUT, self._on_receive_timeout
+        )
+
+    def _on_receive_timeout(self):
+        logger.info('client=%s timed out', self.request.remote_ip)
+        self._receive_timeout_timer_handle = None
+        self.close()
+
+    def on_close(self):
+        logger.info('client=%s disconnected, room=%s', self.request.remote_ip, self.room_key)
+        if self.has_joined_room:
+            services.chat.client_room_manager.del_client(self.room_key, self)
+        if self._heartbeat_timer_handle is not None:
+            self._heartbeat_timer_handle.cancel()
+            self._heartbeat_timer_handle = None
+        if self._receive_timeout_timer_handle is not None:
+            self._receive_timeout_timer_handle.cancel()
+            self._receive_timeout_timer_handle = None
+
+    def on_message(self, message):
+        try:
+            body = json.loads(message)
+            cmd = int(body['cmd'])
+
+            if cmd == Command.HEARTBEAT:
+                # 超时没有加入房间也断开
+                if self.has_joined_room:
+                    self._refresh_receive_timeout_timer()
+
+            elif cmd == Command.JOIN_ROOM:
+                self._on_join_room_req(body)
+
+            else:
+                logger.warning('client=%s unknown cmd=%d, body=%s', self.request.remote_ip, cmd, body)
+
+        except Exception:  # noqa
+            logger.exception('client=%s on_message error, message=%s', self.request.remote_ip, message)
+
+    def _on_join_room_req(self, body: dict):
+        global _latest_room_config
+        
+        if self.has_joined_room:
+            return
+        data = body['data']
+
+        # 检查是否是Unity客户端（不发送roomId/roomKey）
+        is_unity_client = 'roomId' not in data and 'roomKey' not in data
+        
+        if is_unity_client:
+            # Unity客户端：使用最近活跃的房间配置
+            room_id = _latest_room_config['roomId']
+            self.room_key = services.chat.RoomKey(services.chat.RoomKeyType.ROOM_ID, room_id)
+            logger.info('Unity client=%s joining room %s (from latest config)', self.request.remote_ip, self.room_key)
+            
+            # 发送房间配置给Unity
+            self.send_cmd_data(Command.SEND_ROOM_CONFIG, {
+                'roomId': room_id,
+                'autoTranslate': _latest_room_config['autoTranslate']
+            })
+        else:
+            # 普通客户端（前端）：更新全局房间配置
+            room_key_dict = data.get('roomKey', None)
+            if room_key_dict is not None:
+                self.room_key = services.chat.RoomKey.from_dict(room_key_dict)
+            else:
+                # 兼容旧版客户端 TODO 过几个版本可以移除
+                self.room_key = services.chat.RoomKey(services.chat.RoomKeyType.ROOM_ID, int(data['roomId']))
+            
+            logger.info('Frontend client=%s joining room %s', self.request.remote_ip, self.room_key)
+            
+            # 更新全局配置（供Unity使用）
+            if self.room_key.type == services.chat.RoomKeyType.ROOM_ID:
+                _latest_room_config['roomId'] = self.room_key.value
+                logger.info('Updated global room config: roomId=%d', self.room_key.value)
+
+        try:
+            cfg = data.get('config', {})
+            self.auto_translate = bool(cfg.get('autoTranslate', False))
+            # 更新全局翻译配置
+            if not is_unity_client:
+                _latest_room_config['autoTranslate'] = self.auto_translate
+        except KeyError:
+            pass
+
+        services.chat.client_room_manager.add_client(self.room_key, self)
+        utils.async_io.create_task_with_ref(self._on_joined_room())
+
+        self._refresh_receive_timeout_timer()
+
+    def check_origin(self, origin):
+        cfg = config.get_config()
+        return (
+            cfg.debug  # 开发时前端localhost直连
+            or cfg.is_allowed_cors_origin(origin)
+            or super().check_origin(origin)  # 和Host相同
+        )
+
+    @property
+    def has_joined_room(self):
+        return self.room_key is not None
+
+    def send_cmd_data(self, cmd, data):
+        self.send_body_no_raise(make_message_body(cmd, data))
+
+    def send_body_no_raise(self, body: Union[bytes, str, Dict[str, Any]]):
+        try:
+            self.write_message(body)
+        except tornado.websocket.WebSocketClosedError:
+            self.close()
+
+    async def _on_joined_room(self):
+        cfg = config.get_config()
+        if cfg.debug:
+            await self._send_test_message()
+
+        # 不允许自动翻译的提示
+        if (
+            self.auto_translate
+            and cfg.allow_translate_rooms
+            # 身份码就不管了吧，反正配置正确的情况下不会看到这个提示
+            and self.room_key.type == services.chat.RoomKeyType.ROOM_ID
+            and self.room_key.value not in cfg.allow_translate_rooms
+        ):
+            self.send_cmd_data(Command.ADD_TEXT, make_text_message_data(
+                author_name='blivechat',
+                author_type=2,
+                content='Translation is not allowed in this room. Please download to use translation',
+                author_level=60,
+            ))
+
+    # 测试用
+    async def _send_test_message(self):
+        base_data = {
+            'avatarUrl': await services.avatar.get_avatar_url(300474, 'xfgryujk'),
+            'timestamp': int(time.time()),
+            'authorName': 'xfgryujk',
+        }
+        text_data = make_text_message_data(
+            avatar_url=base_data['avatarUrl'],
+            timestamp=base_data['timestamp'],
+            author_name=base_data['authorName'],
+            content='我能吞下玻璃而不伤身体',
+            author_level=60,
+        )
+        member_data = {
+            **base_data,
+            'id': uuid.uuid4().hex,
+            'privilegeType': 3
+        }
+        gift_data = {
+            **base_data,
+            'id': uuid.uuid4().hex,
+            'totalCoin': 450000,
+            'giftName': '摩天大楼',
+            'num': 1
+        }
+        sc_data = {
+            **base_data,
+            'id': str(random.randint(1, 65535)),
+            'price': 30,
+            'content': 'The quick brown fox jumps over the lazy dog',
+            'translation': ''
+        }
+        self.send_cmd_data(Command.ADD_TEXT, text_data)
+        text_data[4] = 'te[dog]st'
+        text_data[11] = uuid.uuid4().hex
+        self.send_cmd_data(Command.ADD_TEXT, text_data)
+        text_data[2] = '主播'
+        text_data[3] = 3
+        text_data[4] = "I can eat glass, it doesn't hurt me."
+        text_data[11] = uuid.uuid4().hex
+        self.send_cmd_data(Command.ADD_TEXT, text_data)
+        self.send_cmd_data(Command.ADD_MEMBER, member_data)
+        self.send_cmd_data(Command.ADD_SUPER_CHAT, sc_data)
+        sc_data['id'] = str(random.randint(1, 65535))
+        sc_data['price'] = 100
+        sc_data['content'] = '敏捷的棕色狐狸跳过了懒狗'
+        self.send_cmd_data(Command.ADD_SUPER_CHAT, sc_data)
+        # self.send_cmd_data(Command.DEL_SUPER_CHAT, {'ids': [sc_data['id']]})
+        self.send_cmd_data(Command.ADD_GIFT, gift_data)
+        gift_data['id'] = uuid.uuid4().hex
+        gift_data['totalCoin'] = 1245000
+        gift_data['giftName'] = '小电视飞船'
+        self.send_cmd_data(Command.ADD_GIFT, gift_data)
+        gift_data['id'] = uuid.uuid4().hex
+        gift_data['totalCoin'] = 0
+        gift_data['totalFreeCoin'] = 1000
+        gift_data['giftName'] = '辣条'
+        gift_data['num'] = 10
+        self.send_cmd_data(Command.ADD_GIFT, gift_data)
+
+
+class RoomInfoHandler(api.base.ApiHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._user_agent = ''
+        self._http_session: Optional[aiohttp.ClientSession] = None
+
+    async def get(self):
+        room_id = int(self.get_query_argument('roomId'))
+        logger.info('client=%s getting room info, room=%d', self.request.remote_ip, room_id)
+
+        self._user_agent = self.request.headers.get('User-Agent', '')
+        # 因为UA会变，所以不能用公共的session了
+        # 显式禁用 br，避免 aiohttp + Brotli 在部分环境下的解压兼容性问题
+        async with aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=10),
+            headers={'Accept-Encoding': 'gzip, deflate'},
+        ) as http_session:
+            self._http_session = http_session
+
+            # 要先初始化buvid才能进行后续请求，不然会-352
+            buvid = await self._get_buvid()
+            (room_id, owner_uid), (host_server_list, host_server_token) = await asyncio.gather(
+                self._get_room_info(room_id),
+                self._get_server_host_list_and_token(room_id),
+            )
+
+            # 缓存1分钟
+            self.set_header('Cache-Control', 'private, max-age=60')
+            self.write({
+                'roomId': room_id,
+                'ownerUid': owner_uid,
+                'hostServerList': host_server_list,
+                'hostServerToken': host_server_token,
+                # 虽然没什么用但还是加上比较保险
+                'buvid': buvid,
+            })
+
+    async def _get_room_info(self, room_id) -> Tuple[int, int]:
+        try:
+            async with self._http_session.get(
+                dm_web_cli.ROOM_INIT_URL,
+                headers={
+                    **utils.request.BILIBILI_COMMON_HEADERS,
+                    'User-Agent': self._user_agent,
+                    'Origin': 'https://live.bilibili.com',
+                    'Referer': f'https://live.bilibili.com/{room_id}'
+                },
+                params={
+                    'room_id': room_id
+                }
+            ) as res:
+                if res.status != 200:
+                    logger.warning('room=%d _get_room_info failed: %d %s', room_id,
+                                   res.status, res.reason)
+                    return room_id, 0
+                data = await res.json()
+        except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, asyncio.TimeoutError) as e:
+            # 连接器/请求生命周期被取消时可能会触发该异常，降级为 warning 避免堆栈噪音
+            logger.warning('room=%d _get_room_info failed: %s', room_id, e)
+            return room_id, 0
+
+        if data['code'] != 0:
+            logger.warning('room=%d _get_room_info failed: %s', room_id, data['message'])
+            return room_id, 0
+
+        data = data['data']
+        return data['room_id'], data['uid']
+
+    async def _get_server_host_list_and_token(self, room_id) -> Tuple[dict, Optional[str]]:
+        wbi_signer = dm_web_cli._get_wbi_signer(self._http_session)  # noqa
+        if wbi_signer.need_refresh_wbi_key:
+            await wbi_signer.refresh_wbi_key()
+            # 如果没刷新成功先用旧的key
+            if wbi_signer.wbi_key == '':
+                logger.warning('room %d _get_server_host_list failed: no wbi key', room_id)
+                return dm_web_cli.DEFAULT_DANMAKU_SERVER_LIST, None
+
+        try:
+            async with self._http_session.get(
+                dm_web_cli.DANMAKU_SERVER_CONF_URL,
+                headers={
+                    # token会对UA签名，要使用和客户端一样的UA
+                    'User-Agent': self._user_agent
+                },
+                params=wbi_signer.add_wbi_sign({
+                    'id': room_id,
+                    'type': 0
+                })
+            ) as res:
+                if res.status != 200:
+                    logger.warning('room %d _get_server_host_list failed: %d %s', room_id,
+                                   res.status, res.reason)
+                    return dm_web_cli.DEFAULT_DANMAKU_SERVER_LIST, None
+                data = await res.json()
+        except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, asyncio.TimeoutError) as e:
+            # 连接器/请求生命周期被取消时可能会触发该异常，降级为 warning 避免堆栈噪音
+            logger.warning('room %d _get_server_host_list failed: %s', room_id, e)
+            return dm_web_cli.DEFAULT_DANMAKU_SERVER_LIST, None
+
+        if data['code'] != 0:
+            if data['code'] == -352:
+                # wbi签名错误
+                wbi_signer.reset()
+            logger.warning('room %d _get_server_host_list failed: %s', room_id, data['message'])
+            return dm_web_cli.DEFAULT_DANMAKU_SERVER_LIST, None
+
+        data = data['data']
+        host_server_list = data['host_list']
+        if not host_server_list:
+            logger.warning('room %d _get_server_host_list failed: host_server_list is empty')
+            return dm_web_cli.DEFAULT_DANMAKU_SERVER_LIST, None
+
+        host_server_token = data.get('token', None)
+        return host_server_list, host_server_token
+
+    async def _get_buvid(self):
+        buvid = self._do_get_buvid()
+        if buvid != '':
+            return buvid
+
+        try:
+            async with self._http_session.get(
+                dm_web_cli.BUVID_INIT_URL,
+                headers={
+                    # 要使用和后续请求一样的UA
+                    'User-Agent': self._user_agent
+                }
+            ):
+                pass
+        except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, asyncio.TimeoutError):
+            pass
+        return self._do_get_buvid()
+
+    def _do_get_buvid(self):
+        cookies = self._http_session.cookie_jar.filter_cookies(yarl.URL(dm_web_cli.BUVID_INIT_URL))
+        buvid_cookie = cookies.get('buvid3', None)
+        if buvid_cookie is None:
+            return ''
+        return buvid_cookie.value
+
+
+class AvatarHandler(api.base.ApiHandler):
+    async def get(self):
+        # uid基本是0了，现在都是前端计算默认头像URL，这个接口留着只是为了兼容旧版
+        uid = int(self.get_query_argument('uid'))
+        username = self.get_query_argument('username', '')
+        avatar_url = await services.avatar.get_avatar_url_or_none(uid)
+        if avatar_url is None:
+            avatar_url = services.avatar.get_default_avatar_url(uid, username)
+            cache_time = 86400 if uid == 0 else 180
+        else:
+            cache_time = 86400
+        self.set_header('Cache-Control', f'private, max-age={cache_time}')
+        self.write({'avatarUrl': avatar_url})
+
+
+class TextEmoticonMappingsHandler(api.base.ApiHandler):
+    async def get(self):
+        # 缓存1天
+        self.set_header('Cache-Control', 'private, max-age=86400')
+        cfg = config.get_config()
+        self.write({'textEmoticons': cfg.text_emoticons})
+
+
+class RoomConfigHandler(api.base.ApiHandler):
+    """获取和设置当前房间配置的API"""
+    async def get(self):
+        """获取当前房间配置"""
+        global _latest_room_config
+        self.write(_latest_room_config)
+    
+    async def post(self):
+        """更新当前房间配置（供前端调用）"""
+        global _latest_room_config
+        try:
+            data = json.loads(self.request.body)
+            if 'roomId' in data:
+                _latest_room_config['roomId'] = int(data['roomId'])
+                logger.info('Room config updated via API: roomId=%d', _latest_room_config['roomId'])
+            if 'autoTranslate' in data:
+                _latest_room_config['autoTranslate'] = bool(data['autoTranslate'])
+            self.write({'success': True, 'config': _latest_room_config})
+        except Exception as e:
+            logger.error('Failed to update room config: %s', e)
+            self.write({'success': False, 'error': str(e)})
+
+
+class PsychStateLatestHandler(api.base.ApiHandler):
+    async def get(self):
+        self.write({
+            'success': True,
+            'data': services.psych_agent.get_latest_result(),
+            'config': services.psych_agent.get_runtime_config(),
+        })
+
+
+class PsychStateHistoryHandler(api.base.ApiHandler):
+    async def get(self):
+        limit = int(self.get_query_argument('limit', '100'))
+        limit = max(1, min(limit, 500))
+        self.write({
+            'success': True,
+            'data': services.psych_agent.get_history(limit),
+        })
+
+
+class PsychStateConfigHandler(api.base.ApiHandler):
+    async def post(self):
+        try:
+            data = json.loads(self.request.body)
+            cfg = services.psych_agent.update_runtime_config(
+                enabled=data.get('enabled', None),
+                room_id=data.get('roomId', None),
+                window_seconds=data.get('windowSeconds', None),
+            )
+            self.write({'success': True, 'config': cfg})
+        except Exception as e:
+            logger.exception('Psych config update failed:')
+            self.write({'success': False, 'error': str(e)})
+
+
+ROUTES = [
+    (r'/api/chat', ChatHandler),
+    (r'/api/room_info', RoomInfoHandler),
+    (r'/api/avatar_url', AvatarHandler),
+    (r'/api/text_emoticon_mappings', TextEmoticonMappingsHandler),
+    (r'/api/room_config', RoomConfigHandler),
+    (r'/api/psych/latest', PsychStateLatestHandler),
+    (r'/api/psych/history', PsychStateHistoryHandler),
+    (r'/api/psych/config', PsychStateConfigHandler),
+]

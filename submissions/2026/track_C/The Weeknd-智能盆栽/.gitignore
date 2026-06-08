@@ -1,0 +1,8 @@
+firmware/src/wifi_credentials.h
+APP/.dart_tool/
+APP/build/
+APP/.flutter-plugins
+APP/.flutter-plugins-dependencies
+APP/android/.gradle/
+APP/android/.kotlin/
+firmware/.pio/

@@ -18,6 +18,8 @@ export type ChatWithToolsResponse = {
   error?: string
 }
 
+export type ModelResponseFormat = 'text' | 'json_object'
+
 function traceEntry(
   id: string,
   status: PlanningTraceEntry['status'],
@@ -70,25 +72,34 @@ export async function requestModelChatWithTools(
   provider: ProviderConfig,
   messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }>,
   tools: Array<Record<string, unknown>>,
-  toolChoice: 'auto' | 'none' | Record<string, unknown> = 'auto',
+  toolChoice: 'auto' | 'none' | Record<string, unknown> | undefined = 'auto',
   reasoningEffort = 'none',
   timeoutSeconds = 45,
+  maxTokens = 256,
+  responseFormat: ModelResponseFormat = 'text',
 ): Promise<ChatWithToolsResponse> {
   // 中文：API 层通过本地 LLM adapter 发送 OpenAI-compatible tools/tool_choice，保留 Gemma 4 原生 tool_calls。
   // EN: The API sends OpenAI-compatible tools/tool_choice through the local LLM adapter and preserves Gemma 4 native tool_calls.
+  const body: Record<string, unknown> = {
+    provider,
+    messages,
+    reasoningEffort,
+    temperature: 0,
+    maxTokens,
+    timeoutSeconds,
+    responseFormat,
+  }
+  if (tools.length) {
+    body.tools = tools
+    if (toolChoice !== undefined) {
+      body.toolChoice = toolChoice
+    }
+  }
+
   const response = await fetch(`${llmEngineUrl}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      provider,
-      messages,
-      tools,
-      toolChoice,
-      reasoningEffort,
-      temperature: 0,
-      maxTokens: 256,
-      timeoutSeconds,
-    }),
+    body: JSON.stringify(body),
   })
 
   if (!response.ok) {

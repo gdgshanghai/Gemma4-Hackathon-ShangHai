@@ -1,0 +1,19 @@
+{
+  "bundled": {
+    "obs_plugin_dll": "obs-blivechat-bridge.dll",
+    "obs_plugin_locale": "locale/en-US.ini",
+    "ffmpeg_portable_dir": "ffmpeg"
+  },
+  "manual_download": {
+    "obs_studio": {
+      "name": "OBS Studio",
+      "url": "https://obsproject.com/download",
+      "winget_id": "OBSProject.OBSStudio"
+    },
+    "ffmpeg": {
+      "name": "FFmpeg",
+      "url": "https://www.gyan.dev/ffmpeg/builds/",
+      "winget_id": "Gyan.FFmpeg"
+    }
+  }
+}

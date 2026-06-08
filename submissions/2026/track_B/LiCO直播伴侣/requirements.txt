@@ -1,0 +1,13 @@
+# LiCO 直播伴侣依赖入口
+#
+# 客户端和服务端运行环境不同，建议分别安装：
+#
+#   cd client
+#   pip install -r requirements.txt
+#
+#   cd ../server
+#   pip install -r requirements.txt
+#
+# 具体版本请以以下文件为准：
+# - client/requirements.txt
+# - server/requirements.txt

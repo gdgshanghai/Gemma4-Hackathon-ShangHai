@@ -1,0 +1,192 @@
+---
+name: GemmaScreen
+options:
+  bundleIdPrefix: cn.youyou
+  deploymentTarget:
+    iOS: "17.0"
+    macOS: "14.0"
+packages:
+  GlimmerIOS:
+    path: .
+targets:
+  GemmaScreen:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - Resources
+    dependencies:
+      - package: GlimmerIOS
+        product: GlimmerIOS
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: 微光 Glimmer
+        CFBundleVersion: "7"
+        UILaunchScreen: {}
+        NSPhotoLibraryUsageDescription: 选择行为视频，在本地进行筛查分析（数据不离开设备）
+        NSCameraUsageDescription: 录制行为视频用于本地筛查分析（数据不离开设备）
+        NSMicrophoneUsageDescription: 录制视频时一并采集声音（数据不离开设备）
+        ITSAppUsesNonExemptEncryption: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ${GEMMASCREEN_PRODUCT_BUNDLE_IDENTIFIER}
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        DEVELOPMENT_TEAM: ${GEMMASCREEN_DEVELOPMENT_TEAM}
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_ENTITLEMENTS: App/GemmaScreen.entitlements
+        OTHER_LDFLAGS: -all_load
+
+  # 仅模拟器：visual loop 可视化壳。
+  GlimmerGallery:
+    type: application
+    platform: iOS
+    sources:
+      - Gallery
+      - Resources
+    dependencies:
+      - package: GlimmerIOS
+        product: GlimmerIOS
+    info:
+      path: Gallery/Info.plist
+      properties:
+        CFBundleDisplayName: 微光 Glimmer
+        UILaunchScreen: {}
+        NSCameraUsageDescription: 录制行为视频（可视化壳）
+        NSMicrophoneUsageDescription: 录制声音（可视化壳）
+        NSPhotoLibraryUsageDescription: 选择视频（可视化壳）
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ${GLIMMER_GALLERY_PRODUCT_BUNDLE_IDENTIFIER}
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ${GLIMMER_GALLERY_DEVELOPMENT_TEAM}
+        # Large on-device inference needs the higher memory entitlement.
+        CODE_SIGN_ENTITLEMENTS: Gallery/GlimmerGallery.entitlements
+        OTHER_LDFLAGS: -all_load
+
+  # Native macOS app: reuses the GlimmerIOS package and runs the GGUF model with Metal.
+  # Regular build: no bundled weights. It uses trusted Application Support models, otherwise asks the user to download or choose local GGUF files.
+  GlimmerMac:
+    type: application
+    platform: macOS
+    sources:
+      - MacApp
+      - Resources
+    dependencies:
+      - package: GlimmerIOS
+        product: GlimmerIOS
+    info:
+      path: MacApp/Info.plist
+      properties:
+        CFBundleDisplayName: 微光 Glimmer
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: cn.youyou.glimmermac
+        SWIFT_VERSION: "5.0"
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        # 仅 Apple Silicon：llama macOS 切片是 arm64-only，避免 Release 编通用二进制时 x86_64 链接失败
+        ARCHS: arm64
+        SUPPORTED_PLATFORMS: "macosx"
+        DEVELOPMENT_TEAM: ${GEMMASCREEN_DEVELOPMENT_TEAM}
+        CODE_SIGN_STYLE: Automatic
+        OTHER_LDFLAGS: -all_load
+
+  # Full build: bundles the model files and seeds them into Application Support on first launch.
+  # It shares the bundle id and product name with GlimmerMac, so regular updates can replace it cleanly.
+  GlimmerMacFull:
+    type: application
+    platform: macOS
+    sources:
+      - MacApp
+      - Resources
+      - path: Model/model-Q4_K_M.gguf
+        buildPhase: resources
+      - path: Model/mmproj-bf16.gguf
+        buildPhase: resources
+    dependencies:
+      - package: GlimmerIOS
+        product: GlimmerIOS
+    info:
+      path: MacApp/Info.plist
+      properties:
+        CFBundleDisplayName: 微光 Glimmer
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_NAME: GlimmerMac
+        PRODUCT_BUNDLE_IDENTIFIER: cn.youyou.glimmermac
+        SWIFT_VERSION: "5.0"
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        ARCHS: arm64
+        SUPPORTED_PLATFORMS: "macosx"
+        DEVELOPMENT_TEAM: ${GEMMASCREEN_DEVELOPMENT_TEAM}
+        CODE_SIGN_STYLE: Automatic
+        OTHER_LDFLAGS: -all_load
+
+  GlimmerIOSTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests/GlimmerIOSTests
+    dependencies:
+      - package: GlimmerIOS
+        product: GlimmerIOS
+    settings:
+      base:
+        SWIFT_VERSION: "5.0"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        GENERATE_INFOPLIST_FILE: true
+schemes:
+  GemmaScreen:
+    build:
+      targets:
+        GemmaScreen: all
+        GlimmerIOSTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - GlimmerIOSTests
+    archive:
+      config: Release
+  GlimmerGallery:
+    build:
+      targets:
+        GlimmerGallery: all
+    run:
+      config: Debug
+  GlimmerMac:
+    build:
+      targets:
+        GlimmerMac: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+  GlimmerMacFull:
+    build:
+      targets:
+        GlimmerMacFull: all
+    run:
+      config: Debug
+    archive:
+      config: Release

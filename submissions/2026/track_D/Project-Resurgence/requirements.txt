@@ -1,0 +1,2 @@
+# This project is an Android application and does not use Python runtime dependencies.
+# Keep this file to satisfy tooling or documentation workflows that expect requirements.txt.

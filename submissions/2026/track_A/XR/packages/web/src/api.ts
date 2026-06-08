@@ -74,6 +74,15 @@ export type ConversationDecision = {
   analysisPrompt?: string
 }
 
+export type ConversationRouteContext = {
+  hasActiveTask?: boolean
+  latestTaskStatus?: string
+  previousAction?: ConversationDecision['action']
+  previousWorkflowKey?: string
+  previousAnalysisPrompt?: string
+  previousMessage?: string
+}
+
 export type ModelPlan = {
   intent: string
   comparison: string
@@ -207,7 +216,7 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ prompt }),
     }),
-  routeConversation: (message: string, context?: { hasActiveTask?: boolean; latestTaskStatus?: string }) =>
+  routeConversation: (message: string, context?: ConversationRouteContext) =>
     request<ConversationDecision>('/api/conversation/route', {
       method: 'POST',
       body: JSON.stringify({ message, context }),

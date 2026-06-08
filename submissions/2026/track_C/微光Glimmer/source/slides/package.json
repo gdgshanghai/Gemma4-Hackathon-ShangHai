@@ -1,0 +1,13 @@
+{
+  "name": "glimmer-hackathon-slides",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "html": "marp --theme glimmer.css --html --allow-local-files --output dist/glimmer-tech-route.html glimmer-tech-route.md",
+    "pdf": "marp --theme glimmer.css --html --allow-local-files --pdf --output dist/glimmer-tech-route.pdf glimmer-tech-route.md",
+    "pptx": "marp --theme glimmer.css --html --allow-local-files --pptx --output dist/glimmer-tech-route.pptx glimmer-tech-route.md"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^4.2.3"
+  }
+}
