@@ -1,0 +1,2 @@
+# Python dependencies are not required for this submission.
+# World Oracle uses Bun + TypeScript. See README.md for setup and run commands.

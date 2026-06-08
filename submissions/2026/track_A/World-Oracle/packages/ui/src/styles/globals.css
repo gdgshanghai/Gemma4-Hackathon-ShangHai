@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@theme {
+	/* Palantir dark theme palette */
+	--color-bg-primary: #0a0a0f;
+	--color-bg-secondary: #12121a;
+	--color-bg-tertiary: #1a1a25;
+	--color-bg-panel: #0f0f18;
+	--color-bg-panel-hover: #161622;
+	--color-bg-input: #0d0d14;
+
+	--color-border-primary: #1e1e2e;
+	--color-border-secondary: #2a2a3e;
+	--color-border-accent: #3a3a55;
+
+	--color-text-primary: #e8e8f0;
+	--color-text-secondary: #9898b0;
+	--color-text-muted: #606078;
+	--color-text-accent: #c0c0e0;
+
+	/* Status colors */
+	--color-status-critical: #ff2244;
+	--color-status-high: #ff6622;
+	--color-status-elevated: #ffaa00;
+	--color-status-moderate: #44cc88;
+	--color-status-low: #2288ff;
+	--color-status-live: #00ff88;
+
+	/* Agent colors */
+	--color-agent-usa: #4488ff;
+	--color-agent-iran: #22cc66;
+	--color-agent-israel: #aa88ff;
+	--color-agent-russia: #ff4466;
+	--color-agent-china: #ffaa22;
+
+	/* Influence spread */
+	--color-influence-military: #ff2244;
+	--color-influence-economic: #ffaa22;
+	--color-influence-diplomatic: #4488ff;
+	--color-influence-intelligence: #aa44ff;
+	--color-influence-cyber: #00ffcc;
+
+	/* Fonts */
+	--font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+	--font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	background: var(--color-bg-primary);
+	color: var(--color-text-primary);
+	font-family: var(--font-mono);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+	width: 4px;
+	height: 4px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-border-secondary);
+	border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-border-accent);
+}
+
+/* Pulse animation for live indicators */
+@keyframes pulse-live {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.4;
+	}
+}
+
+@keyframes pulse-glow {
+	0%,
+	100% {
+		box-shadow: 0 0 4px currentColor;
+	}
+	50% {
+		box-shadow: 0 0 12px currentColor;
+	}
+}
+
+.animate-pulse-live {
+	animation: pulse-live 2s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+	animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Market arc refresh flash */
+@keyframes mkt-flash {
+	0% {
+		opacity: 0.5;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+/* Panel styling */
+.panel {
+	background: var(--color-bg-panel);
+	border: 1px solid var(--color-border-primary);
+	border-radius: 4px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.panel-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 12px;
+	background: var(--color-bg-secondary);
+	border-bottom: 1px solid var(--color-border-primary);
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--color-text-secondary);
+	user-select: none;
+}
+
+.panel-body {
+	flex: 1;
+	overflow-y: auto;
+	padding: 8px;
+}
