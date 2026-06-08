@@ -1,0 +1,56 @@
+name: kiln_echo
+version: 1.0.3
+environment:
+  sdk: '^3.10.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Camera plugin for taking photos
+  camera: ^0.12.0+1
+
+  # Image picker for mobile gallery
+  image_picker: ^1.1.2
+
+  # File picker (macOS desktop friendly) for selecting images
+  file_selector: ^1.0.3
+
+  # HTTP client for calling local Ollama API
+  http: ^1.2.2
+
+  # Image decode/resize/encode (pure Dart) for pre-send compression
+  image: ^4.2.0
+  
+  # Text-to-Speech plugin
+  flutter_tts: ^4.2.5
+
+  # Speech-to-Text (microphone input for voice follow-ups)
+  speech_to_text: ^7.0.0
+  
+  # Path provider for saving images temporarily
+  path_provider: ^2.1.1 # 请检查最新版本
+  
+  # Path for joining paths
+  path: ^1.8.3 # 请检查最新版本
+  
+  # State management (optional, but good practice)
+  # provider: ^6.0.5 # 如果使用Provider进行状态管理
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/app_icon.png"
+  remove_alpha_ios: true
+
+flutter:
+  uses-material-design: true
+  assets:
+    - config.json
+    - assets/app_icon.png
+    - assets/mascot_xiaoci.png
