@@ -1,0 +1,65 @@
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub/
+.pub-cache/
+.packages
+.metadata
+build/
+coverage/
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# OS / editors
+.DS_Store
+*.swp
+*.swo
+*.log
+.history
+.svn/
+
+# Docs
+doc/api/
+
+# Android
+android/.gradle/
+android/local.properties
+android/**/GeneratedPluginRegistrant.java
+android/**/GeneratedPluginRegistrant.kt
+android/app/debug/
+android/app/profile/
+android/app/release/
+**/key.properties
+**/*.jks
+**/*.keystore
+
+# iOS
+ios/Flutter/.last_build_id
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/ephemeral/
+ios/Pods/
+ios/.symlinks/
+
+# macOS
+macos/Flutter/Generated.xcconfig
+macos/Flutter/flutter_export_environment.sh
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/.symlinks/
+
+# Xcode
+**/*.xcuserstate
+**/*.xcuserdata/
+**/*.moved-aside
+DerivedData/
+
+# Symbolication / obfuscation
+app.*.symbols
+app.*.map.json
