@@ -1,0 +1,3 @@
+[submodule "submissions/2026/track_A/safearrival_ai"]
+	path = submissions/2026/track_A/safearrival_ai
+	url = https://github.com/Gzmomo001/aws-gemma-hackthon.git
