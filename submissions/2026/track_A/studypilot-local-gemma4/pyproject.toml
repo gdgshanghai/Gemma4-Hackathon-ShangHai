@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "studypilot-v13"
+version = "0.1.0"
+description = "Local-first StudyPilot planning foundation"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi==0.136.0",
+    "uvicorn==0.44.0",
+    "httpx==0.28.1",
+    "pydantic==2.13.3",
+    "python-dotenv==1.0.1",
+    "tzdata==2025.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.0.2",
+    "ruff==0.15.11",
+    "hypothesis>=6.0,<7",
+    "pytest-cov>=6.0,<8",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-m 'not real_lm'"
+markers = [
+    "real_lm: requires a live local LM Studio model",
+    "e2e: exercises an end-to-end user workflow",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.setuptools.packages.find]
+include = ["backend*"]

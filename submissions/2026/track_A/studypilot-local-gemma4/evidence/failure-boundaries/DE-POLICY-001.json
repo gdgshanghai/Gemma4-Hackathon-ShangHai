@@ -1,0 +1,72 @@
+{
+  "actual_model_output": "{\"ordered_task_ids\": [\"LANG-EN-MUST\", \"LANG-ZH-MUST\", \"MATH-MUST\", \"MATH-EXTEND\"]}",
+  "actual_model_output_sha256": "f3a065666893cbee0566720a43efb8297c14d5d948a73ab85294d4cd3c45e732",
+  "capabilities": [
+    "tool_use"
+  ],
+  "configured_model": "gemma-4-26b-a4b-it",
+  "evidence_id": "DE-POLICY-001",
+  "first_content_empty": true,
+  "first_finish_reason": "tool_calls",
+  "first_request_sha256": "21e4b3f29e8df50ef690e2f0cd50e4d9721d1b1715d3b15dd396257532f526ee",
+  "first_response_sha256": "36354f42e18724304bd036b5dc13b1138ed0d363d8f0b96c516ceb1ce3de3b58",
+  "latencies_ms": {
+    "first_turn": 1156,
+    "second_turn": 12047
+  },
+  "lesson": "Successful memory retrieval is not policy compliance; deterministic candidate generation and validation remain necessary.",
+  "model_state": "loaded",
+  "ordered_task_ids": [
+    "LANG-EN-MUST",
+    "LANG-ZH-MUST",
+    "MATH-MUST",
+    "MATH-EXTEND"
+  ],
+  "provenance": "real_lm_native_fc",
+  "quantization": "Q4_K_M",
+  "reason": null,
+  "reproduced": false,
+  "scorable": true,
+  "second_finish_reason": "stop",
+  "second_request_sha256": "2272ae6781b15bf2738c5e9d8600d7564d3222e38d6d17d68c5e75218144ea11",
+  "second_response_sha256": "1a357c8299537335463f2449e5e553f4ddce8d2fb9a24e222da0fbe5984fe095",
+  "timestamp": "2026-07-11T08:43:36.750837Z",
+  "tool_call_id": "XLIrW3BpW5Q6kRIPnkEHdAgCqfuShbKJ",
+  "tool_name": "get_planning_context",
+  "tool_result": {
+    "memory": {
+      "language_pattern": "unfinished must-do language work is often avoided",
+      "mathematics_recent_pattern": "recent mathematics work overruns estimates"
+    },
+    "tasks": [
+      {
+        "completion_state": "pending",
+        "id": "LANG-EN-MUST",
+        "must_do_tonight": true,
+        "subject": "English"
+      },
+      {
+        "completion_state": "pending",
+        "id": "LANG-ZH-MUST",
+        "must_do_tonight": true,
+        "subject": "Chinese"
+      },
+      {
+        "completion_state": "pending",
+        "id": "MATH-MUST",
+        "must_do_tonight": true,
+        "subject": "Mathematics"
+      },
+      {
+        "completion_state": "pending",
+        "id": "MATH-EXTEND",
+        "must_do_tonight": false,
+        "subject": "Mathematics"
+      }
+    ]
+  },
+  "tool_result_sha256": "0d11fa64f4975b27ae237c999005b9a7411948488c9b9c77bbbd0f05bad52e53",
+  "validated_args": {
+    "scope": "tonight"
+  }
+}

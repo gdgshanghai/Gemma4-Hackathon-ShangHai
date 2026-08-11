@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "directory_rules": [
+    {
+      "source": "backend",
+      "desktop": "02_V14决赛Demo内核/backend",
+      "submission": "backend",
+      "role": "v14-core",
+      "visibility": "public",
+      "suffixes": [".py", ".sql"]
+    },
+    {
+      "source": "kid-frontend",
+      "desktop": "02_V14决赛Demo内核/kid-frontend",
+      "submission": "kid-frontend",
+      "role": "kid-frontend",
+      "visibility": "public",
+      "suffixes": [".css", ".html", ".json", ".ts", ".tsx"]
+    },
+    {
+      "source": "parent-frontend",
+      "desktop": "02_V14决赛Demo内核/parent-frontend",
+      "submission": "parent-frontend",
+      "role": "parent-frontend",
+      "visibility": "public",
+      "suffixes": [".css", ".html", ".json", ".ts", ".tsx"]
+    },
+    {
+      "source": "tests/unit/api",
+      "desktop": "02_V14决赛Demo内核/tests/unit/api",
+      "submission": "tests/unit/api",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "tests/unit/contracts",
+      "desktop": "02_V14决赛Demo内核/tests/unit/contracts",
+      "submission": "tests/unit/contracts",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "tests/unit/domain",
+      "desktop": "02_V14决赛Demo内核/tests/unit/domain",
+      "submission": "tests/unit/domain",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "tests/unit/evidence",
+      "desktop": "02_V14决赛Demo内核/tests/unit/evidence",
+      "submission": "tests/unit/evidence",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "tests/unit/orchestration",
+      "desktop": "02_V14决赛Demo内核/tests/unit/orchestration",
+      "submission": "tests/unit/orchestration",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "tests/unit/services",
+      "desktop": "02_V14决赛Demo内核/tests/unit/services",
+      "submission": "tests/unit/services",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "tests/unit/storage",
+      "desktop": "02_V14决赛Demo内核/tests/unit/storage",
+      "submission": "tests/unit/storage",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "tests/integration/api",
+      "desktop": "02_V14决赛Demo内核/tests/integration/api",
+      "submission": "tests/integration/api",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "tests/property",
+      "desktop": "02_V14决赛Demo内核/tests/property",
+      "submission": "tests/property",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "tests/real_lm",
+      "desktop": "02_V14决赛Demo内核/tests/real_lm",
+      "submission": "tests/real_lm",
+      "role": "v14-tests",
+      "visibility": "public",
+      "suffixes": [".py"]
+    },
+    {
+      "source": "evidence/screenshots/v14-5",
+      "desktop": "03_决赛证据/screenshots/v14-5",
+      "submission": "evidence/screenshots/v14-5",
+      "role": "v14-evidence",
+      "visibility": "public",
+      "suffixes": [".png"]
+    }
+  ],
+  "file_rules": [
+    {"source": ".env.example", "desktop": "02_V14决赛Demo内核/.env.example", "submission": ".env.example", "role": "configuration-template", "visibility": "public"},
+    {"source": "pyproject.toml", "desktop": "02_V14决赛Demo内核/pyproject.toml", "submission": "pyproject.toml", "role": "dependencies", "visibility": "public"},
+    {"source": "requirements.txt", "desktop": "02_V14决赛Demo内核/requirements.txt", "submission": "requirements.txt", "role": "dependencies", "visibility": "public"},
+    {"source": "requirements-dev.txt", "desktop": "02_V14决赛Demo内核/requirements-dev.txt", "submission": "requirements-dev.txt", "role": "dependencies", "visibility": "public"},
+    {"source": "scripts/__init__.py", "desktop": "02_V14决赛Demo内核/scripts/__init__.py", "submission": "scripts/__init__.py", "role": "runtime-support", "visibility": "public"},
+    {"source": "scripts/studypilot_service.py", "desktop": "02_V14决赛Demo内核/scripts/studypilot_service.py", "submission": "scripts/studypilot_service.py", "role": "runtime-service", "visibility": "public"},
+    {"source": "scripts/studypilot_launcher.ps1", "desktop": "02_V14决赛Demo内核/scripts/studypilot_launcher.ps1", "submission": "scripts/studypilot_launcher.ps1", "role": "runtime-launcher", "visibility": "public"},
+    {"source": "scripts/StudyPilotLauncher.psm1", "desktop": "02_V14决赛Demo内核/scripts/StudyPilotLauncher.psm1", "submission": "scripts/StudyPilotLauncher.psm1", "role": "runtime-launcher", "visibility": "public"},
+    {"source": "scripts/final_competition_launcher.ps1", "desktop": "02_V14决赛Demo内核/scripts/final_competition_launcher.ps1", "submission": "scripts/final_competition_launcher.ps1", "role": "final-launcher", "visibility": "public"},
+    {"source": "scripts/final_competition_package.py", "desktop": "02_V14决赛Demo内核/scripts/final_competition_package.py", "submission": "scripts/final_competition_package.py", "role": "package-builder", "visibility": "public"},
+    {"source": "scripts/build_final_competition_package.ps1", "desktop": "02_V14决赛Demo内核/scripts/build_final_competition_package.ps1", "submission": "scripts/build_final_competition_package.ps1", "role": "package-builder", "visibility": "public"},
+    {"source": "scripts/test_final_competition_package.ps1", "desktop": "02_V14决赛Demo内核/scripts/test_final_competition_package.ps1", "submission": "scripts/test_final_competition_package.ps1", "role": "package-checks", "visibility": "public"},
+    {"source": "scripts/check_final_competition_launchers.ps1", "desktop": "02_V14决赛Demo内核/scripts/check_final_competition_launchers.ps1", "submission": "scripts/check_final_competition_launchers.ps1", "role": "package-checks", "visibility": "public"},
+    {"source": "scripts/lm_studio_preflight.py", "desktop": "02_V14决赛Demo内核/scripts/lm_studio_preflight.py", "submission": "scripts/lm_studio_preflight.py", "role": "native-fc-preflight", "visibility": "public"},
+    {"source": "scripts/run_v14_demo_checks.ps1", "desktop": "02_V14决赛Demo内核/scripts/run_v14_demo_checks.ps1", "submission": "scripts/run_v14_demo_checks.ps1", "role": "v14-demo-checks", "visibility": "public"},
+    {"source": "evaluation/v14-demo/README.md", "desktop": "03_决赛证据/evaluation/v14-demo/README.md", "submission": "evaluation/v14-demo/README.md", "role": "v14-evidence", "visibility": "public"},
+    {"source": "evidence/function-calling/v14-real-preflight.json", "desktop": "03_决赛证据/evidence/function-calling/v14-real-preflight.json", "submission": "evidence/function-calling/v14-real-preflight.json", "role": "v14-evidence", "visibility": "public"},
+    {"source": "evidence/failure-boundaries/DE-POLICY-001.json", "desktop": "03_决赛证据/evidence/failure-boundaries/DE-POLICY-001.json", "submission": "evidence/failure-boundaries/DE-POLICY-001.json", "role": "v14-evidence", "visibility": "public"},
+    {"source": "evidence/reports/v14-four-scenario-check.md", "desktop": "03_决赛证据/evidence/reports/v14-four-scenario-check.md", "submission": "evidence/reports/v14-four-scenario-check.md", "role": "v14-evidence", "visibility": "public"},
+    {"source": "evidence/reports/v14-resilient-parent-calibration.md", "desktop": "03_决赛证据/evidence/reports/v14-resilient-parent-calibration.md", "submission": "evidence/reports/v14-resilient-parent-calibration.md", "role": "v14-evidence", "visibility": "public"},
+    {"source": "evidence/reports/v14-daily-lifecycle-verification.md", "desktop": "03_决赛证据/evidence/reports/v14-daily-lifecycle-verification.md", "submission": "evidence/reports/v14-daily-lifecycle-verification.md", "role": "v14-evidence", "visibility": "public"},
+    {"source": "evidence/reports/v14-4-deadline-protected-capacity-recovery.md", "desktop": "03_决赛证据/evidence/reports/v14-4-deadline-protected-capacity-recovery.md", "submission": "evidence/reports/v14-4-deadline-protected-capacity-recovery.md", "role": "v14-evidence", "visibility": "public"},
+    {"source": "evidence/reports/v14-5-command-center-frontend-verification.md", "desktop": "03_决赛证据/evidence/reports/v14-5-command-center-frontend-verification.md", "submission": "evidence/reports/v14-5-command-center-frontend-verification.md", "role": "v14-evidence", "visibility": "public"},
+    {"source": "final-competition/package-allowlist.json", "desktop": "04_启动说明/package-allowlist.json", "submission": "package-allowlist.json", "role": "package-policy", "visibility": "public"},
+    {"source": "final-competition/README.md", "desktop": "04_启动说明/README.md", "submission": "README.md", "role": "finals-readme", "visibility": "public"},
+    {"source": "final-competition/TECHNICAL_REPORT_FINAL_UPDATE.md", "desktop": "04_启动说明/TECHNICAL_REPORT_FINAL_UPDATE.md", "submission": "TECHNICAL_REPORT_FINAL_UPDATE.md", "role": "technical-report", "visibility": "public"},
+    {"source": "final-competition/assets/时间规划小助手_决赛路演V11_产品闭环讲清版.pptx", "desktop": "01_现场材料/时间规划小助手_决赛路演V11_产品闭环讲清版.pptx", "submission": "materials/时间规划小助手_决赛路演V11_产品闭环讲清版.pptx", "role": "v11-deck", "visibility": "public"},
+    {"source": "final-competition/assets/时间规划小助手_决赛演示视频_V7_100秒完整落底版.mp4", "desktop": "01_现场材料/时间规划小助手_决赛演示视频_V7_100秒完整落底版.mp4", "submission": "materials/时间规划小助手_决赛演示视频_V7_100秒完整落底版.mp4", "role": "v7-video", "visibility": "public"},
+    {"source": "final-competition/v11-qa/source-manifest.md", "desktop": "01_现场材料/v11-qa/source-manifest.md", "submission": "materials/v11-qa/source-manifest.md", "role": "v11-qa", "visibility": "public"},
+    {"source": "final-competition/v11-qa/v11-qa-record.md", "desktop": "01_现场材料/v11-qa/v11-qa-record.md", "submission": "materials/v11-qa/v11-qa-record.md", "role": "v11-qa", "visibility": "public"},
+    {"source": "final-competition/v11-qa/v11-formal-sha256.csv", "desktop": "01_现场材料/v11-qa/v11-formal-sha256.csv", "submission": "materials/v11-qa/v11-formal-sha256.csv", "role": "v11-qa", "visibility": "public"},
+    {"source": "final-competition/wrappers/启动决赛Demo.bat", "desktop": "启动决赛Demo.bat", "submission": "启动决赛Demo.bat", "role": "final-launcher", "visibility": "public"},
+    {"source": "final-competition/wrappers/停止决赛Demo.bat", "desktop": "停止决赛Demo.bat", "submission": "停止决赛Demo.bat", "role": "final-launcher", "visibility": "public"},
+    {"source": "final-competition/wrappers/决赛现场预检.bat", "desktop": "决赛现场预检.bat", "submission": "决赛现场预检.bat", "role": "final-launcher", "visibility": "public"},
+    {"source": "final-competition/wrappers/安装决赛Demo依赖.bat", "desktop": "安装决赛Demo依赖.bat", "submission": "安装决赛Demo依赖.bat", "role": "final-launcher", "visibility": "public"},
+    {"source": "final-competition/wrappers/打开决赛PPT.bat", "desktop": "打开决赛PPT.bat", "submission": "打开决赛PPT.bat", "role": "final-material-launcher", "visibility": "public"}
+  ]
+}
