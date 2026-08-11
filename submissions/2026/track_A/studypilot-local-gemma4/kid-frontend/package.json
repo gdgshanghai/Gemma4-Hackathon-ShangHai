@@ -1,23 +1,28 @@
 {
-  "name": "studypilot-kid-quest",
+  "name": "studypilot-kid-frontend",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1 --port 5173",
-    "build": "tsc && vite build",
-    "preview": "vite preview --host 127.0.0.1 --port 5173"
+    "dev": "vite --host 127.0.0.1 --port 8041",
+    "build": "tsc -b && vite build",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^5.1.1",
-    "lucide-react": "^0.555.0",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "typescript": "^5.9.3",
-    "vite": "^7.2.4"
+    "@tanstack/react-query": "^5.81.5",
+    "lucide-react": "^0.525.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.3",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
-    "@types/react": "^19.2.16",
-    "@types/react-dom": "^19.2.3"
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "jsdom": "^26.1.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4",
+    "vitest": "^3.2.4"
   }
 }

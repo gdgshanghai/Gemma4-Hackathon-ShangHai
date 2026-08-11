@@ -1,0 +1,29 @@
+{
+  "capabilities": [
+    "tool_use"
+  ],
+  "configured_model": "gemma-4-26b-a4b-it",
+  "first_content_empty": true,
+  "first_finish_reason": "tool_calls",
+  "first_request_sha256": "ebe4ead038c2dbea563339322df5ab2018c6fd380717a5eb21a8bec1a319e8ad",
+  "first_response_sha256": "90f1e003aadfbaa3d983d6ee9fe13acc2a4c7c1cd70a720995a617f58dbcf8bf",
+  "latencies_ms": {
+    "first_turn": 735,
+    "metadata": 368,
+    "second_turn": 583
+  },
+  "model_state": "loaded",
+  "provenance": "real_lm_native_fc",
+  "quantization": "Q4_K_M",
+  "second_content_sha256": "c3649eb01d3d80bd9eacd81dc25baab45c64df1a10d85a809516fda5cc86ddcd",
+  "second_finish_reason": "stop",
+  "second_request_sha256": "d937f6b21733b0ed3a4f8cc2274d5eae05471ca3bc3e44412fe77b7cc69af7c0",
+  "second_response_sha256": "ba86db5c67c6f25549755db92ea762300c218672dbfdc5a6150d79ef04ab7053",
+  "timestamp": "2026-07-12T12:01:55.879904Z",
+  "tool_call_id": "6ny2oiJ9DbRSLYPSNAVMfJLrR4h3RdAc",
+  "tool_name": "get_planning_context",
+  "tool_result_sha256": "2a6c3da5b900606647ae187342a847f93bed996d16da0aee966200e86fa9538d",
+  "validated_args": {
+    "probe": "native_function_calling"
+  }
+}
